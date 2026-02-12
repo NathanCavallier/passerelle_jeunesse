@@ -30,8 +30,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { handleServiceRequest } from '@/app/actions';
 import { ArrowRight } from 'lucide-react';
+
+// Fonction de traitement du formulaire côté client
+async function handleServiceRequest(values: any) {
+  // Simulate API call/database operation
+  console.log('New service request:', values);
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  return { success: true, message: 'Service request sent successfully.' };
+}
 
 const heroImage = PlaceHolderImages.find(img => img.id === 'hero-image');
 

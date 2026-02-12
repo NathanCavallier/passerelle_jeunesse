@@ -1,0 +1,63 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isValidImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    function isValidDocument() {
+      return request.resource.contentType.matches('application/pdf')
+          || request.resource.contentType.matches('image/.*');
+    }
+    
+    function isSizeValid(maxSize) {
+      return request.resource.size <= maxSize;
+    }
+    
+    // Profile pictures - Limite 5MB
+    match /profile-pictures/{userId}/{fileName} {
+      allow read: if true; // Public read
+      allow write: if isAuthenticated() 
+                   && isOwner(userId) 
+                   && isValidImage() 
+                   && isSizeValid(5 * 1024 * 1024);
+    }
+    
+    // Youngster photos - Limite 5MB
+    match /youngster-photos/{userId}/{youngsterId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() 
+                   && isOwner(userId) 
+                   && isValidImage() 
+                   && isSizeValid(5 * 1024 * 1024);
+    }
+    
+    // Documents (factures, contrats) - Limite 10MB
+    match /documents/{userId}/{docType}/{fileName} {
+      allow read: if isAuthenticated() && isOwner(userId);
+      allow write: if isAuthenticated() 
+                   && isOwner(userId) 
+                   && isValidDocument() 
+                   && isSizeValid(10 * 1024 * 1024);
+    }
+    
+    // Mission reports - Limite 10MB
+    match /mission-reports/{missionId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() 
+                   && isValidDocument() 
+                   && isSizeValid(10 * 1024 * 1024);
+    }
+  }
+}

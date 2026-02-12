@@ -4,7 +4,6 @@
  */
 
 import {
-    getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
@@ -17,11 +16,10 @@ import {
     User as FirebaseUser,
     UserCredential,
 } from 'firebase/auth';
-import app from './firebase';
+import { auth } from './firebase';
 import { createUserDocument, getUserDocument } from './firestore-service';
 import type { UserRole } from '@/types/firestore';
 
-const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 // ============================================================================

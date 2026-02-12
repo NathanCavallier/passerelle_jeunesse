@@ -4,7 +4,6 @@
  */
 
 import {
-    getFirestore,
     collection,
     doc,
     getDoc,
@@ -21,10 +20,8 @@ import {
     DocumentSnapshot,
     QuerySnapshot,
 } from 'firebase/firestore';
-import app from './firebase';
+import { db } from './firebase';
 import type { User, UserRole, Address } from '@/types/firestore';
-
-const db = getFirestore(app);
 
 // ============================================================================
 // USERS
