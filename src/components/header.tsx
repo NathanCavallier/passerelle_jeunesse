@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
 import Logo from './logo';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/auth-context';
 
 const navLinks = [
   { href: '/#services', label: 'Services' },
@@ -19,6 +20,7 @@ const navLinks = [
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +41,8 @@ export default function Header() {
         <Link href="/">
           <Logo />
         </Link>
+        
+        {/* Navigation desktop */}
         <nav className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
             <Link
@@ -50,6 +54,29 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+
+        {/* Boutons d'authentification - Desktop */}
+        <div className="hidden items-center gap-4 md:flex">
+          {isAuthenticated ? (
+            <Button asChild>
+              <Link href="/dashboard">
+                <User className="mr-2 h-4 w-4" />
+                Tableau de bord
+              </Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href="/login">Connexion</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/signup">Inscription</Link>
+              </Button>
+            </>
+          )}
+        </div>
+
+        {/* Menu mobile */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
@@ -74,6 +101,27 @@ export default function Header() {
                     </Link>
                   ))}
                 </nav>
+                
+                {/* Boutons d'authentification - Mobile */}
+                <div className="flex flex-col gap-3 border-t pt-6">
+                  {isAuthenticated ? (
+                    <Button asChild className="w-full">
+                      <Link href="/dashboard">
+                        <User className="mr-2 h-4 w-4" />
+                        Tableau de bord
+                      </Link>
+                    </Button>
+                  ) : (
+                    <>
+                      <Button variant="outline" asChild className="w-full">
+                        <Link href="/login">Connexion</Link>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <Link href="/signup">Inscription</Link>
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
             </SheetContent>
           </Sheet>

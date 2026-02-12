@@ -1,0 +1,292 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================================================
+    // FONCTIONS HELPER
+    // ============================================================================
+    
+    // Vérifie si l'utilisateur est authentifié
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Vérifie si l'utilisateur est le propriétaire du document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Récupère le rôle de l'utilisateur actuel
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    // Vérifie si l'utilisateur a un rôle spécifique
+    function hasRole(role) {
+      return isAuthenticated() && getUserRole() == role;
+    }
+    
+    // Vérifie si l'utilisateur est admin
+    function isAdmin() {
+      return hasRole('admin');
+    }
+    
+    // Vérifie si l'utilisateur est parent
+    function isParent() {
+      return hasRole('parent');
+    }
+    
+    // Vérifie si l'utilisateur est accompagnateur
+    function isAccompanist() {
+      return hasRole('accompanist');
+    }
+    
+    // Vérifie si le document appartient à l'utilisateur
+    function isDocumentOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Vérifie si les données requises sont présentes
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    // Vérifie si l'email est vérifié
+    function isEmailVerified() {
+      return request.auth.token.email_verified == true;
+    }
+    
+    // ============================================================================
+    // USERS COLLECTION
+    // ============================================================================
+    
+    match /users/{userId} {
+      // Lecture : l'utilisateur peut lire son propre profil, les admins peuvent tout lire
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Création : seulement lors de l'inscription (uid doit correspondre)
+      allow create: if isAuthenticated() 
+                    && request.auth.uid == userId
+                    && hasRequiredFields(['email', 'firstName', 'lastName', 'role'])
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.email == request.auth.token.email;
+      
+      // Mise à jour : l'utilisateur peut modifier son profil, admin peut tout modifier
+      allow update: if (isOwner(userId) && 
+                       // L'utilisateur ne peut pas changer son rôle ou son uid
+                       request.resource.data.uid == resource.data.uid &&
+                       request.resource.data.role == resource.data.role)
+                    || isAdmin();
+      
+      // Suppression : seulement admin
+      allow delete: if isAdmin();
+      
+      // ============================================================================
+      // YOUNGSTERS SOUS-COLLECTION
+      // ============================================================================
+      
+      match /youngsters/{youngsterId} {
+        // Le parent peut tout gérer pour ses jeunes
+        allow read, write: if isOwner(userId) || isAdmin();
+        
+        // L'accompagnateur assigné peut lire pendant une mission
+        allow read: if isAccompanist() && 
+                    exists(/databases/$(database)/documents/missions/$(request.auth.uid + '_' + youngsterId));
+      }
+    }
+    
+    // ============================================================================
+    // BOOKINGS COLLECTION
+    // ============================================================================
+    
+    match /bookings/{bookingId} {
+      // Lecture :
+      // - Le parent propriétaire
+      // - L'accompagnateur assigné
+      // - Les admins
+      allow read: if isAdmin() 
+                  || isDocumentOwner(resource.data.parentId)
+                  || (isAccompanist() && request.auth.uid == resource.data.accompanistId);
+      
+      // Création : seulement les parents et admins
+      allow create: if (isParent() || isAdmin())
+                    && hasRequiredFields(['parentId', 'serviceType', 'trip', 'youngsters', 'pricing'])
+                    && request.resource.data.parentId == request.auth.uid;
+      
+      // Mise à jour :
+      // - Le parent peut modifier avant confirmation
+      // - L'accompagnateur peut mettre à jour certains champs
+      // - Admin peut tout modifier
+      allow update: if isAdmin()
+                    || (isDocumentOwner(resource.data.parentId) && resource.data.status == 'pending')
+                    || (isAccompanist() && request.auth.uid == resource.data.accompanistId);
+      
+      // Suppression : seulement admin
+      allow delete: if isAdmin();
+    }
+    
+    // ============================================================================
+    // MISSIONS COLLECTION
+    // ============================================================================
+    
+    match /missions/{missionId} {
+      // Lecture :
+      // - Le parent
+      // - L'accompagnateur assigné
+      // - Les admins
+      allow read: if isAdmin()
+                  || isDocumentOwner(resource.data.parentId)
+                  || (isAccompanist() && request.auth.uid == resource.data.accompanistId);
+      
+      // Création : seulement admin et système
+      allow create: if isAdmin();
+      
+      // Mise à jour :
+      // - L'accompagnateur peut mettre à jour le statut, checkpoints, tracking
+      // - Admin peut tout modifier
+      allow update: if isAdmin()
+                    || (isAccompanist() && request.auth.uid == resource.data.accompanistId);
+      
+      // Suppression : seulement admin
+      allow delete: if isAdmin();
+    }
+    
+    // ============================================================================
+    // PAYMENTS COLLECTION
+    // ============================================================================
+    
+    match /payments/{paymentId} {
+      // Lecture : le payeur ou admin
+      allow read: if isAdmin() || isDocumentOwner(resource.data.userId);
+      
+      // Création : système uniquement (via Cloud Functions)
+      allow create: if false;
+      
+      // Mise à jour : système uniquement
+      allow update: if false;
+      
+      // Suppression : jamais (conservation légale)
+      allow delete: if false;
+    }
+    
+    // ============================================================================
+    // REVIEWS COLLECTION
+    // ============================================================================
+    
+    match /reviews/{reviewId} {
+      // Lecture :
+      // - Tout le monde peut lire les avis publics et approuvés
+      // - L'auteur peut lire son propre avis
+      // - Admin peut tout lire
+      allow read: if (resource.data.isPublic == true && resource.data.status == 'approved')
+                  || isDocumentOwner(resource.data.authorId)
+                  || isAdmin();
+      
+      // Création : seulement le parent après une mission complétée
+      allow create: if isParent()
+                    && hasRequiredFields(['bookingId', 'missionId', 'authorId', 'rating'])
+                    && request.resource.data.authorId == request.auth.uid
+                    && exists(/databases/$(database)/documents/bookings/$(request.resource.data.bookingId))
+                    && get(/databases/$(database)/documents/bookings/$(request.resource.data.bookingId)).data.status == 'completed';
+      
+      // Mise à jour :
+      // - L'auteur peut modifier son avis (si pas encore approuvé)
+      // - Admin peut modérer
+      allow update: if (isDocumentOwner(resource.data.authorId) && resource.data.status == 'pending')
+                    || isAdmin();
+      
+      // Suppression : seulement admin
+      allow delete: if isAdmin();
+    }
+    
+    // ============================================================================
+    // NOTIFICATIONS COLLECTION
+    // ============================================================================
+    
+    match /notifications/{notificationId} {
+      // Lecture : seulement le destinataire ou admin
+      allow read: if isAdmin() || isDocumentOwner(resource.data.recipientId);
+      
+      // Création : système uniquement
+      allow create: if false;
+      
+      // Mise à jour : le destinataire peut marquer comme lu/dismissed
+      allow update: if isDocumentOwner(resource.data.recipientId)
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt', 'dismissed']);
+      
+      // Suppression : le destinataire ou admin
+      allow delete: if isDocumentOwner(resource.data.recipientId) || isAdmin();
+    }
+    
+    // ============================================================================
+    // MESSAGES COLLECTION
+    // ============================================================================
+    
+    match /messages/{messageId} {
+      // Lecture : l'expéditeur, le destinataire ou admin
+      allow read: if isAdmin()
+                  || request.auth.uid == resource.data.senderId
+                  || request.auth.uid == resource.data.receiverId;
+      
+      // Création : parent ou accompagnateur impliqués dans la mission
+      allow create: if isAuthenticated()
+                    && hasRequiredFields(['missionId', 'bookingId', 'senderId', 'receiverId', 'text'])
+                    && request.resource.data.senderId == request.auth.uid
+                    && exists(/databases/$(database)/documents/missions/$(request.resource.data.missionId))
+                    && (get(/databases/$(database)/documents/missions/$(request.resource.data.missionId)).data.parentId == request.auth.uid
+                        || get(/databases/$(database)/documents/missions/$(request.resource.data.missionId)).data.accompanistId == request.auth.uid);
+      
+      // Mise à jour : le destinataire peut marquer comme lu
+      allow update: if request.auth.uid == resource.data.receiverId
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'readAt']);
+      
+      // Suppression : seulement admin
+      allow delete: if isAdmin();
+    }
+    
+    // ============================================================================
+    // STATS COLLECTION
+    // ============================================================================
+    
+    match /stats/{statId} {
+      // Lecture : seulement admin
+      allow read: if isAdmin();
+      
+      // Écriture : système uniquement
+      allow write: if false;
+    }
+    
+    // ============================================================================
+    // SETTINGS COLLECTION
+    // ============================================================================
+    
+    match /settings/{settingId} {
+      // Lecture : tout le monde peut lire les paramètres publics
+      allow read: if true;
+      
+      // Écriture : seulement admin
+      allow write: if isAdmin();
+    }
+    
+    // ============================================================================
+    // AUDIT COLLECTION
+    // ============================================================================
+    
+    match /audit/{auditId} {
+      // Lecture : seulement admin
+      allow read: if isAdmin();
+      
+      // Écriture : système uniquement (via Cloud Functions)
+      allow write: if false;
+    }
+    
+    // ============================================================================
+    // RÈGLE PAR DÉFAUT - TOUT REFUSER
+    // ============================================================================
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
