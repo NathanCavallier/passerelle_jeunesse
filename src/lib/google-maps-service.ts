@@ -8,33 +8,36 @@ import { Loader } from '@googlemaps/js-api-loader';
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 
 let loader: Loader | null = null;
-let google: any = null;
+let isLoaded = false;
+
+// Déclaration globale pour TypeScript
+declare global {
+    interface Window {
+        google: any;
+    }
+}
 
 /**
- * Initialise le loader Google Maps
+ * Initialise et charge l'API Google Maps
  */
-function getLoader(): Loader {
+async function loadGoogleMapsAPI(): Promise<void> {
+    if (isLoaded && typeof window !== 'undefined' && window.google) {
+        return;
+    }
+
     if (!loader) {
         loader = new Loader({
             apiKey: GOOGLE_MAPS_API_KEY,
             version: 'weekly',
-            libraries: ['places', 'geometry'],
+            libraries: ['places'],
         });
-    }
-    return loader;
-}
-
-/**
- * Charge l'API Google Maps
- */
-export async function loadGoogleMaps(): Promise<any> {
-    if (google) {
-        return google;
     }
 
     try {
-        google = await getLoader().load();
-        return google.maps;
+        // @ts-ignore - La méthode loadPromise existe dans v2
+        await loader.loadPromise();
+        isLoaded = true;
+        console.log('Google Maps API chargée avec succès');
     } catch (error) {
         console.error('Erreur lors du chargement de Google Maps:', error);
         throw new Error('Impossible de charger Google Maps');
@@ -49,22 +52,27 @@ export async function calculateRealDistance(
     destination: string
 ): Promise<{ distanceKm: number; durationMinutes: number; status: string }> {
     try {
-        const google = await loadGoogleMaps();
-        const service = new google.maps.DistanceMatrixService();
+        await loadGoogleMapsAPI();
+
+        if (typeof window === 'undefined' || !window.google) {
+            throw new Error('Google Maps non disponible');
+        }
+
+        const service = new window.google.maps.DistanceMatrixService();
 
         return new Promise((resolve, reject) => {
             service.getDistanceMatrix(
                 {
                     origins: [origin],
                     destinations: [destination],
-                    travelMode: google.maps.TravelMode.DRIVING,
-                    unitSystem: google.maps.UnitSystem.METRIC,
+                    travelMode: window.google.maps.TravelMode.DRIVING,
+                    unitSystem: window.google.maps.UnitSystem.METRIC,
                 },
                 (response: any, status: any) => {
-                    if (status === 'OK' && response.rows[0].elements[0].status === 'OK') {
+                    if (status === 'OK' && response && response.rows[0].elements[0].status === 'OK') {
                         const element = response.rows[0].elements[0];
-                        const distanceKm = Math.round(element.distance.value / 1000);
-                        const durationMinutes = Math.round(element.duration.value / 60);
+                        const distanceKm = Math.round(element.distance!.value / 1000);
+                        const durationMinutes = Math.round(element.duration!.value / 60);
 
                         resolve({
                             distanceKm,
@@ -90,12 +98,17 @@ export async function geocodeAddress(
     address: string
 ): Promise<{ lat: number; lng: number; formattedAddress: string } | null> {
     try {
-        const google = await loadGoogleMaps();
-        const geocoder = new google.maps.Geocoder();
+        await loadGoogleMapsAPI();
 
-        return new Promise((resolve, reject) => {
+        if (typeof window === 'undefined' || !window.google) {
+            return null;
+        }
+
+        const geocoder = new window.google.maps.Geocoder();
+
+        return new Promise((resolve) => {
             geocoder.geocode({ address }, (results: any, status: any) => {
-                if (status === 'OK' && results[0]) {
+                if (status === 'OK' && results && results[0]) {
                     const location = results[0].geometry.location;
                     resolve({
                         lat: location.lat(),
@@ -118,8 +131,13 @@ export async function geocodeAddress(
  */
 export async function getAddressSuggestions(input: string): Promise<string[]> {
     try {
-        const google = await loadGoogleMaps();
-        const service = new google.maps.places.AutocompleteService();
+        await loadGoogleMapsAPI();
+
+        if (typeof window === 'undefined' || !window.google) {
+            return [];
+        }
+
+        const service = new window.google.maps.places.AutocompleteService();
 
         return new Promise((resolve) => {
             service.getPlacePredictions(
@@ -129,7 +147,7 @@ export async function getAddressSuggestions(input: string): Promise<string[]> {
                     types: ['address'],
                 },
                 (predictions: any, status: any) => {
-                    if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+                    if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
                         resolve(predictions.map((p: any) => p.description));
                     } else {
                         resolve([]);

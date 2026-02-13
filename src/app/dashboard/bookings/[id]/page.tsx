@@ -26,6 +26,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { PaymentButton } from '@/components/payments/payment-button';
 import {
     ArrowLeft,
     Calendar,
@@ -467,10 +468,27 @@ export default function BookingDetailPage({ params }: PageProps) {
                                 </div>
                             </div>
 
-                            {!booking.pricing.depositPaid && booking.status !== 'cancelled' && (
-                                <Button className="w-full" size="lg">
-                                    Payer l&apos;acompte
-                                </Button>
+                            {/* Boutons de paiement Stripe */}
+                            {booking.status !== 'cancelled' && (
+                                <div className="space-y-3">
+                                    {!booking.pricing.depositPaid && (
+                                        <PaymentButton
+                                            bookingId={booking.id}
+                                            amount={booking.pricing.deposit}
+                                            paymentType="deposit"
+                                            className="w-full"
+                                        />
+                                    )}
+                                    
+                                    {booking.pricing.depositPaid && !booking.pricing.balancePaid && (
+                                        <PaymentButton
+                                            bookingId={booking.id}
+                                            amount={booking.pricing.balance}
+                                            paymentType="balance"
+                                            className="w-full"
+                                        />
+                                    )}
+                                </div>
                             )}
                         </CardContent>
                     </Card>

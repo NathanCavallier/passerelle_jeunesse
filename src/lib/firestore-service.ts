@@ -401,27 +401,67 @@ export async function cancelBooking(
 /**
  * Confirme le paiement de l'acompte
  */
-export async function confirmDepositPayment(bookingId: string): Promise<void> {
+export async function confirmDepositPayment(
+    bookingId: string,
+    paymentDetails?: {
+        stripeSessionId?: string;
+        paymentIntentId?: string;
+        amountPaid?: number;
+        paidAt?: Date;
+    }
+): Promise<void> {
     const bookingRef = doc(db, 'bookings', bookingId);
 
-    await updateDoc(bookingRef, {
+    const updateData: any = {
         'pricing.depositPaid': true,
         status: 'paid',
         updatedAt: serverTimestamp(),
-    });
+    };
+
+    if (paymentDetails) {
+        updateData['payment.deposit'] = {
+            stripeSessionId: paymentDetails.stripeSessionId,
+            paymentIntentId: paymentDetails.paymentIntentId,
+            amount: paymentDetails.amountPaid,
+            paidAt: paymentDetails.paidAt || new Date(),
+            status: 'succeeded',
+        };
+    }
+
+    await updateDoc(bookingRef, updateData);
 }
 
 /**
  * Confirme le paiement du solde
  */
-export async function confirmBalancePayment(bookingId: string): Promise<void> {
+export async function confirmBalancePayment(
+    bookingId: string,
+    paymentDetails?: {
+        stripeSessionId?: string;
+        paymentIntentId?: string;
+        amountPaid?: number;
+        paidAt?: Date;
+    }
+): Promise<void> {
     const bookingRef = doc(db, 'bookings', bookingId);
 
-    await updateDoc(bookingRef, {
+    const updateData: any = {
         'pricing.balancePaid': true,
         status: 'paid',
         updatedAt: serverTimestamp(),
-    });
+    };
+
+    if (paymentDetails) {
+        updateData['payment.balance'] = {
+            stripeSessionId: paymentDetails.stripeSessionId,
+            paymentIntentId: paymentDetails.paymentIntentId,
+            amount: paymentDetails.amountPaid,
+            paidAt: paymentDetails.paidAt || new Date(),
+            status: 'succeeded',
+        };
+    }
+
+    await updateDoc(bookingRef, updateData);
 }
 
 // ============================================================================

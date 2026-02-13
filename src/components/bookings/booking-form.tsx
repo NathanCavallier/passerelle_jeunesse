@@ -23,6 +23,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AddressAutocomplete } from '@/components/ui/address-autocomplete';
 import { 
     Calendar,
     Clock,
@@ -467,10 +468,27 @@ export default function BookingForm() {
 
                                 <div className="space-y-2">
                                     <Label htmlFor="departureAddress">Adresse *</Label>
-                                    <Input
-                                        id="departureAddress"
-                                        {...register('departureAddress')}
-                                        placeholder="12 rue de la Paix"
+                                    <Controller
+                                        name="departureAddress"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <AddressAutocomplete
+                                                id="departureAddress"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                onSelect={(address, details) => {
+                                                    field.onChange(details?.streetAddress || address);
+                                                    // Auto-remplir ville et code postal si disponibles
+                                                    if (details?.city) {
+                                                        setValue('departureCity', details.city);
+                                                    }
+                                                    if (details?.postalCode) {
+                                                        setValue('departurePostalCode', details.postalCode);
+                                                    }
+                                                }}
+                                                placeholder="12 rue de la Paix, 75001 Paris"
+                                            />
+                                        )}
                                     />
                                     {errors.departureAddress && (
                                         <p className="text-sm text-red-600">{errors.departureAddress.message}</p>
@@ -542,10 +560,27 @@ export default function BookingForm() {
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="arrivalAddress">Adresse *</Label>
-                                    <Input
-                                        id="arrivalAddress"
-                                        {...register('arrivalAddress')}
-                                        placeholder="45 avenue des Champs-Élysées"
+                                    <Controller
+                                        name="arrivalAddress"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <AddressAutocomplete
+                                                id="arrivalAddress"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                onSelect={(address, details) => {
+                                                    field.onChange(details?.streetAddress || address);
+                                                    // Auto-remplir ville et code postal si disponibles
+                                                    if (details?.city) {
+                                                        setValue('arrivalCity', details.city);
+                                                    }
+                                                    if (details?.postalCode) {
+                                                        setValue('arrivalPostalCode', details.postalCode);
+                                                    }
+                                                }}
+                                                placeholder="45 avenue des Champs-Élysées, 75008 Paris"
+                                            />
+                                        )}
                                     />
                                     {errors.arrivalAddress && (
                                         <p className="text-sm text-red-600">{errors.arrivalAddress.message}</p>
