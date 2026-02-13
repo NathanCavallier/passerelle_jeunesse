@@ -138,13 +138,19 @@ Le projet suit un développement en 9 phases sur 12+ mois :
 - Architecture base de données
 - Pages légales (FAQ, CGV, Mentions légales)
 
-### 🚧 Phase 2 - Profils utilisateurs (EN COURS)
+### ✅ Phase 2 - Profils utilisateurs (COMPLÈTE)
 - Gestion des profils jeunes
-- Upload de photos et documents
+- Upload de photos avec compression
+- Upload et gestion des documents
 - Informations médicales et contacts d'urgence
 
+### 🚧 Phase 3 - Système de réservation (EN COURS)
+- Formulaire de réservation avec calcul automatique des tarifs
+- Liste et détail des réservations
+- Service de tarification avec réductions
+- Système d'annulation avec remboursement
+
 ### Phases suivantes
-- Phase 3 : Système de réservation
 - Phase 4 : Paiements Stripe
 - Phase 5 : Dashboard accompagnateurs
 - Phase 6 : Messagerie interne

@@ -23,8 +23,8 @@ Cette roadmap détaille le développement de la plateforme web professionnelle p
 - [x] Types TypeScript pour Firestore
 - [x] Règles de sécurité Firestore
 - [x] Configuration Firebase Authentication
-- [ ] Déploiement initial (Firebase Hosting)
-- [ ] Configuration domaine personnalisé
+- [x] Déploiement initial (Firebase Hosting)
+- [x] Configuration domaine personnalisé (jeunesse.imogo.org)
 
 ### 🎨 Interface utilisateur de base
 
@@ -48,43 +48,51 @@ Cette roadmap détaille le développement de la plateforme web professionnelle p
 
 ---
 
-## 🎯 Phase 2 - Authentification & Profils (Mois 3)
+## ✅ Phase 2 - Authentification & Profils (COMPLÈTE)
 
 ### 👤 Système d'authentification
 
-- [ ] Inscription parent/tuteur
-- [ ] Connexion sécurisée
-- [ ] Réinitialisation mot de passe
-- [ ] Vérification email
-- [ ] Connexion via Google (optionnel)
+- [x] Inscription parent/tuteur
+- [x] Connexion sécurisée
+- [x] Réinitialisation mot de passe
+- [x] Vérification email
+- [x] Connexion via Google
 
 ### 📝 Gestion des profils
 
-- [ ] Profil parent :
+- [x] Profil parent :
   - Informations personnelles
   - Coordonnées d'urgence
   - Documents administratifs
-- [ ] Profils jeunes :
+- [x] Profils jeunes :
   - Informations personnelles
   - Âge et besoins spécifiques
   - Autorisations parentales
   - Contacts d'urgence
   - Allergies/informations médicales
-- [ ] Tableau de bord personnel
+  - Photo de profil avec compression
+  - Gestion des documents (certificats, autorisations, pièces d'identité)
+- [x] Tableau de bord personnel
+- [x] Liste et gestion des jeunes
+- [x] Upload et stockage sécurisé des documents
 
 ---
 
-## 🎯 Phase 3 - Système de réservation (Mois 4-5)
+## 🚧 Phase 3 - Système de réservation (EN COURS)
 
 ### 📅 Moteur de réservation
 
-- [ ] Formulaire de demande de prestation :
+- [x] Formulaire de demande de prestation :
   - Type de service (local / longue distance)
   - Date et heure
   - Lieu de départ / arrivée
   - Nombre de jeunes
   - Informations complémentaires
-- [ ] Calcul automatique du tarif
+- [x] Calcul automatique du tarif
+- [x] Service de tarification avec règles métier
+- [x] Page de liste des réservations
+- [x] Page de détail d'une réservation
+- [x] Système d'annulation avec remboursement
 - [ ] Vérification de disponibilité
 - [ ] Système de créneaux horaires
 - [ ] Gestion des trajets récurrents
@@ -386,11 +394,14 @@ Mois 11-12: ░░░░░░░░░░░░████████░░�
 3. [x] Définir l'architecture Firestore
 4. [x] Créer les premiers schémas de la base de données
 5. [x] Mettre en place Firebase Authentication
-6. [ ] Créer les pages de connexion et d'inscription
-7. [ ] Tester l'authentification complète
+6. [x] Créer les pages de connexion et d'inscription
+7. [x] Tester l'authentification complète
+8. [x] Déployer en production (jeunesse.imogo.org)
+9. [ ] Créer la gestion des profils jeunes
+10. [ ] Implémenter l'upload de photos
 
 ---
 
-**Dernière mise à jour :** 12 février 2026  
+**Dernière mise à jour :** 13 février 2026  
 **Version :** 1.0  
 **Auteur :** Nathan Imogo – Passerelle Jeunesse

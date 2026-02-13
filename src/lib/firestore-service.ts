@@ -19,9 +19,11 @@ import {
     serverTimestamp,
     DocumentSnapshot,
     QuerySnapshot,
+    arrayUnion,
+    arrayRemove,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import type { User, UserRole, Address } from '@/types/firestore';
+import type { User, UserRole, Address, YoungsterDocument } from '@/types/firestore';
 
 // ============================================================================
 // USERS
@@ -157,6 +159,7 @@ export async function createYoungster(
         ...youngsterData,
         id: youngsterRef.id,
         parentId,
+        documents: youngsterData.documents || [],
         totalTrips: 0,
         status: 'active',
         createdAt: serverTimestamp(),
@@ -187,6 +190,20 @@ export async function getYoungsters(parentId: string): Promise<any[]> {
 }
 
 /**
+ * Récupère un jeune spécifique
+ */
+export async function getYoungster(parentId: string, youngsterId: string): Promise<any | null> {
+    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+    const youngsterSnap = await getDoc(youngsterRef);
+
+    if (!youngsterSnap.exists()) {
+        return null;
+    }
+
+    return youngsterSnap.data();
+}
+
+/**
  * Met à jour un jeune
  */
 export async function updateYoungster(
@@ -198,6 +215,95 @@ export async function updateYoungster(
 
     await updateDoc(youngsterRef, {
         ...data,
+        updatedAt: serverTimestamp(),
+    });
+}
+
+/**
+ * Supprime un jeune (soft delete)
+ */
+export async function deleteYoungster(
+    parentId: string,
+    youngsterId: string
+): Promise<void> {
+    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+
+    await updateDoc(youngsterRef, {
+        status: 'deleted',
+        updatedAt: serverTimestamp(),
+    });
+
+    // Décrémenter le compteur de jeunes du parent
+    const parentRef = doc(db, 'users', parentId);
+    const parentSnap = await getDoc(parentRef);
+    const currentCount = parentSnap.data()?.parentProfile?.numberOfYoungsters || 0;
+
+    if (currentCount > 0) {
+        await updateDoc(parentRef, {
+            'parentProfile.numberOfYoungsters': currentCount - 1,
+        });
+    }
+}
+
+/**
+ * Ajoute un document à un jeune
+ */
+export async function addYoungsterDocument(
+    parentId: string,
+    youngsterId: string,
+    document: Omit<YoungsterDocument, 'id'>
+): Promise<string> {
+    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+
+    // Générer un ID unique pour le document
+    const docId = `doc_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const fullDocument: YoungsterDocument = {
+        id: docId,
+        ...document,
+    };
+
+    await updateDoc(youngsterRef, {
+        documents: arrayUnion(fullDocument),
+        updatedAt: serverTimestamp(),
+    });
+
+    return docId;
+}
+
+/**
+ * Supprime un document d'un jeune
+ */
+export async function deleteYoungsterDocument(
+    parentId: string,
+    youngsterId: string,
+    document: YoungsterDocument
+): Promise<void> {
+    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+
+    await updateDoc(youngsterRef, {
+        documents: arrayRemove(document),
+        updatedAt: serverTimestamp(),
+    });
+}
+
+/**
+ * Met à jour un document d'un jeune
+ */
+export async function updateYoungsterDocument(
+    parentId: string,
+    youngsterId: string,
+    oldDocument: YoungsterDocument,
+    newDocument: YoungsterDocument
+): Promise<void> {
+    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+
+    // Supprimer l'ancien document et ajouter le nouveau
+    await updateDoc(youngsterRef, {
+        documents: arrayRemove(oldDocument),
+    });
+
+    await updateDoc(youngsterRef, {
+        documents: arrayUnion(newDocument),
         updatedAt: serverTimestamp(),
     });
 }
@@ -240,6 +346,20 @@ export async function getParentBookings(parentId: string): Promise<any[]> {
 }
 
 /**
+ * Récupère une réservation spécifique
+ */
+export async function getBooking(bookingId: string): Promise<any | null> {
+    const bookingRef = doc(db, 'bookings', bookingId);
+    const bookingSnap = await getDoc(bookingRef);
+
+    if (!bookingSnap.exists()) {
+        return null;
+    }
+
+    return bookingSnap.data();
+}
+
+/**
  * Met à jour une réservation
  */
 export async function updateBooking(
@@ -250,6 +370,56 @@ export async function updateBooking(
 
     await updateDoc(bookingRef, {
         ...data,
+        updatedAt: serverTimestamp(),
+    });
+}
+
+/**
+ * Annule une réservation
+ */
+export async function cancelBooking(
+    bookingId: string,
+    cancelledBy: 'parent' | 'accompanist' | 'admin',
+    reason: string,
+    refundAmount: number
+): Promise<void> {
+    const bookingRef = doc(db, 'bookings', bookingId);
+
+    await updateDoc(bookingRef, {
+        status: 'cancelled',
+        cancellation: {
+            cancelledBy,
+            cancelledAt: serverTimestamp(),
+            reason,
+            refundAmount,
+            refundStatus: 'pending',
+        },
+        updatedAt: serverTimestamp(),
+    });
+}
+
+/**
+ * Confirme le paiement de l'acompte
+ */
+export async function confirmDepositPayment(bookingId: string): Promise<void> {
+    const bookingRef = doc(db, 'bookings', bookingId);
+
+    await updateDoc(bookingRef, {
+        'pricing.depositPaid': true,
+        status: 'paid',
+        updatedAt: serverTimestamp(),
+    });
+}
+
+/**
+ * Confirme le paiement du solde
+ */
+export async function confirmBalancePayment(bookingId: string): Promise<void> {
+    const bookingRef = doc(db, 'bookings', bookingId);
+
+    await updateDoc(bookingRef, {
+        'pricing.balancePaid': true,
+        status: 'paid',
         updatedAt: serverTimestamp(),
     });
 }

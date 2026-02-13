@@ -118,10 +118,35 @@ npm run dev
 **Cause :** Les règles Firestore ne sont pas déployées
 **Solution :** `firebase deploy --only firestore:rules`
 
+### Erreur "The current domain is not authorized for OAuth operations"
+
+**Cause :** Le domaine n'est pas dans la liste des domaines autorisés pour Google OAuth
+**Solution :** Ajouter votre domaine dans Firebase Console
+
+**Étapes détaillées :**
+
+1. **Aller dans Authentication → Settings :**
+   ```
+   https://console.firebase.google.com/project/studio-6855979452-20286/authentication/settings
+   ```
+
+2. **Onglet "Authorized domains" :**
+   - Cliquer sur **"Add domain"**
+   - Entrer : `jeunesse.imogo.org`
+   - Cliquer sur **"Add"**
+
+3. **Domaines à ajouter :**
+   - `localhost` (pour le développement)
+   - `jeunesse.imogo.org` (domaine personnalisé)
+   - `studio-6855979452-20286.web.app` (domaine Firebase par défaut)
+   - `studio-6855979452-20286.firebaseapp.com` (domaine Firebase secondaire)
+
+✅ **L'authentification Google OAuth fonctionne maintenant sur tous les domaines !**
+
 ### Erreur "Firebase: Error (auth/popup-blocked)"
 
 **Cause :** Le navigateur bloque les popups Google
-**Solution :** Autoriser les popups pour localhost
+**Solution :** Autoriser les popups pour le domaine
 
 ### Les variables d'environnement ne sont pas chargées
 
@@ -134,7 +159,38 @@ npm run dev
 
 ---
 
-## 📦 Structure des fichiers Firebase
+## � Déploiement en production
+
+### Build et déploiement
+
+```bash
+# Build de l'application
+npm run build
+
+# Déployer sur Firebase Hosting
+firebase deploy --only hosting
+
+# Déployer tout (rules + hosting)
+npm run build && firebase deploy
+```
+
+### URLs de l'application
+
+- **Production** : https://jeunesse.imogo.org
+- **Firebase (par défaut)** : https://studio-6855979452-20286.web.app
+- **Développement** : http://localhost:9002
+
+### Configuration du domaine personnalisé
+
+Si vous souhaitez utiliser un domaine personnalisé (déjà configuré pour jeunesse.imogo.org) :
+
+1. **Aller dans Hosting → Domaines personnalisés**
+2. **Ajouter un domaine** et suivre les instructions DNS
+3. **Ajouter le domaine dans les domaines autorisés** (voir section OAuth ci-dessus)
+
+---
+
+## �📦 Structure des fichiers Firebase
 
 ```
 passerelle_jeunesse/
@@ -178,4 +234,4 @@ Si vous rencontrez un problème :
 
 ---
 
-**Dernière mise à jour :** 12 février 2026
+**Dernière mise à jour :** 13 février 2026

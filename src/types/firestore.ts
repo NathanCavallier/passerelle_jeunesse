@@ -136,6 +136,27 @@ export interface Authorizations {
     activitiesParticipation: boolean;
 }
 
+export type DocumentType =
+    | 'id_card'
+    | 'birth_certificate'
+    | 'health_certificate'
+    | 'vaccination_record'
+    | 'parental_authorization'
+    | 'insurance'
+    | 'other';
+
+export interface YoungsterDocument {
+    id: string;
+    type: DocumentType;
+    name: string;
+    url: string;
+    mimeType: string;
+    size: number;
+    uploadedAt: Timestamp;
+    expiresAt?: Timestamp;
+    notes?: string;
+}
+
 export interface Youngster {
     id: string;
     parentId: string;
@@ -151,6 +172,7 @@ export interface Youngster {
     healthInfo: HealthInfo;
     emergencyContacts: YoungsterEmergencyContact[];
     authorizations: Authorizations;
+    documents: YoungsterDocument[];
     behaviouralNotes?: string;
     specialNeeds?: string[];
     totalTrips: number;

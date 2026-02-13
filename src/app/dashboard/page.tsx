@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
@@ -123,21 +124,30 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  Mes réservations
-                </CardTitle>
-                <CardDescription>
-                  Consultez vos prestations à venir
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">0</p>
-                <p className="text-sm text-muted-foreground">réservation(s)</p>
-              </CardContent>
-            </Card>
+            <Link href="/dashboard/bookings">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Mes réservations
+                  </CardTitle>
+                  <CardDescription>
+                    Consultez et créez vos prestations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">
+                    {userProfile.parentProfile?.totalBookings || 0}
+                  </p>
+                  <p className="text-sm text-muted-foreground">réservation(s)</p>
+                  <Button variant="outline" className="w-full mt-4" asChild>
+                    <Link href="/dashboard/bookings/new">
+                      Nouvelle réservation
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
 
             <Card className="hover:shadow-lg transition-shadow cursor-pointer">
               <CardHeader>
@@ -157,23 +167,25 @@ export default function DashboardPage() {
             </Card>
 
             {userProfile.role === 'parent' && (
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5" />
-                    Mes jeunes
-                  </CardTitle>
-                  <CardDescription>
-                    Gérez les profils de vos enfants
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">
-                    {userProfile.parentProfile?.numberOfYoungsters || 0}
-                  </p>
-                  <p className="text-sm text-muted-foreground">jeune(s) enregistré(s)</p>
-                </CardContent>
-              </Card>
+              <Link href="/dashboard/youngsters">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <User className="h-5 w-5" />
+                      Mes jeunes
+                    </CardTitle>
+                    <CardDescription>
+                      Gérez les profils de vos enfants
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold">
+                      {userProfile.parentProfile?.numberOfYoungsters || 0}
+                    </p>
+                    <p className="text-sm text-muted-foreground">jeune(s) enregistré(s)</p>
+                  </CardContent>
+                </Card>
+              </Link>
             )}
 
             <Card className="hover:shadow-lg transition-shadow cursor-pointer">
