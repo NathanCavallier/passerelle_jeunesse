@@ -23,7 +23,10 @@ import {
   Bell, 
   Settings, 
   LogOut,
-  AlertCircle 
+  AlertCircle,
+  Gift,
+  BarChart3,
+  Users
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -49,8 +52,7 @@ export default function DashboardPage() {
     const bookingsRef = collection(db, 'bookings');
     const q = query(
       bookingsRef,
-      where('parentId', '==', user.uid),
-      orderBy('scheduledFor', 'desc')
+      where('parentId', '==', user.uid)
     );
 
     // Listener en temps réel
@@ -61,6 +63,13 @@ export default function DashboardPage() {
           id: doc.id,
           ...doc.data()
         } as Booking));
+        
+        // Trier côté client par createdAt décroissant
+        bookingsData.sort((a, b) => {
+          const timeA = a.createdAt?.toDate().getTime() || 0;
+          const timeB = b.createdAt?.toDate().getTime() || 0;
+          return timeB - timeA;
+        });
         
         setBookings(bookingsData);
         setLastUpdate(new Date());
@@ -138,31 +147,35 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
+    <div className="flex flex-col min-h-dvh bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <Header />
       <main className="flex-1 container py-8 px-4 md:px-6">
         <div className="space-y-6">
           {/* En-tête */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">
-                Bonjour, {userProfile.firstName} 👋
-              </h1>
-              <p className="text-muted-foreground">
-                Bienvenue sur votre tableau de bord
-              </p>
-            </div>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Déconnexion
-            </Button>
-          </div>
+          <Card className="border-none shadow-lg bg-gradient-to-r from-blue-600 to-purple-600">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-white">
+                    Bonjour, {userProfile.firstName} 👋
+                  </h1>
+                  <p className="text-blue-100 mt-1">
+                    Bienvenue sur votre tableau de bord
+                  </p>
+                </div>
+                <Button variant="secondary" onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Déconnexion
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Alerte email non vérifié */}
           {!isEmailVerified && (
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
+            <Alert className="border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50">
+              <AlertCircle className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-900">
                 Votre email n'est pas encore vérifié. Vérifiez votre boîte de réception pour activer toutes les fonctionnalités.
               </AlertDescription>
             </Alert>
@@ -179,10 +192,10 @@ export default function DashboardPage() {
           {/* Cartes de navigation */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Link href="/dashboard/profile">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-purple-200 bg-gradient-to-br from-purple-50 to-background">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <User className="h-5 w-5" />
+                    <User className="h-5 w-5 text-purple-600" />
                     Mon profil
                   </CardTitle>
                   <CardDescription>
@@ -190,7 +203,7 @@ export default function DashboardPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full border-purple-300 hover:bg-purple-50">
                     Modifier mon profil
                   </Button>
                 </CardContent>
@@ -198,10 +211,10 @@ export default function DashboardPage() {
             </Link>
 
             <Link href="/dashboard/bookings">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-green-200 bg-gradient-to-br from-green-50 to-background">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
+                    <Calendar className="h-5 w-5 text-green-600" />
                     Mes réservations
                   </CardTitle>
                   <CardDescription>
@@ -209,11 +222,11 @@ export default function DashboardPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold">
+                  <p className="text-2xl font-bold text-green-600">
                     {userProfile.parentProfile?.totalBookings || 0}
                   </p>
                   <p className="text-sm text-muted-foreground">réservation(s)</p>
-                  <Button variant="outline" className="w-full mt-4" asChild>
+                  <Button variant="outline" className="w-full mt-4 border-green-300 hover:bg-green-50" asChild>
                     <Link href="/dashboard/bookings/new">
                       Nouvelle réservation
                     </Link>
@@ -222,29 +235,31 @@ export default function DashboardPage() {
               </Card>
             </Link>
 
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Paiements
-                </CardTitle>
-                <CardDescription>
-                  Historique et factures
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button variant="outline" className="w-full">
-                  Voir l'historique
-                </Button>
-              </CardContent>
-            </Card>
+            <Link href="/dashboard/payments">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-emerald-200 bg-gradient-to-br from-emerald-50 to-background">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-emerald-600" />
+                    Paiements
+                  </CardTitle>
+                  <CardDescription>
+                    Historique et factures
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="outline" className="w-full border-emerald-300 hover:bg-emerald-50">
+                    Voir l'historique
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
 
             {userProfile.role === 'parent' && (
               <Link href="/dashboard/youngsters">
-                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-pink-200 bg-gradient-to-br from-pink-50 to-background">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <User className="h-5 w-5" />
+                      <User className="h-5 w-5 text-pink-600" />
                       Mes jeunes
                     </CardTitle>
                     <CardDescription>
@@ -252,7 +267,7 @@ export default function DashboardPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-2xl font-bold">
+                    <p className="text-2xl font-bold text-pink-600">
                       {userProfile.parentProfile?.numberOfYoungsters || 0}
                     </p>
                     <p className="text-sm text-muted-foreground">jeune(s) enregistré(s)</p>
@@ -261,45 +276,147 @@ export default function DashboardPage() {
               </Link>
             )}
 
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="h-5 w-5" />
-                  Notifications
-                </CardTitle>
-                <CardDescription>
-                  Gérez vos préférences
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button variant="outline" className="w-full">
-                  Configurer
-                </Button>
-              </CardContent>
-            </Card>
+            <Link href="/dashboard/notifications">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-orange-200 bg-gradient-to-br from-orange-50 to-background">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-5 w-5 text-orange-600" />
+                    Notifications
+                  </CardTitle>
+                  <CardDescription>
+                    Gérez vos préférences
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="outline" className="w-full border-orange-300 hover:bg-orange-50">
+                    Configurer
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Paramètres
-                </CardTitle>
-                <CardDescription>
-                  Personnalisez votre compte
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button variant="outline" className="w-full">
-                  Accéder
-                </Button>
-              </CardContent>
-            </Card>
+            <Link href="/dashboard/settings">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-slate-200 bg-gradient-to-br from-slate-50 to-background">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="h-5 w-5 text-slate-600" />
+                    Paramètres
+                  </CardTitle>
+                  <CardDescription>
+                    Personnalisez votre compte
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="outline" className="w-full border-slate-300 hover:bg-slate-50">
+                    Accéder
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {userProfile.role === 'parent' && userProfile.parentProfile && (
+              <Link href="/dashboard/loyalty">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-yellow-200 bg-gradient-to-br from-yellow-50 to-background">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Gift className="h-5 w-5 text-yellow-600" />
+                      Programme de fidélité
+                    </CardTitle>
+                    <CardDescription>
+                      Vos points et récompenses
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-yellow-600">
+                      {userProfile.parentProfile.loyaltyPoints}
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-3">points de fidélité</p>
+                    <Button variant="outline" className="w-full">
+                      Voir mes récompenses
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
+
+            {userProfile.role === 'parent' && userProfile.parentProfile && (
+              <Link href="/dashboard/referral">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-blue-200 bg-gradient-to-br from-blue-50 to-background">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-blue-600" />
+                      Programme de parrainage
+                    </CardTitle>
+                    <CardDescription>
+                      Partagez et gagnez des récompenses
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-lg font-bold font-mono text-blue-600 mb-1">
+                      {userProfile.parentProfile.referralCode}
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-3">votre code de parrainage</p>
+                    <Button variant="outline" className="w-full">
+                      Partager mon code
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
+
+            {userProfile.role === 'parent' && (
+              <Link href="/dashboard/calendar">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-cyan-200 bg-gradient-to-br from-cyan-50 to-background">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-cyan-600" />
+                      Calendrier
+                    </CardTitle>
+                    <CardDescription>
+                      Vue mensuelle de vos missions
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="outline" className="w-full border-cyan-300 hover:bg-cyan-50">
+                      Voir le calendrier
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
+
+            {userProfile.role === 'parent' && (
+              <Link href="/dashboard/stats">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-indigo-200 bg-gradient-to-br from-indigo-50 to-background">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5 text-indigo-600" />
+                      Statistiques
+                    </CardTitle>
+                    <CardDescription>
+                      Analysez votre activité
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Graphiques, KPIs et impact environnemental
+                    </p>
+                    <Button variant="outline" className="w-full">
+                      Voir les statistiques
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
           </div>
 
           {/* Informations du profil */}
-          <Card>
+          <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-background">
             <CardHeader>
-              <CardTitle>Informations du compte</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5 text-blue-600" />
+                Informations du compte
+              </CardTitle>
               <CardDescription>
                 Détails de votre compte Passerelle Jeunesse
               </CardDescription>
@@ -328,12 +445,12 @@ export default function DashboardPage() {
                 {userProfile.role === 'parent' && userProfile.parentProfile && (
                   <>
                     <span className="text-muted-foreground">Points de fidélité :</span>
-                    <span className="font-medium">
+                    <span className="font-medium text-yellow-600">
                       {userProfile.parentProfile.loyaltyPoints} points
                     </span>
 
                     <span className="text-muted-foreground">Code de parrainage :</span>
-                    <span className="font-medium font-mono">
+                    <span className="font-medium font-mono text-blue-600">
                       {userProfile.parentProfile.referralCode}
                     </span>
                   </>

@@ -1,8 +1,8 @@
 # TODO - Dashboard Passerelle Jeunesse
 
-**Date:** 16 janvier 2025  
-**Taux de complétion global:** 65% (+10%)  
-**Sprint 1 Progress:** 3/4 tâches terminées (75%)
+**Date:** 16 février 2026  
+**Taux de complétion global:** 70% (+5%)  
+**Sprint 1 Progress:** 4/4 tâches terminées (100%) ✅
 
 Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
@@ -58,19 +58,20 @@ Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
 ---
 
-### 4. Historique des paiements
+### 4. Historique des paiements ✅
 
-- [ ] Créer `/src/app/dashboard/payments/page.tsx`
-- [ ] Liste de tous les paiements (query Firestore)
-- [ ] Filtres: date, statut, montant
-- [ ] Recherche par ID réservation
-- [ ] Téléchargement factures
-- [ ] Statistiques (total dépensé, moyenne)
-- [ ] Export CSV
-- [ ] Lier depuis bouton "Voir l'historique" (dashboard principal)
+- [x] Créer `/src/app/dashboard/payments/page.tsx`
+- [x] Liste de tous les paiements (query Firestore)
+- [x] Filtres: date, statut, montant
+- [x] Recherche par ID réservation
+- [x] Téléchargement factures
+- [x] Statistiques (total dépensé, moyenne)
+- [x] Export CSV
+- [x] Lier depuis bouton "Voir l'historique" (dashboard principal)
 
+**Statut:** ✅ TERMINÉ (16 février 2026)  
 **Estimation:** 2 jours  
-**Fichiers:** `src/app/dashboard/payments/page.tsx`
+**Fichiers:** `src/app/dashboard/payments/page.tsx`, `src/app/dashboard/page.tsx`
 
 ---
 
