@@ -31,6 +31,34 @@ import type { Booking, BookingStatus } from '@/types/firestore';
 import { getParentBookings } from '@/lib/firestore-service';
 import { formatPrice } from '@/lib/pricing-service';
 
+/**
+ * Convertit un Timestamp Firestore en Date de manière sécurisée
+ * Gère les cas où le timestamp est un objet Timestamp ou un objet plain avec seconds/nanoseconds
+ */
+function toSafeDate(timestamp: any): Date {
+    if (!timestamp) {
+        return new Date();
+    }
+    
+    // Si c'est déjà une Date
+    if (timestamp instanceof Date) {
+        return timestamp;
+    }
+    
+    // Si c'est un Timestamp Firestore avec la méthode toDate()
+    if (typeof timestamp.toDate === 'function') {
+        return timestamp.toDate();
+    }
+    
+    // Si c'est un objet plain avec seconds et nanoseconds
+    if (timestamp.seconds !== undefined) {
+        return new Date(timestamp.seconds * 1000 + (timestamp.nanoseconds || 0) / 1000000);
+    }
+    
+    // Fallback : essayer de créer une Date depuis la valeur
+    return new Date(timestamp);
+}
+
 const STATUS_LABELS: Record<BookingStatus, string> = {
     pending: 'En attente',
     confirmed: 'Confirmée',
@@ -72,7 +100,9 @@ export default function BookingsPage() {
     const loadBookings = async () => {
         try {
             setLoading(true);
+            console.log('Loading bookings for user:', user!.uid);
             const data = await getParentBookings(user!.uid);
+            console.log('Received bookings:', data);
             setBookings(data as Booking[]);
         } catch (error: any) {
             console.error('Erreur lors du chargement:', error);
@@ -87,12 +117,12 @@ export default function BookingsPage() {
         switch (activeTab) {
             case 'upcoming':
                 return bookings.filter((b) => {
-                    const scheduledDate = b.scheduledFor.toDate();
+                    const scheduledDate = toSafeDate(b.scheduledFor);
                     return scheduledDate > now && b.status !== 'cancelled' && b.status !== 'completed';
                 });
             case 'past':
                 return bookings.filter((b) => {
-                    const scheduledDate = b.scheduledFor.toDate();
+                    const scheduledDate = toSafeDate(b.scheduledFor);
                     return scheduledDate <= now || b.status === 'cancelled' || b.status === 'completed';
                 });
             default:
@@ -205,7 +235,7 @@ export default function BookingsPage() {
                                                 </Badge>
                                             </div>
                                             <p className="text-sm text-neutral-600">
-                                                {format(booking.scheduledFor.toDate(), 'EEEE d MMMM yyyy à HH:mm', {
+                                                {format(toSafeDate(booking.scheduledFor), 'EEEE d MMMM yyyy à HH:mm', {
                                                     locale: fr,
                                                 })}
                                             </p>

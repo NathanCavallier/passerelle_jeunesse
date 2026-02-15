@@ -3,12 +3,10 @@
  * Intégration de l'API Google Maps pour le calcul de distance et l'autocomplétion d'adresses
  */
 
-import { Loader } from '@googlemaps/js-api-loader';
-
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 
-let loader: Loader | null = null;
 let isLoaded = false;
+let loadingPromise: Promise<void> | null = null;
 
 // Déclaration globale pour TypeScript
 declare global {
@@ -18,30 +16,55 @@ declare global {
 }
 
 /**
- * Initialise et charge l'API Google Maps
+ * Configure et charge l'API Google Maps (chargement dynamique du script)
  */
 async function loadGoogleMapsAPI(): Promise<void> {
-    if (isLoaded && typeof window !== 'undefined' && window.google) {
+    if (typeof window === 'undefined') {
+        throw new Error('Google Maps ne peut être chargé que côté client');
+    }
+
+    if (isLoaded && window.google?.maps) {
         return;
     }
 
-    if (!loader) {
-        loader = new Loader({
-            apiKey: GOOGLE_MAPS_API_KEY,
-            version: 'weekly',
-            libraries: ['places'],
-        });
+    // Si déjà en cours de chargement, attendre la promesse existante
+    if (loadingPromise) {
+        return loadingPromise;
     }
 
-    try {
-        // @ts-ignore - La méthode loadPromise existe dans v2
-        await loader.loadPromise();
-        isLoaded = true;
-        console.log('Google Maps API chargée avec succès');
-    } catch (error) {
-        console.error('Erreur lors du chargement de Google Maps:', error);
-        throw new Error('Impossible de charger Google Maps');
-    }
+    loadingPromise = new Promise<void>((resolve, reject) => {
+        // Vérifier si le script est déjà présent
+        if (window.google?.maps) {
+            isLoaded = true;
+            resolve();
+            return;
+        }
+
+        // Créer et insérer le script
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initGoogleMaps`;
+        script.async = true;
+        script.defer = true;
+
+        // Callback global pour le script
+        (window as any).initGoogleMaps = () => {
+            isLoaded = true;
+            console.log('Google Maps API chargée avec succès');
+            delete (window as any).initGoogleMaps;
+            resolve();
+        };
+
+        script.onerror = (error) => {
+            console.error('Erreur lors du chargement de Google Maps:', error);
+            delete (window as any).initGoogleMaps;
+            loadingPromise = null;
+            reject(new Error('Impossible de charger Google Maps'));
+        };
+
+        document.head.appendChild(script);
+    });
+
+    return loadingPromise;
 }
 
 /**

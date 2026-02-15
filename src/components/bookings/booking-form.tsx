@@ -227,7 +227,25 @@ export default function BookingForm() {
                 new Date(`${data.departureDate}T${data.departureTime}`)
             );
 
-            const bookingData = {
+            // Préparer bookingData - fonction utilitaire pour supprimer undefined/null
+            const cleanObject = (obj: any): any => {
+                if (obj === null || obj === undefined) return null;
+                if (typeof obj !== 'object') return obj;
+                if (Array.isArray(obj)) return obj.map(cleanObject).filter(item => item !== null);
+                
+                const cleaned: any = {};
+                for (const [key, value] of Object.entries(obj)) {
+                    if (value !== undefined && value !== null && value !== '') {
+                        const cleanedValue = cleanObject(value);
+                        if (cleanedValue !== null) {
+                            cleaned[key] = cleanedValue;
+                        }
+                    }
+                }
+                return Object.keys(cleaned).length > 0 ? cleaned : null;
+            };
+
+            const rawBookingData = {
                 parentId: user!.uid,
                 youngstersIds: data.selectedYoungsters,
                 serviceType: data.serviceType,
@@ -248,17 +266,20 @@ export default function BookingForm() {
                         postalCode: data.arrivalPostalCode,
                         contactPerson: data.arrivalContactPerson,
                         contactPhone: data.arrivalContactPhone,
-                        estimatedDate: departureTimestamp, // À calculer plus précisément
+                        estimatedDate: departureTimestamp,
                         estimatedTime: data.departureTime,
                     },
                     transportType: data.transportType || 'car',
-                    ticketsProvided: data.ticketsProvided || false,
+                    ticketsProvided: data.ticketsProvided ?? false,
                 },
                 pricing,
-                additionalInfo: data.additionalInfo,
-                documents: {},
                 scheduledFor: departureTimestamp,
+                additionalInfo: data.additionalInfo || undefined,
+                documents: {},
             };
+
+            // Nettoyer l'objet pour Firestore (supprimer undefined/null/empty)
+            const bookingData = cleanObject(rawBookingData);
 
             const bookingId = await createBooking(bookingData);
 

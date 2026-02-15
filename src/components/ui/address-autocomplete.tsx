@@ -72,6 +72,9 @@ export function AddressAutocomplete({
     const [mapsAvailable, setMapsAvailable] = useState(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+    // S'assurer que value n'est jamais undefined (fix erreur uncontrolled input)
+    const safeValue = value ?? '';
+
     // Vérifier si Google Maps est disponible
     useEffect(() => {
         setMapsAvailable(isGoogleMapsAvailable());
@@ -130,7 +133,7 @@ export function AddressAutocomplete({
             <Input
                 id={id}
                 type="text"
-                value={value}
+                value={safeValue}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
                 disabled={disabled}
@@ -145,7 +148,7 @@ export function AddressAutocomplete({
             <Input
                 id={id}
                 type="text"
-                value={value}
+                value={safeValue}
                 onChange={(e) => onChange(e.target.value)}
                 onFocus={() => suggestions.length > 0 && setOpen(true)}
                 onBlur={() => setTimeout(() => setOpen(false), 200)}

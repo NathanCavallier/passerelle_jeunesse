@@ -319,8 +319,13 @@ export async function createBooking(bookingData: any): Promise<string> {
     const bookingsRef = collection(db, 'bookings');
     const bookingRef = doc(bookingsRef);
 
+    // Filtrer les valeurs undefined pour éviter l'erreur Firestore
+    const cleanData = Object.fromEntries(
+        Object.entries(bookingData).filter(([_, value]) => value !== undefined)
+    );
+
     await setDoc(bookingRef, {
-        ...bookingData,
+        ...cleanData,
         id: bookingRef.id,
         status: 'pending',
         createdAt: serverTimestamp(),
@@ -334,15 +339,36 @@ export async function createBooking(bookingData: any): Promise<string> {
  * Récupère les réservations d'un parent
  */
 export async function getParentBookings(parentId: string): Promise<any[]> {
-    const bookingsRef = collection(db, 'bookings');
-    const q = query(
-        bookingsRef,
-        where('parentId', '==', parentId),
-        orderBy('createdAt', 'desc')
-    );
-    const snapshot = await getDocs(q);
+    try {
+        const bookingsRef = collection(db, 'bookings');
 
-    return snapshot.docs.map((doc) => doc.data());
+        // Requête simple sans orderBy pour éviter les erreurs si createdAt manque
+        const q = query(
+            bookingsRef,
+            where('parentId', '==', parentId)
+        );
+
+        const snapshot = await getDocs(q);
+
+        console.log(`Found ${snapshot.docs.length} bookings for parent ${parentId}`);
+
+        // Inclure l'ID du document explicitement et trier côté client
+        const bookings = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+        }));
+
+        // Trier par createdAt côté client (si le champ existe)
+        return bookings.sort((a, b) => {
+            if (!a.createdAt || !b.createdAt) return 0;
+            const dateA = a.createdAt.seconds || 0;
+            const dateB = b.createdAt.seconds || 0;
+            return dateB - dateA; // Plus récent en premier
+        });
+    } catch (error) {
+        console.error('Erreur dans getParentBookings:', error);
+        throw error;
+    }
 }
 
 /**
@@ -356,7 +382,11 @@ export async function getBooking(bookingId: string): Promise<any | null> {
         return null;
     }
 
-    return bookingSnap.data();
+    // Inclure l'ID du document explicitement
+    return {
+        ...bookingSnap.data(),
+        id: bookingSnap.id,
+    };
 }
 
 /**

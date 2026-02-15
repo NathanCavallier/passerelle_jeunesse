@@ -46,6 +46,34 @@ import type { Booking, BookingStatus } from '@/types/firestore';
 import { getBooking, cancelBooking } from '@/lib/firestore-service';
 import { formatPrice, getDiscountLabel } from '@/lib/pricing-service';
 
+/**
+ * Convertit un Timestamp Firestore en Date de manière sécurisée
+ * Gère les cas où le timestamp est un objet Timestamp ou un objet plain avec seconds/nanoseconds
+ */
+function toSafeDate(timestamp: any): Date {
+    if (!timestamp) {
+        return new Date();
+    }
+    
+    // Si c'est déjà une Date
+    if (timestamp instanceof Date) {
+        return timestamp;
+    }
+    
+    // Si c'est un Timestamp Firestore avec la méthode toDate()
+    if (typeof timestamp.toDate === 'function') {
+        return timestamp.toDate();
+    }
+    
+    // Si c'est un objet plain avec seconds et nanoseconds
+    if (timestamp.seconds !== undefined) {
+        return new Date(timestamp.seconds * 1000 + (timestamp.nanoseconds || 0) / 1000000);
+    }
+    
+    // Fallback : essayer de créer une Date depuis la valeur
+    return new Date(timestamp);
+}
+
 interface PageProps {
     params: Promise<{
         id: string;
@@ -124,7 +152,7 @@ export default function BookingDetailPage({ params }: PageProps) {
         setCancelling(true);
         try {
             // Calculer le remboursement selon la politique d'annulation
-            const scheduledDate = booking.scheduledFor.toDate();
+            const scheduledDate = toSafeDate(booking.scheduledFor);
             const now = new Date();
             const hoursDiff = (scheduledDate.getTime() - now.getTime()) / (1000 * 60 * 60);
 
@@ -177,7 +205,7 @@ export default function BookingDetailPage({ params }: PageProps) {
     const canCancel = 
         booking.status !== 'cancelled' && 
         booking.status !== 'completed' && 
-        booking.scheduledFor.toDate() > new Date();
+        toSafeDate(booking.scheduledFor) > new Date();
 
     return (
         <div className="container max-w-5xl mx-auto py-8 px-4 space-y-6">
@@ -252,12 +280,12 @@ export default function BookingDetailPage({ params }: PageProps) {
                                 <Clock className="h-5 w-5 text-neutral-400" />
                                 <div>
                                     <div className="font-semibold">
-                                        {format(booking.scheduledFor.toDate(), 'EEEE d MMMM yyyy', {
+                                        {format(toSafeDate(booking.scheduledFor), 'EEEE d MMMM yyyy', {
                                             locale: fr,
                                         })}
                                     </div>
                                     <div className="text-neutral-600">
-                                        {format(booking.scheduledFor.toDate(), 'HH:mm', { locale: fr })}
+                                        {format(toSafeDate(booking.scheduledFor), 'HH:mm', { locale: fr })}
                                     </div>
                                 </div>
                             </div>
