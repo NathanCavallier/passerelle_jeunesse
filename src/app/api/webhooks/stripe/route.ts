@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyWebhookSignature } from '@/lib/stripe-server';
-import { confirmDepositPayment, confirmBalancePayment } from '@/lib/firestore-service';
+import { confirmDepositPaymentAdmin, confirmBalancePaymentAdmin } from '@/lib/firestore-admin-service';
 import Stripe from 'stripe';
 
 export async function POST(request: NextRequest) {
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
                 // Mettre à jour la réservation dans Firestore
                 try {
                     if (paymentType === 'deposit') {
-                        await confirmDepositPayment(bookingId, {
+                        await confirmDepositPaymentAdmin(bookingId, {
                             stripeSessionId: session.id,
                             paymentIntentId: session.payment_intent as string,
                             amountPaid: (session.amount_total || 0) / 100, // Convertir centimes en euros
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
                         });
                         console.log(`Acompte confirmé pour ${bookingId}`);
                     } else if (paymentType === 'balance') {
-                        await confirmBalancePayment(bookingId, {
+                        await confirmBalancePaymentAdmin(bookingId, {
                             stripeSessionId: session.id,
                             paymentIntentId: session.payment_intent as string,
                             amountPaid: (session.amount_total || 0) / 100,

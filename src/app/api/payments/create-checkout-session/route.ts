@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createPaymentSession } from '@/lib/stripe-server';
-import { getBooking } from '@/lib/firestore-service';
+import { getBookingAdmin } from '@/lib/firestore-admin-service';
 
 export async function POST(request: NextRequest) {
     try {
@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Récupérer la réservation depuis Firestore
-        const booking = await getBooking(bookingId);
+        // Récupérer la réservation depuis Firestore (avec Admin SDK)
+        const booking = await getBookingAdmin(bookingId);
 
         if (!booking) {
             return NextResponse.json(

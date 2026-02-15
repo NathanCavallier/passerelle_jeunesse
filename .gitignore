@@ -43,3 +43,6 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# Firebase service account credentials (SECURITY: Never commit!)
+*firebase-adminsdk*.json
