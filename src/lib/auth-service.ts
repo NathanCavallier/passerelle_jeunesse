@@ -10,6 +10,10 @@ import {
     sendPasswordResetEmail,
     sendEmailVerification,
     updateProfile,
+    updateEmail,
+    updatePassword,
+    reauthenticateWithCredential,
+    EmailAuthProvider,
     GoogleAuthProvider,
     signInWithPopup,
     onAuthStateChanged,
@@ -243,6 +247,98 @@ export async function getIdToken(): Promise<string | null> {
     } catch (error) {
         console.error('Erreur lors de la récupération du token:', error);
         return null;
+    }
+}
+
+// ============================================================================
+// MISE À JOUR DU PROFIL
+// ============================================================================
+
+/**
+ * Réauthentifie l'utilisateur avec son mot de passe
+ * Requis avant toute opération sensible (changement email/mot de passe)
+ */
+export async function reauthenticateUser(currentPassword: string): Promise<void> {
+    try {
+        const user = auth.currentUser;
+        if (!user || !user.email) {
+            throw new Error('Aucun utilisateur connecté');
+        }
+
+        const credential = EmailAuthProvider.credential(user.email, currentPassword);
+        await reauthenticateWithCredential(user, credential);
+    } catch (error: any) {
+        throw handleAuthError(error);
+    }
+}
+
+/**
+ * Met à jour le nom d'affichage et/ou la photo de profil
+ */
+export async function updateUserProfile(data: {
+    displayName?: string;
+    photoURL?: string;
+}): Promise<void> {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            throw new Error('Aucun utilisateur connecté');
+        }
+
+        await updateProfile(user, data);
+    } catch (error: any) {
+        throw handleAuthError(error);
+    }
+}
+
+/**
+ * Met à jour l'adresse email de l'utilisateur
+ * Nécessite une réauthentification récente
+ */
+export async function updateUserEmail(
+    newEmail: string,
+    currentPassword: string
+): Promise<void> {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            throw new Error('Aucun utilisateur connecté');
+        }
+
+        // Réauthentifier l'utilisateur
+        await reauthenticateUser(currentPassword);
+
+        // Mettre à jour l'email
+        await updateEmail(user, newEmail);
+
+        // Envoyer un email de vérification à la nouvelle adresse
+        await sendEmailVerification(user);
+    } catch (error: any) {
+        throw handleAuthError(error);
+    }
+}
+
+/**
+ * Met à jour le mot de passe de l'utilisateur
+ * Nécessite une réauthentification récente
+ */
+export async function updateUserPassword(
+    currentPassword: string,
+    newPassword: string
+): Promise<void> {
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            throw new Error('Aucun utilisateur connecté');
+        }
+
+        // Réauthentifier l'utilisateur
+        await reauthenticateUser(currentPassword);
+
+        // Mettre à jour le mot de passe
+        await updatePassword(user, newPassword);
+    } catch (error: any) {
+        throw handleAuthError(error);
     }
 }
 

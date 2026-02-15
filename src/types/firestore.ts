@@ -5,6 +5,9 @@
 
 import { Timestamp } from 'firebase/firestore';
 
+// Réexporter Timestamp pour l'utiliser ailleurs
+export type { Timestamp };
+
 // ============================================================================
 // USERS
 // ============================================================================
@@ -277,7 +280,27 @@ export interface Cancellation {
     cancelledAt: Timestamp;
     reason: string;
     refundAmount: number;
-    refundStatus: 'pending' | 'processed';
+    refundStatus: 'pending' | 'processed' | 'completed' | 'not_applicable';
+    stripeRefundId?: string;
+    refundedAt?: Timestamp;
+    refundError?: string;
+}
+
+export interface MissionStatusUpdate {
+    status: MissionStatus;
+    updatedAt: Timestamp;
+    location?: LocationPoint;
+    photoURL?: string;
+    notes?: string;
+    updatedBy: string; // accompagnateur ID
+}
+
+export interface SimplifiedMissionTracking {
+    currentStatus: MissionStatus;
+    statusHistory: MissionStatusUpdate[];
+    departurePhoto?: string;
+    arrivalPhoto?: string;
+    lastUpdateAt?: Timestamp;
 }
 
 export interface Booking {
@@ -294,6 +317,9 @@ export interface Booking {
     documents: BookingDocuments;
     status: BookingStatus;
     cancellation?: Cancellation;
+    missionTracking?: SimplifiedMissionTracking;
+    reminderSent?: boolean;
+    reminderSentAt?: Timestamp;
     createdAt: Timestamp;
     updatedAt: Timestamp;
     confirmedAt?: Timestamp;

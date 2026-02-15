@@ -25,7 +25,7 @@ import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AddressAutocomplete } from '@/components/ui/address-autocomplete';
 import { 
-    Calendar,
+    Calendar as CalendarIcon,
     Clock,
     MapPin,
     Users,
@@ -34,7 +34,11 @@ import {
     Check,
     ChevronRight,
     FileText,
+    Loader2,
 } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import type { ServiceType, Youngster, Pricing } from '@/types/firestore';
 import { getYoungsters, createBooking, getUserDocument } from '@/lib/firestore-service';
 import { 
@@ -94,6 +98,12 @@ export default function BookingForm() {
     const [pricing, setPricing] = useState<Pricing | null>(null);
     const [step, setStep] = useState<'form' | 'review'>('form');
     const [parentData, setParentData] = useState<any>(null);
+    
+    // États pour la sélection de date et créneaux
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+    const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+    const [loadingSlots, setLoadingSlots] = useState(false);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
 
     const {
         register,
@@ -130,6 +140,13 @@ export default function BookingForm() {
         loadData();
     }, [user]);
 
+    // Charger les créneaux disponibles quand la date change
+    useEffect(() => {
+        if (selectedDate) {
+            loadAvailableSlots(selectedDate);
+        }
+    }, [selectedDate]);
+
     const loadData = async () => {
         try {
             setLoading(true);
@@ -149,6 +166,37 @@ export default function BookingForm() {
             });
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Charger les créneaux horaires disponibles pour une date
+    const loadAvailableSlots = async (date: Date) => {
+        try {
+            setLoadingSlots(true);
+            setAvailableSlots([]);
+            setSelectedTimeSlot('');
+            
+            const dateStr = format(date, 'yyyy-MM-dd');
+            const response = await fetch(
+                `/api/availability/slots?date=${dateStr}&serviceType=accompagnement`
+            );
+            
+            if (!response.ok) {
+                throw new Error('Impossible de charger les créneaux disponibles');
+            }
+            
+            const data = await response.json();
+            setAvailableSlots(data.availableSlots || []);
+        } catch (error: any) {
+            console.error('Erreur chargement créneaux:', error);
+            toast({
+                title: 'Erreur',
+                description: error.message,
+                variant: 'destructive',
+            });
+            setAvailableSlots([]);
+        } finally {
+            setLoadingSlots(false);
         }
     };
 
@@ -460,32 +508,102 @@ export default function BookingForm() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="departureDate">Date *</Label>
-                                        <Input
-                                            id="departureDate"
-                                            type="date"
-                                            {...register('departureDate')}
-                                            min={new Date().toISOString().split('T')[0]}
+                                {/* Sélection de la date avec calendrier */}
+                                <div className="space-y-2">
+                                    <Label className="flex items-center gap-2">
+                                        <CalendarIcon className="h-4 w-4" />
+                                        Date de départ *
+                                    </Label>
+                                    <div className="border rounded-lg p-4 bg-white">
+                                        <Calendar
+                                            mode="single"
+                                            selected={selectedDate}
+                                            onSelect={(date) => {
+                                                setSelectedDate(date);
+                                                if (date) {
+                                                    const dateStr = format(date, 'yyyy-MM-dd');
+                                                    setValue('departureDate', dateStr);
+                                                    // Réinitialiser l'heure sélectionnée
+                                                    setSelectedTimeSlot('');
+                                                    setValue('departureTime', '');
+                                                }
+                                            }}
+                                            disabled={(date) => {
+                                                // Désactiver les dates passées et dans moins de 24h
+                                                const tomorrow = new Date();
+                                                tomorrow.setDate(tomorrow.getDate() + 1);
+                                                tomorrow.setHours(0, 0, 0, 0);
+                                                return date < tomorrow;
+                                            }}
+                                            locale={fr}
+                                            className="w-full"
                                         />
-                                        {errors.departureDate && (
-                                            <p className="text-sm text-red-600">{errors.departureDate.message}</p>
-                                        )}
                                     </div>
+                                    {errors.departureDate && (
+                                        <p className="text-sm text-red-600">{errors.departureDate.message}</p>
+                                    )}
+                                </div>
 
+                                {/* Sélection du créneau horaire */}
+                                {selectedDate && (
                                     <div className="space-y-2">
-                                        <Label htmlFor="departureTime">Heure *</Label>
-                                        <Input
-                                            id="departureTime"
-                                            type="time"
-                                            {...register('departureTime')}
-                                        />
+                                        <Label className="flex items-center gap-2">
+                                            <Clock className="h-4 w-4" />
+                                            Heure de départ *
+                                        </Label>
+                                        
+                                        {loadingSlots ? (
+                                            <div className="flex items-center justify-center p-8 border rounded-lg bg-neutral-50">
+                                                <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                                                <span className="ml-2 text-sm text-neutral-600">
+                                                    Chargement des créneaux disponibles...
+                                                </span>
+                                            </div>
+                                        ) : availableSlots.length > 0 ? (
+                                            <>
+                                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                                    {availableSlots.map((slot) => (
+                                                        <Button
+                                                            key={slot}
+                                                            type="button"
+                                                            variant={selectedTimeSlot === slot ? 'default' : 'outline'}
+                                                            className={`h-12 ${
+                                                                selectedTimeSlot === slot
+                                                                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                                                    : 'hover:border-blue-500 hover:bg-blue-50'
+                                                            }`}
+                                                            onClick={() => {
+                                                                setSelectedTimeSlot(slot);
+                                                                setValue('departureTime', slot);
+                                                            }}
+                                                        >
+                                                            <Clock className="h-4 w-4 mr-1" />
+                                                            {slot}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                                <p className="text-xs text-neutral-600 mt-2">
+                                                    {availableSlots.length} créneau{availableSlots.length > 1 ? 'x' : ''} disponible{availableSlots.length > 1 ? 's' : ''} pour le {format(selectedDate, 'dd MMMM yyyy', { locale: fr })}
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <Alert>
+                                                <AlertCircle className="h-4 w-4" />
+                                                <AlertDescription>
+                                                    Aucun créneau disponible pour le {format(selectedDate, 'dd MMMM yyyy', { locale: fr })}.
+                                                    <br />
+                                                    <span className="text-sm">
+                                                        Essayez de sélectionner une autre date ou contactez-nous pour une demande spécifique.
+                                                    </span>
+                                                </AlertDescription>
+                                            </Alert>
+                                        )}
+                                        
                                         {errors.departureTime && (
                                             <p className="text-sm text-red-600">{errors.departureTime.message}</p>
                                         )}
                                     </div>
-                                </div>
+                                )}
 
                                 <div className="space-y-2">
                                     <Label htmlFor="departureAddress">Adresse *</Label>

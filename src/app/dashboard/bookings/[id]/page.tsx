@@ -28,6 +28,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { PaymentButton } from '@/components/payments/payment-button';
 import { DocumentDownloads } from '@/components/documents/document-downloads';
+import { MissionTimeline } from '@/components/mission/mission-timeline';
 import {
     ArrowLeft,
     Calendar,
@@ -40,12 +41,14 @@ import {
     CheckCircle2,
     Clock,
     X,
+    Radio,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Booking, BookingStatus } from '@/types/firestore';
-import { getBooking } from '@/lib/firestore-service';
 import { formatPrice, getDiscountLabel } from '@/lib/pricing-service';
+import { db } from '@/lib/firebase';
+import { doc, onSnapshot, Unsubscribe } from 'firebase/firestore';
 
 /**
  * Convertit un Timestamp Firestore en Date de manière sécurisée
@@ -111,41 +114,62 @@ export default function BookingDetailPage({ params }: PageProps) {
     const [booking, setBooking] = useState<Booking | null>(null);
     const [loading, setLoading] = useState(true);
     const [cancelling, setCancelling] = useState(false);
+    const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
+    // Écouter les mises à jour en temps réel de la réservation
     useEffect(() => {
         if (!user) {
             router.push('/login');
             return;
         }
 
-        loadBooking();
-    }, [user, id]);
+        setLoading(true);
+        const bookingRef = doc(db, 'bookings', id);
+        
+        // Listener en temps réel
+        const unsubscribe: Unsubscribe = onSnapshot(
+            bookingRef,
+            (snapshot) => {
+                if (!snapshot.exists()) {
+                    toast({
+                        title: 'Erreur',
+                        description: 'Réservation introuvable',
+                        variant: 'destructive',
+                    });
+                    router.push('/dashboard/bookings');
+                    return;
+                }
 
-    const loadBooking = async () => {
-        try {
-            setLoading(true);
-            const data = await getBooking(id);
-            if (!data) {
+                const data = { id: snapshot.id, ...snapshot.data() } as Booking;
+                const previousStatus = booking?.missionTracking?.currentStatus;
+                const newStatus = data.missionTracking?.currentStatus;
+
+                // Afficher une notification si le statut de la mission change
+                if (booking && previousStatus && newStatus && previousStatus !== newStatus) {
+                    toast({
+                        title: 'Mise à jour de mission',
+                        description: `Statut mis à jour : ${newStatus.replace(/_/g, ' ')}`,
+                    });
+                }
+
+                setBooking(data);
+                setLastUpdate(new Date());
+                setLoading(false);
+            },
+            (error) => {
+                console.error('Erreur lors du chargement:', error);
                 toast({
                     title: 'Erreur',
-                    description: 'Réservation introuvable',
+                    description: 'Impossible de charger la réservation',
                     variant: 'destructive',
                 });
-                router.push('/dashboard/bookings');
-                return;
+                setLoading(false);
             }
-            setBooking(data as Booking);
-        } catch (error: any) {
-            console.error('Erreur lors du chargement:', error);
-            toast({
-                title: 'Erreur',
-                description: error.message,
-                variant: 'destructive',
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+        );
+
+        // Cleanup à la destruction du composant
+        return () => unsubscribe();
+    }, [user, id, router, toast]);
 
     const handleCancel = async () => {
         if (!booking || !user) return;
@@ -191,7 +215,7 @@ export default function BookingDetailPage({ params }: PageProps) {
                     : 'La réservation a été annulée.',
             });
 
-            loadBooking();
+            // Les données seront automatiquement mises à jour via onSnapshot
         } catch (error: any) {
             console.error('Erreur lors de l\'annulation:', error);
             toast({
@@ -246,9 +270,22 @@ export default function BookingDetailPage({ params }: PageProps) {
                             <Badge variant={STATUS_VARIANTS[booking.status]} className="text-base">
                                 {STATUS_LABELS[booking.status]}
                             </Badge>
+                            {/* Badge Live avec animation pulse */}
+                            <Badge variant="outline" className="flex items-center gap-1.5 border-green-500 text-green-700">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                Live
+                            </Badge>
                         </div>
-                        <p className="text-neutral-600">
-                            Réservation #{booking.id.substring(0, 8).toUpperCase()}
+                        <p className="text-neutral-600 flex items-center gap-3">
+                            <span>Réservation #{booking.id.substring(0, 8).toUpperCase()}</span>
+                            {lastUpdate && (
+                                <span className="text-xs text-muted-foreground">
+                                    • Mis à jour il y a {Math.round((Date.now() - lastUpdate.getTime()) / 60000)} min
+                                </span>
+                            )}
                         </p>
                     </div>
                     {canCancel && (
@@ -406,6 +443,11 @@ export default function BookingDetailPage({ params }: PageProps) {
                                 </p>
                             </CardContent>
                         </Card>
+                    )}
+
+                    {/* Timeline de la mission (suivi temps réel) */}
+                    {booking.status !== 'cancelled' && booking.status !== 'pending' && (
+                        <MissionTimeline missionTracking={booking.missionTracking} />
                     )}
                 </div>
 

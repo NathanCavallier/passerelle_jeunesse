@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
@@ -12,6 +12,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { logout } from '@/lib/auth-service';
 import { useToast } from '@/hooks/use-toast';
+import { ActiveMissions } from '@/components/mission/active-missions';
+import { db } from '@/lib/firebase';
+import { collection, query, where, onSnapshot, orderBy, Unsubscribe } from 'firebase/firestore';
+import type { Booking } from '@/types/firestore';
 import { 
   User, 
   Calendar, 
@@ -26,12 +30,71 @@ export default function DashboardPage() {
   const router = useRouter();
   const { user, userProfile, loading, isAuthenticated, isEmailVerified } = useAuth();
   const { toast } = useToast();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.push('/login');
     }
   }, [loading, isAuthenticated, router]);
+
+  // Écouter les bookings en temps réel
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+
+    setLoadingBookings(true);
+    
+    const bookingsRef = collection(db, 'bookings');
+    const q = query(
+      bookingsRef,
+      where('parentId', '==', user.uid),
+      orderBy('scheduledFor', 'desc')
+    );
+
+    // Listener en temps réel
+    const unsubscribe: Unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const bookingsData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as Booking));
+        
+        setBookings(bookingsData);
+        setLastUpdate(new Date());
+        setLoadingBookings(false);
+
+        // Détection de changement de statut pour notification
+        if (snapshot.docChanges().length > 0) {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'modified') {
+              const booking = { id: change.doc.id, ...change.doc.data() } as Booking;
+              if (booking.missionTracking?.currentStatus) {
+                toast({
+                  title: 'Mise à jour de mission',
+                  description: `La mission pour ${booking.youngsterName || 'votre enfant'} a été mise à jour`,
+                });
+              }
+            }
+          });
+        }
+      },
+      (error) => {
+        console.error('Erreur lors de l\'écoute des réservations:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Erreur',
+          description: 'Impossible de charger vos réservations',
+        });
+        setLoadingBookings(false);
+      }
+    );
+
+    // Cleanup à la destruction du composant
+    return () => unsubscribe();
+  }, [isAuthenticated, user, toast]);
 
   const handleLogout = async () => {
     try {
@@ -105,24 +168,34 @@ export default function DashboardPage() {
             </Alert>
           )}
 
+          {/* Missions en cours (suivi temps réel) */}
+          {userProfile.role === 'parent' && (
+            <ActiveMissions 
+              bookings={bookings}
+              lastUpdate={lastUpdate}
+            />
+          )}
+
           {/* Cartes de navigation */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Mon profil
-                </CardTitle>
-                <CardDescription>
-                  Gérez vos informations personnelles
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button variant="outline" className="w-full">
-                  Modifier mon profil
-                </Button>
-              </CardContent>
-            </Card>
+            <Link href="/dashboard/profile">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Mon profil
+                  </CardTitle>
+                  <CardDescription>
+                    Gérez vos informations personnelles
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="outline" className="w-full">
+                    Modifier mon profil
+                  </Button>
+                </CardContent>
+              </Card>
+            </Link>
 
             <Link href="/dashboard/bookings">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
