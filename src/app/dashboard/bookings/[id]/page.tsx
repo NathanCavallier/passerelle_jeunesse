@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentButton } from '@/components/payments/payment-button';
+import { DocumentDownloads } from '@/components/documents/document-downloads';
 import {
     ArrowLeft,
     Calendar,
@@ -43,7 +44,7 @@ import {
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Booking, BookingStatus } from '@/types/firestore';
-import { getBooking, cancelBooking } from '@/lib/firestore-service';
+import { getBooking } from '@/lib/firestore-service';
 import { formatPrice, getDiscountLabel } from '@/lib/pricing-service';
 
 /**
@@ -147,7 +148,7 @@ export default function BookingDetailPage({ params }: PageProps) {
     };
 
     const handleCancel = async () => {
-        if (!booking) return;
+        if (!booking || !user) return;
 
         setCancelling(true);
         try {
@@ -162,12 +163,26 @@ export default function BookingDetailPage({ params }: PageProps) {
                 refundAmount = booking.pricing.depositPaid ? booking.pricing.deposit : 0;
             }
 
-            await cancelBooking(
-                booking.id,
-                'parent',
-                'Annulation par le parent',
-                refundAmount
-            );
+            // Appeler l'API route pour annuler avec remboursement Stripe
+            const response = await fetch(`/api/bookings/${booking.id}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: user.uid,
+                    cancelledBy: 'parent',
+                    reason: 'Annulation par le parent',
+                    refundAmount,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erreur lors de l\'annulation');
+            }
+
+            const result = await response.json();
 
             toast({
                 title: 'Réservation annulée',
@@ -521,6 +536,15 @@ export default function BookingDetailPage({ params }: PageProps) {
                             )}
                         </CardContent>
                     </Card>
+
+                    {/* Documents PDF */}
+                    {user && (
+                        <DocumentDownloads
+                            booking={booking}
+                            parentName={`${user.firstName} ${user.lastName}`}
+                            parentEmail={user.email}
+                        />
+                    )}
 
                     {/* Alerte annulation */}
                     {booking.status === 'cancelled' && booking.cancellation && (

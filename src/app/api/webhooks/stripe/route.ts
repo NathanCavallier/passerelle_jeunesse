@@ -7,7 +7,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyWebhookSignature } from '@/lib/stripe-server';
-import { confirmDepositPaymentAdmin, confirmBalancePaymentAdmin } from '@/lib/firestore-admin-service';
+import { confirmDepositPaymentAdmin, confirmBalancePaymentAdmin, getBookingAdmin, updateBookingAdmin } from '@/lib/firestore-admin-service';
+import { sendPaymentConfirmationEmail } from '@/lib/email-service';
+import { adminAuth } from '@/lib/firebase-admin';
 import Stripe from 'stripe';
 
 export async function POST(request: NextRequest) {
@@ -79,6 +81,30 @@ export async function POST(request: NextRequest) {
                         });
                         console.log(`Solde confirmé pour ${bookingId}`);
                     }
+
+                    // Envoyer l'email de confirmation de paiement
+                    try {
+                        const booking = await getBookingAdmin(bookingId);
+                        if (booking) {
+                            // Récupérer les informations du parent
+                            const parentUser = await adminAuth.getUser(booking.parentId);
+                            if (parentUser.email) {
+                                const parentName = parentUser.displayName || 'Cher parent';
+                                const amount = (session.amount_total || 0) / 100;
+
+                                await sendPaymentConfirmationEmail(
+                                    booking as any,
+                                    parentUser.email,
+                                    parentName,
+                                    paymentType,
+                                    amount
+                                );
+                            }
+                        }
+                    } catch (emailError) {
+                        console.error('Erreur envoi email:', emailError);
+                        // Ne pas bloquer le webhook si l'email échoue
+                    }
                 } catch (firestoreError) {
                     console.error('Erreur mise à jour Firestore:', firestoreError);
                     // Ne pas renvoyer d'erreur à Stripe pour ne pas qu'il réessaie
@@ -105,7 +131,60 @@ export async function POST(request: NextRequest) {
             case 'charge.refunded': {
                 const charge = event.data.object as Stripe.Charge;
                 console.log('Remboursement effectué:', charge.id);
-                // Mettre à jour le statut de la réservation
+
+                // Récupérer le payment_intent_id
+                const paymentIntentId = charge.payment_intent as string;
+
+                if (paymentIntentId) {
+                    try {
+                        // Rechercher le booking correspondant à ce payment_intent
+                        // On doit chercher dans payment.deposit.paymentIntentId ou payment.balance.paymentIntentId
+                        const bookingsRef = await adminAuth.app.firestore().collection('bookings')
+                            .where('payment.deposit.paymentIntentId', '==', paymentIntentId)
+                            .limit(1)
+                            .get();
+
+                        // Si pas trouvé dans deposit, chercher dans balance
+                        let booking: any = null;
+                        if (!bookingsRef.empty) {
+                            booking = {
+                                id: bookingsRef.docs[0].id,
+                                ...bookingsRef.docs[0].data(),
+                            };
+                        } else {
+                            const bookingsRefBalance = await adminAuth.app.firestore().collection('bookings')
+                                .where('payment.balance.paymentIntentId', '==', paymentIntentId)
+                                .limit(1)
+                                .get();
+
+                            if (!bookingsRefBalance.empty) {
+                                booking = {
+                                    id: bookingsRefBalance.docs[0].id,
+                                    ...bookingsRefBalance.docs[0].data(),
+                                };
+                            }
+                        }
+
+                        if (booking && booking.cancellation) {
+                            // Mettre à jour le statut de remboursement
+                            await updateBookingAdmin(booking.id, {
+                                'cancellation.refundStatus': 'completed',
+                                'cancellation.stripeRefundId': charge.refund as string,
+                                'cancellation.refundedAt': new Date(),
+                            });
+
+                            console.log(`Remboursement confirmé pour booking ${booking.id}`);
+
+                            // TODO: Envoyer un email de confirmation de remboursement
+                        } else {
+                            console.warn(`Booking introuvable ou non annulé pour payment_intent ${paymentIntentId}`);
+                        }
+                    } catch (refundError) {
+                        console.error('Erreur traitement remboursement:', refundError);
+                        // Ne pas bloquer le webhook
+                    }
+                }
+
                 break;
             }
 
