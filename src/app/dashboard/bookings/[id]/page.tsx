@@ -5,7 +5,7 @@
  * /dashboard/bookings/[id]
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
@@ -47,9 +47,9 @@ import { getBooking, cancelBooking } from '@/lib/firestore-service';
 import { formatPrice, getDiscountLabel } from '@/lib/pricing-service';
 
 interface PageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
@@ -75,6 +75,7 @@ const STATUS_VARIANTS: Record<BookingStatus, 'default' | 'secondary' | 'destruct
 };
 
 export default function BookingDetailPage({ params }: PageProps) {
+    const { id } = use(params);
     const { user } = useAuth();
     const router = useRouter();
     const { toast } = useToast();
@@ -89,12 +90,12 @@ export default function BookingDetailPage({ params }: PageProps) {
         }
 
         loadBooking();
-    }, [user, params.id]);
+    }, [user, id]);
 
     const loadBooking = async () => {
         try {
             setLoading(true);
-            const data = await getBooking(params.id);
+            const data = await getBooking(id);
             if (!data) {
                 toast({
                     title: 'Erreur',

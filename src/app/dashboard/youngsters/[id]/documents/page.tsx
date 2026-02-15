@@ -5,7 +5,7 @@
  * /dashboard/youngsters/[id]/documents
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { Timestamp } from 'firebase/firestore';
@@ -43,9 +43,9 @@ import { addYoungsterDocument, deleteYoungsterDocument } from '@/lib/firestore-s
 import { uploadDocument, deleteDocument } from '@/lib/storage-service';
 
 interface PageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 const DOCUMENT_TYPES: { value: DocumentType; label: string }[] = [
@@ -59,6 +59,7 @@ const DOCUMENT_TYPES: { value: DocumentType; label: string }[] = [
 ];
 
 export default function YoungsterDocumentsPage({ params }: PageProps) {
+    const { id } = use(params);
     const { user } = useAuth();
     const router = useRouter();
     const { toast } = useToast();
@@ -82,12 +83,12 @@ export default function YoungsterDocumentsPage({ params }: PageProps) {
         }
 
         loadYoungster();
-    }, [user, params.id]);
+    }, [user, id]);
 
     const loadYoungster = async () => {
         try {
             setLoading(true);
-            const data = await getYoungster(user!.uid, params.id);
+            const data = await getYoungster(user!.uid, id);
             if (!data) {
                 toast({
                     title: 'Erreur',
