@@ -313,7 +313,7 @@ export default function AddYoungsterForm({ onSuccess, youngster }: AddYoungsterF
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel>Date de naissance *</FormLabel>
-                      <Popover>
+                      <Popover modal={true}>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
@@ -332,7 +332,7 @@ export default function AddYoungsterForm({ onSuccess, youngster }: AddYoungsterF
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0" align="start" sideOffset={4}>
                           <Calendar
                             mode="single"
                             selected={field.value}
@@ -340,6 +340,7 @@ export default function AddYoungsterForm({ onSuccess, youngster }: AddYoungsterF
                             disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
                             initialFocus
                             locale={fr}
+                            defaultMonth={field.value || new Date(2010, 0)}
                           />
                         </PopoverContent>
                       </Popover>
