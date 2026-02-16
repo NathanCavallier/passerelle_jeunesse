@@ -75,22 +75,31 @@ Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
 ---
 
-### 5. Application mobile accompagnateur (Phase 5)
+### 5. Application mobile accompagnateur (Phase 5) ✅
 
-- [ ] Créer dashboard accompagnateur séparé
-- [ ] Planning des missions assignées
-- [ ] Acceptation/refus de missions
-- [ ] Fiche mission détaillée
-- [ ] Mise à jour statut (API ✅ prête: `/api/bookings/[id]/status`)
-- [ ] Upload photos (composant ✅ prêt: `PhotoCapture`)
+- [x] Créer dashboard accompagnateur séparé
+- [x] Planning des missions assignées
+- [x] Acceptation/refus de missions
+- [x] Fiche mission détaillée
+- [x] Mise à jour statut (API ✅ prête: `/api/bookings/[id]/status`)
+- [x] Upload photos (composant ✅ prêt: `PhotoCapture`)
 - [ ] Navigation GPS intégrée
 - [ ] Gestion des indisponibilités
 - [ ] Mode offline (queue sync)
 
-**Technologies:** React Native / Expo / PWA
+**Status:** ✅ INTERFACE WEB TERMINÉE (16 février 2026)  
+**Technologies:** Next.js (web) + React Native/PWA (mobile)  
+**Estimation restante:** 2-3 jours pour app mobile  
+**Fichiers créés:** `src/app/dashboard/accompanist/*`
 
-**Estimation:** 5 jours  
-**Fichiers:** `src/app/dashboard/accompanist/*`, ou repo séparé pour app mobile
+**Fonctionnalités implémentées:**
+- ✅ Dashboard principal avec stats et navigation
+- ✅ Page de liste des missions (onglets à venir/terminées/annulées)  
+- ✅ Page détail mission avec outils de mise à jour de statut
+- ✅ Page profil avec gestion des disponibilités
+- ✅ Pages messages et paramètres (stubs prêts pour développement)
+- ✅ Redirection automatique depuis `/dashboard` pour accompagnateurs
+- ✅ Intégration complète avec l'API existante de suivi de mission
 
 ---
 

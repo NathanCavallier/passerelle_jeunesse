@@ -9,6 +9,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User as FirebaseUser } from 'firebase/auth';
 import { onAuthChange, getCurrentUser } from '@/lib/auth-service';
 import { getUserDocument, updateLastLogin } from '@/lib/firestore-service';
+import { useTestAuth, PWA_TEST_MODE } from '@/lib/test-config';
 import type { User } from '@/types/firestore';
 
 // ============================================================================
@@ -50,8 +51,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Mode test PWA
+  const testAuth = useTestAuth();
+
   useEffect(() => {
-    // Écouter les changements d'authentification
+    // Si mode test activé, utiliser les données de test
+    if (PWA_TEST_MODE && testAuth) {
+      setUser(testAuth.user as any);
+      setUserProfile(testAuth.userProfile as any);
+      setLoading(false);
+      return;
+    }
+
+    // Écouter les changements d'authentification normale
     const unsubscribe = onAuthChange(async (firebaseUser) => {
       setUser(firebaseUser);
 
@@ -76,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Cleanup
     return () => unsubscribe();
-  }, []);
+  }, [testAuth]);
 
   const value: AuthContextType = {
     user,

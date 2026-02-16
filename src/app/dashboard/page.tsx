@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { logout } from '@/lib/auth-service';
 import { useToast } from '@/hooks/use-toast';
 import { ActiveMissions } from '@/components/mission/active-missions';
+import { PWA_TEST_MODE } from '@/lib/test-config';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, orderBy, Unsubscribe } from 'firebase/firestore';
 import type { Booking } from '@/types/firestore';
@@ -31,21 +32,53 @@ import {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, userProfile, loading, isAuthenticated, isEmailVerified } = useAuth();
+  const { user, userProfile, loading, isAuthenticated, isEmailVerified, isAccompanist } = useAuth();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [unsubscribeRef, setUnsubscribeRef] = useState<Unsubscribe | null>(null);
+
+  // Fonction pour gérer les erreurs avec toast
+  const handleBookingError = useCallback((error: any) => {
+    console.error('Erreur lors de l\'écoute des réservations:', error);
+    toast({
+      variant: 'destructive',
+      title: 'Erreur',
+      description: 'Impossible de charger vos réservations',
+    });
+    setLoadingBookings(false);
+  }, [toast]);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.push('/login');
+      return;
     }
-  }, [loading, isAuthenticated, router]);
+
+    // Rediriger les accompagnateurs vers leur espace dédié
+    if (!loading && isAccompanist) {
+      router.push('/dashboard/accompanist');
+      return;
+    }
+  }, [loading, isAuthenticated, isAccompanist, router]);
 
   // Écouter les bookings en temps réel
   useEffect(() => {
-    if (!isAuthenticated || !user) return;
+    // Vérifier si on est sur la page dashboard parent (pas accompagnateur)
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    const isParentDashboard = currentPath === '/dashboard';
+    
+    // Ne charger que si on est sur le dashboard parent et authentifié comme parent
+    if (!isParentDashboard || !isAuthenticated || !user || loadingBookings || isAccompanist) {
+      setLoadingBookings(false);
+      return;
+    }
+
+    // Nettoyage de l'ancienne souscription
+    if (unsubscribeRef) {
+      unsubscribeRef();
+    }
 
     setLoadingBookings(true);
     
@@ -103,9 +136,9 @@ export default function DashboardPage() {
 
     // Cleanup à la destruction du composant
     return () => unsubscribe();
-  }, [isAuthenticated, user, toast]);
+  }, [isAuthenticated, user?.uid]); // Retirer toast des dépendances pour éviter la boucle infinie
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await logout();
       toast({
@@ -120,7 +153,7 @@ export default function DashboardPage() {
         description: 'Une erreur est survenue lors de la déconnexion',
       });
     }
-  };
+  }, [toast, router]);
 
   if (loading) {
     return (
@@ -210,109 +243,125 @@ export default function DashboardPage() {
               </Card>
             </Link>
 
-            <Link href="/dashboard/bookings">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-green-200 bg-gradient-to-br from-green-50 to-background">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-green-600" />
-                    Mes réservations
-                  </CardTitle>
-                  <CardDescription>
-                    Consultez et créez vos prestations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold text-green-600">
-                    {userProfile.parentProfile?.totalBookings || 0}
-                  </p>
-                  <p className="text-sm text-muted-foreground">réservation(s)</p>
-                  <Button variant="outline" className="w-full mt-4 border-green-300 hover:bg-green-50" asChild>
-                    <Link href="/dashboard/bookings/new">
-                      Nouvelle réservation
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-green-200 bg-gradient-to-br from-green-50 to-background" onClick={() => router.push('/dashboard/bookings')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-green-600" />
+                  Mes réservations
+                </CardTitle>
+                <CardDescription>
+                  Consultez et créez vos prestations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold text-green-600">
+                  {loadingBookings ? '...' : bookings.length}
+                </p>
+                <p className="text-sm text-muted-foreground">réservation(s)</p>
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-4 border-green-300 hover:bg-green-50"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push('/dashboard/bookings/new');
+                  }}
+                >
+                  Nouvelle réservation
+                </Button>
+              </CardContent>
+            </Card>
 
-            <Link href="/dashboard/payments">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-emerald-200 bg-gradient-to-br from-emerald-50 to-background">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-emerald-600" />
-                    Paiements
-                  </CardTitle>
-                  <CardDescription>
-                    Historique et factures
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="outline" className="w-full border-emerald-300 hover:bg-emerald-50">
-                    Voir l'historique
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-emerald-200 bg-gradient-to-br from-emerald-50 to-background" onClick={() => router.push('/dashboard/payments')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5 text-emerald-600" />
+                  Paiements
+                </CardTitle>
+                <CardDescription>
+                  Historique et factures
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-emerald-300 hover:bg-emerald-50"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push('/dashboard/payments');
+                  }}
+                >
+                  Voir l'historique
+                </Button>
+              </CardContent>
+            </Card>
 
             {userProfile.role === 'parent' && (
-              <Link href="/dashboard/youngsters">
-                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-pink-200 bg-gradient-to-br from-pink-50 to-background">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <User className="h-5 w-5 text-pink-600" />
-                      Mes jeunes
-                    </CardTitle>
-                    <CardDescription>
-                      Gérez les profils de vos enfants
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-pink-600">
-                      {userProfile.parentProfile?.numberOfYoungsters || 0}
-                    </p>
-                    <p className="text-sm text-muted-foreground">jeune(s) enregistré(s)</p>
-                  </CardContent>
-                </Card>
-              </Link>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-pink-200 bg-gradient-to-br from-pink-50 to-background" onClick={() => router.push('/dashboard/youngsters')}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5 text-pink-600" />
+                    Mes jeunes
+                  </CardTitle>
+                  <CardDescription>
+                    Gérez les profils de vos enfants
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold text-pink-600">
+                    {userProfile.parentProfile?.numberOfYoungsters || 0}
+                  </p>
+                  <p className="text-sm text-muted-foreground">jeune(s) enregistré(s)</p>
+                </CardContent>
+              </Card>
             )}
 
-            <Link href="/dashboard/notifications">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-orange-200 bg-gradient-to-br from-orange-50 to-background">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Bell className="h-5 w-5 text-orange-600" />
-                    Notifications
-                  </CardTitle>
-                  <CardDescription>
-                    Gérez vos préférences
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="outline" className="w-full border-orange-300 hover:bg-orange-50">
-                    Configurer
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-orange-200 bg-gradient-to-br from-orange-50 to-background" onClick={() => router.push('/dashboard/notifications')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-orange-600" />
+                  Notifications
+                </CardTitle>
+                <CardDescription>
+                  Gérez vos préférences
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-orange-300 hover:bg-orange-50"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push('/dashboard/notifications');
+                  }}
+                >
+                  Configurer
+                </Button>
+              </CardContent>
+            </Card>
 
-            <Link href="/dashboard/settings">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-slate-200 bg-gradient-to-br from-slate-50 to-background">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-slate-600" />
-                    Paramètres
-                  </CardTitle>
-                  <CardDescription>
-                    Personnalisez votre compte
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="outline" className="w-full border-slate-300 hover:bg-slate-50">
-                    Accéder
-                  </Button>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full border-slate-200 bg-gradient-to-br from-slate-50 to-background" onClick={() => router.push('/dashboard/settings')}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5 text-slate-600" />
+                  Paramètres
+                </CardTitle>
+                <CardDescription>
+                  Personnalisez votre compte
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-slate-300 hover:bg-slate-50"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push('/dashboard/settings');
+                  }}
+                >
+                  Accéder
+                </Button>
+              </CardContent>
+            </Card>
 
             {userProfile.role === 'parent' && userProfile.parentProfile && (
               <Link href="/dashboard/loyalty">

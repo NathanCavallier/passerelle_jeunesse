@@ -5,8 +5,9 @@
 ### 🐛 Bug fixes
 
 #### Sélecteur de date (Calendar)
+
 - **Problème** : Le composant Calendar ne transmettait pas correctement les props à DayPicker, notamment la locale `fr` pour afficher le calendrier en français
-- **Solution** : 
+- **Solution** :
   - Mise à jour du type `CalendarProps` pour utiliser directement `DayPickerProps` au lieu de `React.ComponentProps`
   - Suppression des composants personnalisés `IconLeft` et `IconRight` qui causaient des conflits avec react-day-picker v9
   - Le composant transmet maintenant correctement toutes les props, y compris `locale`, `disabled`, `mode`, etc.
@@ -15,6 +16,7 @@
 ### 🎨 Intégration du logo
 
 #### Fichiers ajoutés
+
 - `public/images/logo.png` (1024x1024, 305KB) - Logo principal
 - `public/favicon.ico` - Favicon du site
 - `public/apple-touch-icon.png` - Icône iOS/Apple
@@ -22,6 +24,7 @@
 - `public/images/README.md` - Documentation des assets
 
 #### Composant Logo mis à jour
+
 - **Avant** : Utilisait l'icône `Leaf` de Lucide
 - **Après** : Utilise l'image PNG du logo officiel
 - **Nouvelles fonctionnalités** :
@@ -31,6 +34,7 @@
   - Classes Tailwind dynamiques (pas de styles inline)
 
 #### Métadonnées améliorées (layout.tsx)
+
 - **SEO** : Titre et description enrichis
 - **Open Graph** : Métadonnées pour le partage sur réseaux sociaux
 - **Twitter Card** : Preview optimisée pour Twitter
@@ -38,7 +42,9 @@
 - **Icons** : Favicon et icône Apple Touch configurés
 
 #### Composants affectés
+
 Les composants suivants affichent maintenant le nouveau logo :
+
 - `Header` - En-tête du site (desktop et mobile)
 - `Footer` - Pied de page
 - Pages d'authentification (via Header/Footer) :
@@ -75,11 +81,13 @@ public/
 ---
 
 **Fichiers modifiés** :
+
 - `src/components/ui/calendar.tsx`
 - `src/components/logo.tsx`
 - `src/app/layout.tsx`
 
 **Fichiers créés** :
+
 - `public/images/logo.png`
 - `public/favicon.ico`
 - `public/apple-touch-icon.png`
