@@ -1,8 +1,9 @@
 # TODO - Dashboard Passerelle Jeunesse
 
 **Date:** 16 février 2026  
-**Taux de complétion global:** 70% (+5%)  
-**Sprint 1 Progress:** 4/4 tâches terminées (100%) ✅
+**Taux de complétion global:** 80% (+10%) 🚀  
+**Sprint 1 Progress:** 4/4 tâches terminées (100%) ✅  
+**Sprint 3 Progress:** Messagerie temps réel terminée ✅
 
 Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
@@ -105,18 +106,23 @@ Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
 ## 🟡 PRIORITÉ MOYENNE (Sprint 3)
 
-### 6. Messagerie avec accompagnateur
+### 6. Messagerie avec accompagnateur ✅
 
-- [ ] Créer `/src/app/dashboard/messages/page.tsx`
-- [ ] Chat temps réel (Firestore collection `messages`)
-- [ ] Liste des conversations
-- [ ] Notifications de nouveaux messages
-- [ ] Support pièces jointes (photos)
-- [ ] Indicateurs de lecture (vu/non lu)
-- [ ] Interface mobile-friendly
+- [x] Créer `/src/app/dashboard/messages/page.tsx`
+- [x] Chat temps réel (Firestore collection `conversations` + `messages`)
+- [x] Liste des conversations avec recherche
+- [x] Notifications et compteurs de nouveaux messages
+- [x] Support pièces jointes (images, documents, localisation)
+- [x] Indicateurs de lecture (envoyé/livré/lu)
+- [x] Interface mobile-friendly responsive
+- [x] Upload Firebase Storage avec compression
+- [x] Service messagerie temps réel complet
+- [x] Hook useMessaging pour gestion React
+- [x] Widget aperçu messages sur dashboard
 
-**Estimation:** 3 jours  
-**Fichiers:** `src/app/dashboard/messages/page.tsx`, `src/components/messages/*`
+**Statut:** ✅ TERMINÉ (16 février 2026)  
+**Estimation:** 3 jours ✅  
+**Fichiers:** `src/app/dashboard/messages/page.tsx`, `src/components/messages/*`, `src/hooks/use-messaging.ts`, `src/lib/messaging-service.ts`, `src/lib/upload-service.ts`
 
 ---
 
@@ -289,11 +295,11 @@ Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 - Réservations (liste, détail, création)
 - Jeunes (liste, documents)
 
-**Pages à créer (9):**
+**Pages à créer (8):**
 
-- [ ] Profil (modification)
-- [ ] Paiements (historique)
-- [ ] Messages (chat)
+- [x] Profil (modification)
+- [x] Paiements (historique)
+- [x] Messages (chat) ✅ NOUVEAU
 - [ ] Notifications (config)
 - [ ] Paramètres (compte)
 - [ ] Fidélité
@@ -328,7 +334,7 @@ Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
 ### Sprint 3 complet quand
 
-- [x] Messagerie en temps réel active
+- [x] Messagerie en temps réel active ✅
 - [x] Notifications push configurées
 - [x] Config notifications disponible
 

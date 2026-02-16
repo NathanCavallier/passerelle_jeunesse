@@ -220,7 +220,47 @@ service cloud.firestore {
     }
     
     // ============================================================================
-    // MESSAGES COLLECTION
+    // CONVERSATIONS COLLECTION
+    // ============================================================================
+    
+    match /conversations/{conversationId} {
+      // Lecture : utilisateur authentifié (validation côté app)
+      allow read: if isAuthenticated();
+      
+      // Création : utilisateur authentifié avec booking valide
+      allow create: if isAuthenticated()
+                    && hasRequiredFields(['bookingId', 'participants', 'settings'])
+                    && exists(/databases/$(database)/documents/bookings/$(request.resource.data.bookingId));
+      
+      // Mise à jour : utilisateur authentifié
+      allow update: if isAuthenticated();
+      
+      // Suppression : seulement admin
+      allow delete: if isAdmin();
+      
+      // ============================================================================
+      // MESSAGES SOUS-COLLECTION
+      // ============================================================================
+      
+      match /messages/{messageId} {
+        // Lecture : utilisateur authentifié
+        allow read: if isAuthenticated();
+        
+        // Création : utilisateur authentifié
+        allow create: if isAuthenticated()
+                      && hasRequiredFields(['bookingId', 'senderId', 'text'])
+                      && request.resource.data.senderId == request.auth.uid;
+        
+        // Mise à jour : utilisateur authentifié
+        allow update: if isAuthenticated();
+        
+        // Suppression : seulement admin
+        allow delete: if isAdmin();
+      }
+    }
+    
+    // ============================================================================
+    // MESSAGES COLLECTION (ancienne structure - rétrocompatibilité)
     // ============================================================================
     
     match /messages/{messageId} {

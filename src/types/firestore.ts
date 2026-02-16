@@ -613,6 +613,55 @@ export interface Message {
 }
 
 // ============================================================================
+// CONVERSATIONS
+// ============================================================================
+
+export type ConversationStatus = 'active' | 'closed' | 'archived';
+export type ParticipantRole = 'parent' | 'accompanist' | 'admin';
+
+export interface ConversationParticipant {
+    id: string; // User ID
+    role: ParticipantRole;
+    name: string;
+    avatar?: string;
+    lastSeenAt?: Timestamp;
+    notificationsEnabled: boolean;
+}
+
+export interface ConversationSettings {
+    muteNotifications: boolean;
+    autoClose: boolean;
+    allowAttachments: boolean;
+}
+
+export interface Conversation {
+    id: string;
+    bookingId: string;
+    missionId?: string;
+    title: string;
+    description?: string;
+    status: ConversationStatus;
+    participants: ConversationParticipant[];
+    settings: ConversationSettings;
+    // Message tracking
+    messagesCount: number;
+    lastMessageId?: string;
+    lastMessageText?: string;
+    lastMessageAt?: Timestamp;
+    lastMessageBy?: string;
+    // Lecture tracking
+    unreadCount: { [participantId: string]: number };
+    lastReadBy: { [participantId: string]: Timestamp };
+    // Metadata
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+    createdBy: string;
+    closedAt?: Timestamp;
+    closedBy?: string;
+    archivedAt?: Timestamp;
+}
+
+// ============================================================================
 // STATS
 // ============================================================================
 
