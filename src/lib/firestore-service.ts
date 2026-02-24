@@ -84,6 +84,32 @@ export async function createUserDocument(
             loyaltyPoints: 0,
             referralCode: generateReferralCode(uid),
         };
+    } else if (data.role === 'accompanist') {
+        userData.accompanistProfile = {
+            biography: '',
+            experience: '',
+            certifications: [],
+            availability: {
+                monday: [],
+                tuesday: [],
+                wednesday: [],
+                thursday: [],
+                friday: [],
+                saturday: [],
+                sunday: [],
+            },
+            zones: [],
+            longDistanceAvailable: false,
+            maxYoungsters: 1,
+            rating: 0,
+            totalMissions: 0,
+            totalEarnings: 0,
+            documents: {
+                criminalRecord: { verified: false },
+                insurance: { verified: false },
+                idCard: { verified: false },
+            },
+        };
     }
 
     await setDoc(userRef, userData);

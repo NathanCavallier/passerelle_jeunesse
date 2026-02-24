@@ -928,3 +928,130 @@ export interface AuditLog {
     userAgent?: string;
     createdAt: Timestamp;
 }
+
+// ============================================================================
+// LOYALTY PROGRAM
+// ============================================================================
+
+export type LoyaltyTier = 'bronze' | 'silver' | 'gold' | 'platinum';
+
+export type LoyaltyTransactionType =
+    | 'booking_completed'
+    | 'referral_bonus'
+    | 'review_submitted'
+    | 'promo_code'
+    | 'reward_redeemed'
+    | 'admin_adjustment'
+    | 'welcome_bonus';
+
+export interface LoyaltyTransaction {
+    id: string;
+    userId: string;
+    type: LoyaltyTransactionType;
+    points: number; // positif = gain, négatif = dépense
+    description: string;
+    referenceId?: string; // bookingId, reviewId, promoCodeId
+    balanceAfter: number;
+    createdAt: Timestamp;
+}
+
+export interface LoyaltyReward {
+    id: string;
+    name: string;
+    description: string;
+    pointsCost: number;
+    type: 'discount_percentage' | 'discount_fixed' | 'free_service' | 'upgrade';
+    value: number; // pourcentage ou montant
+    minBookingAmount?: number;
+    maxUsesPerUser?: number;
+    totalAvailable?: number;
+    totalRedeemed: number;
+    active: boolean;
+    imageUrl?: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export interface LoyaltyRedemption {
+    id: string;
+    userId: string;
+    rewardId: string;
+    rewardName: string;
+    pointsSpent: number;
+    bookingId?: string;
+    status: 'pending' | 'applied' | 'expired' | 'cancelled';
+    code: string;
+    expiresAt: Timestamp;
+    createdAt: Timestamp;
+    usedAt?: Timestamp;
+}
+
+export interface LoyaltyTierConfig {
+    tier: LoyaltyTier;
+    label: string;
+    minPoints: number;
+    color: string;
+    benefits: string[];
+    pointsMultiplier: number; // 1x, 1.5x, 2x, 3x
+}
+
+// ============================================================================
+// REFERRAL PROGRAM
+// ============================================================================
+
+export type ReferralStatus = 'pending' | 'registered' | 'first_booking' | 'completed' | 'expired';
+
+export interface Referral {
+    id: string;
+    referrerId: string;
+    referrerName: string;
+    referrerEmail: string;
+    refereeId?: string;
+    refereeName?: string;
+    refereeEmail: string;
+    referralCode: string;
+    status: ReferralStatus;
+    referrerReward?: number; // points gagnés
+    refereeReward?: number; // points gagnés
+    firstBookingId?: string;
+    invitedAt: Timestamp;
+    registeredAt?: Timestamp;
+    completedAt?: Timestamp;
+    expiresAt: Timestamp;
+}
+
+// ============================================================================
+// PROMO CODES
+// ============================================================================
+
+export type PromoCodeType = 'percentage' | 'fixed_amount' | 'loyalty_points';
+
+export interface PromoCode {
+    id: string;
+    code: string;
+    description: string;
+    type: PromoCodeType;
+    value: number;
+    minBookingAmount?: number;
+    maxDiscount?: number;
+    maxUses: number;
+    currentUses: number;
+    perUserLimit: number;
+    validFrom: Timestamp;
+    validUntil: Timestamp;
+    applicableServices?: ServiceType[];
+    active: boolean;
+    createdBy: string;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
+}
+
+export interface PromoCodeUsage {
+    id: string;
+    promoCodeId: string;
+    code: string;
+    userId: string;
+    bookingId: string;
+    discountAmount: number;
+    usedAt: Timestamp;
+}

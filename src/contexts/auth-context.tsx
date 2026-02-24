@@ -5,7 +5,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { User as FirebaseUser } from 'firebase/auth';
 import { onAuthChange, getCurrentUser } from '@/lib/auth-service';
 import { getUserDocument, updateLastLogin } from '@/lib/firestore-service';
@@ -90,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, [testAuth]);
 
-  const value: AuthContextType = {
+  const value: AuthContextType = useMemo(() => ({
     user,
     userProfile,
     loading,
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isParent: userProfile?.role === 'parent',
     isAccompanist: userProfile?.role === 'accompanist',
     isAdmin: userProfile?.role === 'admin',
-  };
+  }), [user, userProfile, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

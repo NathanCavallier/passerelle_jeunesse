@@ -28,8 +28,9 @@ import {
     Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { ParentProfile } from '@/types/firestore';
+import type { ParentProfile, Referral } from '@/types/firestore';
 import { getUserDocument } from '@/lib/firestore-service';
+import { getUserReferrals, getReferralStats, POINTS_RULES } from '@/lib/loyalty-service';
 
 interface ReferralReward {
     id: string;
@@ -71,16 +72,24 @@ export default function ReferralPage() {
     const [loading, setLoading] = useState(true);
     const [userProfile, setUserProfile] = useState<ParentProfile | null>(null);
     const [copied, setCopied] = useState(false);
+    const [referrals, setReferrals] = useState<Referral[]>([]);
+    const [stats, setStats] = useState({ totalInvited: 0, registered: 0, completed: 0, totalPointsEarned: 0 });
 
     useEffect(() => {
         if (!user) return;
 
         const loadData = async () => {
             try {
-                const profile = await getUserDocument(user.uid);
+                const [profile, userReferrals, referralStats] = await Promise.all([
+                    getUserDocument(user.uid),
+                    getUserReferrals(user.uid),
+                    getReferralStats(user.uid),
+                ]);
                 if (profile?.parentProfile) {
                     setUserProfile(profile.parentProfile);
                 }
+                setReferrals(userReferrals);
+                setStats(referralStats);
             } catch (error) {
                 console.error('Erreur lors du chargement du profil:', error);
             } finally {
@@ -325,32 +334,50 @@ export default function ReferralPage() {
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="text-center p-4 rounded-lg border bg-card">
-                                <p className="text-3xl font-bold text-primary">0</p>
-                                <p className="text-sm text-muted-foreground mt-1">Filleuls inscrits</p>
+                                <p className="text-3xl font-bold text-primary">{stats.totalInvited}</p>
+                                <p className="text-sm text-muted-foreground mt-1">Filleuls invités</p>
                             </div>
                             <div className="text-center p-4 rounded-lg border bg-card">
-                                <p className="text-3xl font-bold text-green-600">0€</p>
-                                <p className="text-sm text-muted-foreground mt-1">Récompenses gagnées</p>
+                                <p className="text-3xl font-bold text-green-600">{stats.totalPointsEarned} pts</p>
+                                <p className="text-sm text-muted-foreground mt-1">Points gagnés</p>
                             </div>
                         </div>
 
-                        <Alert className="bg-blue-50 border-blue-200">
-                            <Info className="h-4 w-4 text-blue-600" />
-                            <AlertTitle className="text-blue-900">Suivi en développement</AlertTitle>
-                            <AlertDescription className="text-blue-800 text-sm">
-                                Le système de suivi des filleuls sera bientôt disponible. 
-                                Vous pourrez voir qui s'est inscrit avec votre code et vos récompenses en attente.
-                            </AlertDescription>
-                        </Alert>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="text-center p-4 rounded-lg border bg-card">
+                                <p className="text-3xl font-bold text-yellow-600">{stats.totalInvited - stats.registered - stats.completed}</p>
+                                <p className="text-sm text-muted-foreground mt-1">En attente</p>
+                            </div>
+                            <div className="text-center p-4 rounded-lg border bg-card">
+                                <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
+                                <p className="text-sm text-muted-foreground mt-1">Complétés</p>
+                            </div>
+                        </div>
 
                         <Separator />
 
                         <div>
-                            <h4 className="font-semibold mb-2">Filleul le plus récent</h4>
-                            <div className="text-center py-6 text-muted-foreground">
-                                <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                <p className="text-sm">Aucun filleul pour le moment</p>
-                            </div>
+                            <h4 className="font-semibold mb-2">Filleuls récents</h4>
+                            {referrals.length > 0 ? (
+                                <div className="space-y-2">
+                                    {referrals.slice(0, 5).map((ref) => (
+                                        <div key={ref.id} className="flex items-center justify-between p-3 rounded-lg border bg-card">
+                                            <div className="flex items-center gap-2">
+                                                <Users className="h-4 w-4 text-muted-foreground" />
+                                                <span className="text-sm">{ref.refereeEmail || 'Filleul'}</span>
+                                            </div>
+                                            <Badge variant={ref.status === 'completed' ? 'default' : ref.status === 'pending' ? 'secondary' : 'destructive'}>
+                                                {ref.status === 'completed' ? 'Complété' : ref.status === 'pending' ? 'En attente' : 'Expiré'}
+                                            </Badge>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-6 text-muted-foreground">
+                                    <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                                    <p className="text-sm">Aucun filleul pour le moment</p>
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                 </Card>

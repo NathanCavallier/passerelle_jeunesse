@@ -2,11 +2,7 @@
 
 import Image from 'next/image';
 import { CheckCircle } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
-const founderImage = PlaceHolderImages.find(img => img.id === 'founder-image');
 
 const commitments = [
     { text: 'Sécurité et vigilance' },
@@ -21,12 +17,16 @@ export default function About() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid md:grid-cols-3 gap-12 items-center">
           <div className="md:col-span-1 flex flex-col items-center text-center">
-            {founderImage && (
-              <Avatar className="w-48 h-48 mb-4 border-4 border-primary">
-                <AvatarImage src={founderImage.imageUrl} alt="Nathan Imogo" data-ai-hint={founderImage.imageHint} />
-                <AvatarFallback>NI</AvatarFallback>
-              </Avatar>
-            )}
+            <div className="relative w-56 h-72 mb-4 rounded-2xl overflow-hidden border-4 border-primary shadow-lg">
+              <Image
+                src="/images/nathan.jpeg"
+                alt="Nathan Imogo — Fondateur de Passerelle Jeunesse"
+                fill
+                className="object-cover object-center"
+                sizes="224px"
+                priority
+              />
+            </div>
             <h3 className="text-2xl font-bold font-headline">Nathan Imogo</h3>
             <p className="text-muted-foreground">Fondateur</p>
           </div>

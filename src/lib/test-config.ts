@@ -5,6 +5,8 @@
 
 'use client';
 
+import { useMemo } from 'react';
+
 // Mode test PWA - À DÉSACTIVER EN PRODUCTION
 export const PWA_TEST_MODE = true;
 
@@ -27,36 +29,35 @@ export const TEST_USER_CONFIG = {
  * Hook pour surcharger l'authentification en mode test
  */
 export function useTestAuth() {
-  if (PWA_TEST_MODE && typeof window !== 'undefined') {
-    const currentPath = window.location.pathname;
-    const isTestPage = PWA_TEST_PAGES.some(page => currentPath.startsWith(page));
-    
-    if (isTestPage) {
-      return {
-        isAuthenticated: true,
-        isAccompanist: true,
-        isParent: false,
-        isAdmin: false,
-        user: {
-          uid: 'test-accompanist-uid',
-          email: TEST_USER_CONFIG.email,
-          displayName: TEST_USER_CONFIG.name,
-          emailVerified: TEST_USER_CONFIG.isEmailVerified
-        },
-        userProfile: {
-          id: 'test-accompanist-uid',
-          email: TEST_USER_CONFIG.email,
-          role: TEST_USER_CONFIG.role,
-          firstName: 'Test',
-          lastName: 'Accompagnateur',
-          status: 'active' as const,
-          emailVerified: true,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }
-      };
-    }
-  }
-  
-  return null;
+  const isTestPage = typeof window !== 'undefined' && PWA_TEST_MODE
+    ? PWA_TEST_PAGES.some(page => window.location.pathname.startsWith(page))
+    : false;
+
+  return useMemo(() => {
+    if (!PWA_TEST_MODE || !isTestPage) return null;
+
+    return {
+      isAuthenticated: true,
+      isAccompanist: true,
+      isParent: false,
+      isAdmin: false,
+      user: {
+        uid: 'test-accompanist-uid',
+        email: TEST_USER_CONFIG.email,
+        displayName: TEST_USER_CONFIG.name,
+        emailVerified: TEST_USER_CONFIG.isEmailVerified
+      },
+      userProfile: {
+        id: 'test-accompanist-uid',
+        email: TEST_USER_CONFIG.email,
+        role: TEST_USER_CONFIG.role,
+        firstName: 'Test',
+        lastName: 'Accompagnateur',
+        status: 'active' as const,
+        emailVerified: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    };
+  }, [isTestPage]);
 }

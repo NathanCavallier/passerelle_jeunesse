@@ -3,6 +3,8 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from '@/contexts/auth-context';
+import { ThemeProvider } from '@/components/theme-provider';
+import { I18nProvider } from '@/i18n';
 
 export const metadata: Metadata = {
   title: 'Passerelle Jeunesse | Accompagnement & Mobilité pour Jeunes',
@@ -51,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="scroll-smooth">
+    <html lang="fr" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <meta name="theme-color" content="#3b82f6" />
@@ -67,11 +69,20 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="1024x1024" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={cn("font-body antialiased")}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-        <Toaster />
+      <body className={cn("font-body antialiased")} suppressHydrationWarning>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <I18nProvider>
+              {children}
+            </I18nProvider>
+          </AuthProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -17,6 +17,7 @@ import {
     GoogleAuthProvider,
     signInWithPopup,
     onAuthStateChanged,
+    deleteUser,
     User as FirebaseUser,
     UserCredential,
 } from 'firebase/auth';
@@ -373,3 +374,26 @@ function handleAuthError(error: any): AuthError {
 }
 
 export { auth };
+
+// ============================================================================
+// SUPPRESSION DE COMPTE
+// ============================================================================
+
+/**
+ * Supprime le compte utilisateur après réauthentification
+ * Nécessite une réauthentification récente
+ */
+export async function deleteAccount(currentPassword: string): Promise<void> {
+    const user = auth.currentUser;
+    if (!user || !user.email) {
+        throw new Error('Utilisateur non connecté.');
+    }
+
+    // Réauthentifier avant suppression (requis par Firebase)
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    // Supprimer le compte Firebase Auth
+    await deleteUser(user);
+}
+

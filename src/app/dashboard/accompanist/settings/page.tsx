@@ -21,18 +21,22 @@ import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { logout } from '@/lib/auth-service';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { 
   ArrowLeft,
   Settings,
   Bell,
   Shield,
   Globe,
-  Moon,
   Smartphone,
   LogOut,
   Trash2,
   AlertTriangle,
-  Save
+  Save,
+  Loader2
 } from 'lucide-react';
 
 export default function AccompanistSettingsPage() {
@@ -42,6 +46,8 @@ export default function AccompanistSettingsPage() {
   
   const [isSaving, setIsSaving] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isProfilePublic, setIsProfilePublic] = useState(true);
+  const [statsVisible, setStatsVisible] = useState(true);
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -78,16 +84,24 @@ export default function AccompanistSettingsPage() {
   };
 
   const handleSaveSettings = async () => {
+    if (!user) return;
     setIsSaving(true);
     try {
-      // TODO: Implémenter la sauvegarde des paramètres
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulation
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        'settings.notifications': notifications,
+        'settings.darkMode': isDarkMode,
+        'settings.profilePublic': isProfilePublic,
+        'settings.statsVisible': statsVisible,
+        updatedAt: serverTimestamp(),
+      });
       
       toast({
         title: "Paramètres sauvegardés",
         description: "Vos préférences ont été mises à jour avec succès."
       });
     } catch (error) {
+      console.error('Erreur sauvegarde paramètres:', error);
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -95,6 +109,24 @@ export default function AccompanistSettingsPage() {
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!user?.email) return;
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      toast({
+        title: "Email envoyé",
+        description: "Un email de réinitialisation de mot de passe a été envoyé."
+      });
+    } catch (error) {
+      console.error('Erreur reset password:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'envoyer l'email de réinitialisation."
+      });
     }
   };
 
@@ -126,7 +158,10 @@ export default function AccompanistSettingsPage() {
 
           <Button onClick={handleSaveSettings} disabled={isSaving}>
             {isSaving ? (
-              <>Sauvegarde...</>
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Sauvegarde...
+              </>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
@@ -248,7 +283,10 @@ export default function AccompanistSettingsPage() {
                         Permettre aux familles de voir votre profil dans les recherches
                       </p>
                     </div>
-                    <Switch defaultChecked={true} />
+                    <Switch 
+                      checked={isProfilePublic}
+                      onCheckedChange={setIsProfilePublic}
+                    />
                   </div>
 
                   <Separator />
@@ -260,7 +298,10 @@ export default function AccompanistSettingsPage() {
                         Afficher votre note et nombre de missions sur votre profil
                       </p>
                     </div>
-                    <Switch defaultChecked={true} />
+                    <Switch 
+                      checked={statsVisible}
+                      onCheckedChange={setStatsVisible}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -365,11 +406,11 @@ export default function AccompanistSettingsPage() {
                   <Separator />
 
                   <div className="space-y-2">
-                    <Button variant="outline" className="w-full" disabled>
-                      🔐 Changer le mot de passe
+                    <Button variant="outline" className="w-full" onClick={handleResetPassword}>
+                      🔐 Réinitialiser le mot de passe
                     </Button>
                     <Button variant="outline" className="w-full" disabled>
-                      📱 Authentification à deux facteurs
+                      📱 Authentification à deux facteurs (bientôt)
                     </Button>
                   </div>
                 </CardContent>

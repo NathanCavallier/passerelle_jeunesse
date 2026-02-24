@@ -94,6 +94,24 @@ service cloud.firestore {
         allow read: if isAccompanist() && 
                     exists(/databases/$(database)/documents/missions/$(request.auth.uid + '_' + youngsterId));
       }
+
+      // ============================================================================
+      // UNAVAILABILITIES SOUS-COLLECTION
+      // ============================================================================
+      
+      match /unavailabilities/{unavailId} {
+        // L'utilisateur peut gérer ses propres indisponibilités
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+
+      // ============================================================================
+      // SETTINGS SOUS-COLLECTION
+      // ============================================================================
+      
+      match /settings/{settingId} {
+        // L'utilisateur peut gérer ses propres paramètres
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
     }
     
     // ============================================================================

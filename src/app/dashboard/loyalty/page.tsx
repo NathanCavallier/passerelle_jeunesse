@@ -17,6 +17,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 import { 
     ArrowLeft, 
     TrendingUp, 
@@ -31,8 +32,10 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import type { Booking, ParentProfile } from '@/types/firestore';
+import type { Booking, ParentProfile, LoyaltyTransaction } from '@/types/firestore';
 import { getUserDocument } from '@/lib/firestore-service';
+import { getLoyaltyTransactions, redeemReward as redeemRewardService, getUserRedemptions, deductLoyaltyPoints, addLoyaltyPoints } from '@/lib/loyalty-service';
+import type { LoyaltyRedemption } from '@/types/firestore';
 
 interface LoyaltyTier {
     name: string;
@@ -176,6 +179,9 @@ export default function LoyaltyPage() {
     const [currentTier, setCurrentTier] = useState<LoyaltyTier>(LOYALTY_TIERS[0]);
     const [nextTier, setNextTier] = useState<LoyaltyTier | null>(LOYALTY_TIERS[1]);
     const [progressToNext, setProgressToNext] = useState(0);
+    const [redemptions, setRedemptions] = useState<LoyaltyRedemption[]>([]);
+    const [redeemingId, setRedeemingId] = useState<string | null>(null);
+    const { toast } = useToast();
 
     useEffect(() => {
         if (!user) return;
@@ -249,16 +255,50 @@ export default function LoyaltyPage() {
         loadData();
     }, [user]);
 
-    const handleRedeemReward = (reward: Reward) => {
-        if (!userProfile || userProfile.loyaltyPoints < reward.pointsCost) {
+    const handleRedeemReward = async (reward: Reward) => {
+        if (!user || !userProfile || userProfile.loyaltyPoints < reward.pointsCost) {
             return;
         }
-
-        // TODO: Implémenter la logique de rachat
-        // - Créer un code promo avec la réduction
-        // - Déduire les points du profil
-        // - Créer une transaction dans l'historique
-        alert(`Fonctionnalité en développement.\nVous souhaitez échanger ${reward.pointsCost} points contre : ${reward.title}`);
+        setRedeemingId(reward.id);
+        try {
+            // Déduire les points
+            await deductLoyaltyPoints(
+                user.uid,
+                reward.pointsCost,
+                `Échange: ${reward.title} (${reward.value})`
+            );
+            toast({
+                title: 'Récompense échangée ! 🎉',
+                description: `${reward.pointsCost} points déduits pour : ${reward.title}`,
+            });
+            // Recharger le profil
+            const profile = await getUserDocument(user.uid);
+            if (profile?.parentProfile) {
+                setUserProfile(profile.parentProfile);
+                const points = profile.parentProfile.loyaltyPoints;
+                const tier = LOYALTY_TIERS.find(
+                    t => points >= t.minPoints && points <= t.maxPoints
+                ) || LOYALTY_TIERS[0];
+                setCurrentTier(tier);
+                const tierIndex = LOYALTY_TIERS.indexOf(tier);
+                const next = tierIndex < LOYALTY_TIERS.length - 1 ? LOYALTY_TIERS[tierIndex + 1] : null;
+                setNextTier(next);
+                if (next) {
+                    const progress = ((points - tier.minPoints) / (next.minPoints - tier.minPoints)) * 100;
+                    setProgressToNext(Math.min(progress, 100));
+                } else {
+                    setProgressToNext(100);
+                }
+            }
+        } catch (error: any) {
+            toast({
+                title: 'Erreur',
+                description: error.message || 'Impossible d\'échanger cette récompense.',
+                variant: 'destructive',
+            });
+        } finally {
+            setRedeemingId(null);
+        }
     };
 
     if (authLoading) {
@@ -400,11 +440,11 @@ export default function LoyaltyPage() {
                                                 </p>
                                                 <Button 
                                                     className="w-full"
-                                                    disabled={!canAfford}
+                                                    disabled={!canAfford || redeemingId === reward.id}
                                                     onClick={() => handleRedeemReward(reward)}
                                                     variant={canAfford ? 'default' : 'outline'}
                                                 >
-                                                    {canAfford ? 'Échanger' : 'Points insuffisants'}
+                                                    {redeemingId === reward.id ? 'Échange en cours...' : canAfford ? 'Échanger' : 'Points insuffisants'}
                                                 </Button>
                                             </CardContent>
                                         </Card>

@@ -20,6 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
 import { collection, query, where, orderBy, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import type { Booking } from '@/types/firestore';
+import { Input } from '@/components/ui/input';
 import { 
   ArrowLeft,
   Calendar,
@@ -27,12 +28,13 @@ import {
   Users,
   MapPin,
   Navigation,
-  Filter,
   Loader2,
   CheckCircle,
   XCircle,
   Eye,
-  AlertCircle
+  AlertCircle,
+  Search,
+  TrendingUp,
 } from 'lucide-react';
 import { format, isAfter, isBefore, startOfDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -45,6 +47,7 @@ export default function AccompanistMissionsPage() {
   const [allBookings, setAllBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -202,6 +205,24 @@ export default function AccompanistMissionsPage() {
   const pastBookings = getFilteredBookings('past');
   const cancelledBookings = getFilteredBookings('cancelled');
 
+  // Appliquer la recherche textuelle
+  const applySearch = (bookings: Booking[]) => {
+    if (!searchQuery.trim()) return bookings;
+    const q = searchQuery.toLowerCase();
+    return bookings.filter((b) =>
+      b.trip.departure.address.toLowerCase().includes(q) ||
+      b.trip.arrival.address.toLowerCase().includes(q) ||
+      b.youngsters.some((y) => y.firstName.toLowerCase().includes(q))
+    );
+  };
+
+  const filteredUpcoming = applySearch(upcomingBookings);
+  const filteredPast = applySearch(pastBookings);
+  const filteredCancelled = applySearch(cancelledBookings);
+
+  // Statistiques enrichies pour l'historique
+  const totalRevenue = pastBookings.reduce((acc, b) => acc + (b.pricing?.total || 0), 0);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -226,7 +247,7 @@ export default function AccompanistMissionsPage() {
         </div>
 
         {/* Statistiques rapides */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -262,6 +283,31 @@ export default function AccompanistMissionsPage() {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Revenus</p>
+                  <p className="text-2xl font-bold text-purple-600">{totalRevenue.toFixed(0)}€</p>
+                </div>
+                <TrendingUp className="h-8 w-8 text-purple-600" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Barre de recherche */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Rechercher par adresse, nom de jeune..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
         </div>
 
         {/* Tabs des missions */}
@@ -283,7 +329,7 @@ export default function AccompanistMissionsPage() {
 
           <TabsContent value="upcoming" className="mt-6">
             <MissionsList 
-              bookings={upcomingBookings} 
+              bookings={filteredUpcoming} 
               loading={loadingBookings}
               emptyMessage="Aucune mission programmée"
               emptyDescription="Vous n'avez actuellement aucune mission à venir."
@@ -294,7 +340,7 @@ export default function AccompanistMissionsPage() {
 
           <TabsContent value="past" className="mt-6">
             <MissionsList 
-              bookings={pastBookings} 
+              bookings={filteredPast} 
               loading={loadingBookings}
               emptyMessage="Aucune mission terminée"
               emptyDescription="Vous n'avez encore terminé aucune mission."
@@ -305,7 +351,7 @@ export default function AccompanistMissionsPage() {
 
           <TabsContent value="cancelled" className="mt-6">
             <MissionsList 
-              bookings={cancelledBookings} 
+              bookings={filteredCancelled} 
               loading={loadingBookings}
               emptyMessage="Aucune mission annulée"
               emptyDescription="Vous n'avez aucune mission annulée."

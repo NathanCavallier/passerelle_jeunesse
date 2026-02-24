@@ -32,7 +32,7 @@ import {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, userProfile, loading, isAuthenticated, isEmailVerified, isAccompanist } = useAuth();
+  const { user, userProfile, loading, isAuthenticated, isEmailVerified, isAccompanist, isAdmin } = useAuth();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
@@ -56,12 +56,18 @@ export default function DashboardPage() {
       return;
     }
 
+    // Rediriger les admins vers leur espace dédié
+    if (!loading && isAdmin) {
+      router.push('/dashboard/admin');
+      return;
+    }
+
     // Rediriger les accompagnateurs vers leur espace dédié
     if (!loading && isAccompanist) {
       router.push('/dashboard/accompanist');
       return;
     }
-  }, [loading, isAuthenticated, isAccompanist, router]);
+  }, [loading, isAuthenticated, isAccompanist, isAdmin, router]);
 
   // Écouter les bookings en temps réel
   useEffect(() => {

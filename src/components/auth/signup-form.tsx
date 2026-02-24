@@ -16,9 +16,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuthForm } from '@/hooks/use-auth-form';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Users, Briefcase } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
+import type { UserRole } from '@/types/firestore';
 
 const signupSchema = z.object({
   firstName: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
@@ -42,6 +43,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 
 export default function SignupForm() {
   const { loading, handleSignUp, handleGoogleSignIn } = useAuthForm();
+  const [selectedRole, setSelectedRole] = useState<UserRole>('parent');
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -66,7 +68,7 @@ export default function SignupForm() {
       firstName: data.firstName,
       lastName: data.lastName,
       phoneNumber: data.phoneNumber,
-      role: 'parent',
+      role: selectedRole,
       address: {
         street: data.street,
         postalCode: data.postalCode,
@@ -133,6 +135,45 @@ export default function SignupForm() {
         {/* Formulaire d'inscription */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Sélection du type de compte */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Type de compte</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole('parent')}
+                  className={`p-4 rounded-lg border-2 text-center transition-all ${
+                    selectedRole === 'parent'
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-muted hover:border-primary/50'
+                  }`}
+                  disabled={loading}
+                >
+                  <Users className="h-6 w-6 mx-auto mb-2 text-blue-600" />
+                  <p className="font-semibold text-sm">Parent / Tuteur</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Réserver des accompagnements
+                  </p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRole('accompanist')}
+                  className={`p-4 rounded-lg border-2 text-center transition-all ${
+                    selectedRole === 'accompanist'
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-muted hover:border-primary/50'
+                  }`}
+                  disabled={loading}
+                >
+                  <Briefcase className="h-6 w-6 mx-auto mb-2 text-green-600" />
+                  <p className="font-semibold text-sm">Accompagnateur</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Réaliser des missions
+                  </p>
+                </button>
+              </div>
+            </div>
+
             {/* Nom et prénom */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
