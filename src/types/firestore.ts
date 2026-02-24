@@ -25,13 +25,107 @@ export interface Address {
 
 export interface UserPreferences {
     language: Language;
-    notifications: {
-        email: boolean;
-        sms: boolean;
-        push: boolean;
-    };
+    notifications: NotificationPreferences;
     newsletter: boolean;
 }
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+export type NotificationChannel = 'email' | 'sms' | 'push';
+export type NotificationEventType =
+    | 'booking_confirmed'
+    | 'booking_cancelled'
+    | 'mission_status_update'
+    | 'new_message'
+    | 'payment_processed'
+    | 'payment_failed'
+    | 'reminder_mission'
+    | 'reminder_payment'
+    | 'review_request'
+    | 'account_update';
+
+export interface NotificationChannelSettings {
+    enabled: boolean;
+    quietHours?: {
+        start: string; // HH:mm
+        end: string;   // HH:mm
+    };
+}
+
+export interface NotificationEventSettings {
+    email: NotificationChannelSettings;
+    sms: NotificationChannelSettings;
+    push: NotificationChannelSettings;
+}
+
+export interface NotificationPreferences {
+    [x: string]: any;
+    // Paramètres globaux par canal
+    globalSettings: {
+        email: NotificationChannelSettings;
+        sms: NotificationChannelSettings;
+        push: NotificationChannelSettings;
+    };
+
+    // Préférences détaillées par type d'événement
+    events: {
+        [K in NotificationEventType]: NotificationEventSettings;
+    };
+
+    // Paramètres avancés
+    summary: {
+        dailyEnabled: boolean;
+        weeklyEnabled: boolean;
+        preferredTime: string; // HH:mm
+    };
+
+    // Dernière mise à jour
+    updatedAt: Timestamp;
+}
+
+// ============================================================================
+// FCM (Firebase Cloud Messaging)
+// ============================================================================
+
+export interface FCMDeviceInfo {
+    userAgent: string;
+    timestamp: string;
+    platform: string;
+}
+
+export interface FCMTokens {
+    [token: string]: FCMDeviceInfo;
+}
+
+export interface NotificationPayload {
+    title: string;
+    body: string;
+    icon?: string;
+    data?: {
+        [key: string]: any;
+        type?: string;
+        url?: string;
+        bookingId?: string;
+        conversationId?: string;
+    };
+    timestamp: string;
+}
+
+export type FCMNotificationType =
+    | 'booking_confirmed'
+    | 'booking_started'
+    | 'booking_completed'
+    | 'booking_cancelled'
+    | 'message_received'
+    | 'payment_processed'
+    | 'reminder'
+    | 'system';
+
+// ============================================================================
+// USER PROFILES
+// ============================================================================
 
 export interface EmergencyContact {
     name: string;
@@ -102,6 +196,8 @@ export interface User {
     parentProfile?: ParentProfile;
     accompanistProfile?: AccompanistProfile;
     status: UserStatus;
+    fcmTokens?: FCMTokens;
+    lastTokenUpdate?: Timestamp;
     createdAt: Timestamp;
     updatedAt: Timestamp;
     lastLoginAt?: Timestamp;

@@ -1,337 +1,402 @@
-/**
- * Page de configuration des notifications
- * Permet de gérer les préférences de notifications (email, SMS, push, newsletter)
- */
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
-import { getUserDocument, updateUserDocument } from '@/lib/firestore-service';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import { TestModeBanner } from '@/components/testing/test-mode-banner';
+import GlobalNotificationSettings from '@/components/notifications/global-notification-settings';
+import EventNotificationSettings from '@/components/notifications/event-notification-settings';
+import SummaryNotificationSettings from '@/components/notifications/summary-notification-settings';
+import FCMNotificationSettings from '@/components/notifications/fcm-notification-settings';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Bell, Mail, MessageSquare, Smartphone, Loader2, Info } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import type { UserPreferences } from '@/types/firestore';
+import { ArrowLeft, Settings, Save, RotateCcw } from 'lucide-react';
+import type { 
+  NotificationPreferences, 
+  NotificationChannel, 
+  NotificationEventType 
+} from '@/types/firestore';
+import {
+  getUserNotificationPreferences,
+  updateNotificationPreferences,
+  toggleGlobalChannel,
+  updateEventPreferences,
+  updateQuietHours,
+  getDefaultNotificationPreferences
+} from '@/lib/notifications-service';
 
 export default function NotificationsPage() {
-    const { user, loading: authLoading } = useAuth();
-    const router = useRouter();
-    const { toast } = useToast();
+  const router = useRouter();
+  const { user, loading, isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  
+  const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [preferences, setPreferences] = useState<UserPreferences>({
-        language: 'fr',
-        notifications: {
-            email: true,
-            sms: true,
-            push: true,
-        },
-        newsletter: false,
-    });
+  // Redirection si non authentifié
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [loading, isAuthenticated, router]);
 
-    // Charger les préférences actuelles
-    useEffect(() => {
-        const loadPreferences = async () => {
-            if (!user) return;
+  // Chargement des préférences
+  useEffect(() => {
+    if (user?.uid) {
+      loadPreferences();
+    }
+  }, [user]);
 
-            try {
-                const userData = await getUserDocument(user.uid);
-                if (userData?.preferences) {
-                    setPreferences(userData.preferences);
-                }
-            } catch (error) {
-                console.error('Erreur chargement préférences:', error);
-                toast({
-                    variant: 'destructive',
-                    title: 'Erreur',
-                    description: 'Impossible de charger vos préférences.',
-                });
-            } finally {
-                setLoading(false);
+  const loadPreferences = async () => {
+    if (!user?.uid) return;
+    
+    try {
+      setIsLoading(true);
+      const prefs = await getUserNotificationPreferences(user.uid);
+      setPreferences(prefs);
+    } catch (error) {
+      console.error('Erreur chargement préférences:', error);
+      toast({
+        title: 'Erreur de chargement',
+        description: 'Impossible de charger vos préférences. Les paramètres par défaut seront utilisés.',
+        variant: 'destructive',
+      });
+      // Utiliser les préférences par défaut
+      setPreferences({
+        ...getDefaultNotificationPreferences(),
+        updatedAt: new Date() as any
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggleChannel = async (channel: NotificationChannel, enabled: boolean) => {
+    if (!user?.uid || !preferences) return;
+
+    try {
+      setIsSaving(true);
+      setHasChanges(true);
+      
+      await toggleGlobalChannel(user.uid, channel, enabled);
+      
+      // Mettre à jour l'état local
+      setPreferences(prev => prev ? {
+        ...prev,
+        globalSettings: {
+          ...prev.globalSettings,
+          [channel]: {
+            ...prev.globalSettings[channel],
+            enabled
+          }
+        }
+      } : null);
+      
+      toast({
+        title: 'Paramètres sauvegardés',
+        description: `Notifications ${channel} ${enabled ? 'activées' : 'désactivées'}`,
+      });
+      
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Erreur toggle canal:', error);
+      toast({
+        title: 'Erreur de sauvegarde',
+        description: 'Impossible de sauvegarder les paramètres',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUpdateQuietHours = async (
+    channel: NotificationChannel, 
+    quietHours: { start: string; end: string } | undefined
+  ) => {
+    if (!user?.uid || !preferences) return;
+
+    try {
+      setIsSaving(true);
+      setHasChanges(true);
+      
+      await updateQuietHours(user.uid, channel, quietHours);
+      
+      // Mettre à jour l'état local
+      setPreferences(prev => prev ? {
+        ...prev,
+        globalSettings: {
+          ...prev.globalSettings,
+          [channel]: {
+            ...prev.globalSettings[channel],
+            quietHours
+          }
+        }
+      } : null);
+      
+      toast({
+        title: 'Heures silencieuses mises à jour',
+        description: quietHours 
+          ? `${channel}: ${quietHours.start} - ${quietHours.end}`
+          : `Heures silencieuses désactivées pour ${channel}`,
+      });
+      
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Erreur heures silencieuses:', error);
+      toast({
+        title: 'Erreur de sauvegarde',
+        description: 'Impossible de sauvegarder les heures silencieuses',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUpdateEventPreferences = async (
+    eventType: NotificationEventType,
+    channel: NotificationChannel,
+    enabled: boolean
+  ) => {
+    if (!user?.uid || !preferences) return;
+
+    try {
+      setIsSaving(true);
+      setHasChanges(true);
+      
+      await updateEventPreferences(user.uid, eventType, {
+        [channel]: { enabled }
+      });
+      
+      // Mettre à jour l'état local
+      setPreferences(prev => prev ? {
+        ...prev,
+        events: {
+          ...prev.events,
+          [eventType]: {
+            ...prev.events[eventType],
+            [channel]: {
+              ...prev.events[eventType][channel],
+              enabled
             }
-        };
-
-        if (!authLoading && user) {
-            loadPreferences();
+          }
         }
-    }, [user, authLoading, toast]);
+      } : null);
+      
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Erreur mise à jour événement:', error);
+      toast({
+        title: 'Erreur de sauvegarde',
+        description: 'Impossible de sauvegarder les préférences d\'événement',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-    // Sauvegarder les modifications
-    const savePreferences = async (newPreferences: UserPreferences) => {
-        if (!user) return;
+  const handleUpdateSummarySettings = async (settings: {
+    dailyEnabled?: boolean;
+    weeklyEnabled?: boolean;
+    preferredTime?: string;
+  }) => {
+    if (!user?.uid || !preferences) return;
 
-        setSaving(true);
-        try {
-            await updateUserDocument(user.uid, {
-                preferences: newPreferences,
-            });
-
-            toast({
-                title: 'Préférences mises à jour',
-                description: 'Vos préférences de notifications ont été enregistrées.',
-            });
-        } catch (error) {
-            console.error('Erreur sauvegarde préférences:', error);
-            toast({
-                variant: 'destructive',
-                title: 'Erreur',
-                description: 'Impossible de sauvegarder vos préférences.',
-            });
-            // Revenir à l'état précédent en cas d'erreur
-            setPreferences(preferences);
-        } finally {
-            setSaving(false);
+    try {
+      setIsSaving(true);
+      setHasChanges(true);
+      
+      const updatedPrefs = {
+        ...preferences,
+        summary: {
+          ...preferences.summary,
+          ...settings
         }
-    };
-
-    // Toggle d'une préférence de notification
-    const handleToggleNotification = (channel: 'email' | 'sms' | 'push') => {
-        const newPreferences = {
-            ...preferences,
-            notifications: {
-                ...preferences.notifications,
-                [channel]: !preferences.notifications[channel],
-            },
-        };
-        setPreferences(newPreferences);
-        savePreferences(newPreferences);
-    };
-
-    // Toggle newsletter
-    const handleToggleNewsletter = () => {
-        const newPreferences = {
-            ...preferences,
-            newsletter: !preferences.newsletter,
-        };
-        setPreferences(newPreferences);
-        savePreferences(newPreferences);
-    };
-
-    if (authLoading || loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        );
+      };
+      
+      await updateNotificationPreferences(user.uid, updatedPrefs);
+      setPreferences(updatedPrefs);
+      
+      toast({
+        title: 'Résumés mis à jour',
+        description: 'Paramètres des résumés sauvegardés',
+      });
+      
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Erreur mise à jour résumés:', error);
+      toast({
+        title: 'Erreur de sauvegarde',
+        description: 'Impossible de sauvegarder les paramètres des résumés',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
     }
+  };
 
-    if (!user) {
-        router.push('/login');
-        return null;
+  const resetToDefaults = async () => {
+    if (!user?.uid) return;
+    
+    try {
+      setIsSaving(true);
+      const defaultPrefs = {
+        ...getDefaultNotificationPreferences(),
+        updatedAt: new Date() as any
+      };
+      
+      await updateNotificationPreferences(user.uid, defaultPrefs);
+      setPreferences(defaultPrefs);
+      
+      toast({
+        title: 'Paramètres réinitialisés',
+        description: 'Les paramètres par défaut ont été rétablis',
+      });
+      
+      setHasChanges(false);
+    } catch (error) {
+      console.error('Erreur réinitialisation:', error);
+      toast({
+        title: 'Erreur de réinitialisation',
+        description: 'Impossible de réinitialiser les paramètres',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
     }
+  };
 
+  if (loading || isLoading) {
     return (
-        <div className="container max-w-4xl py-8 px-4">
-            {/* Header */}
-            <div className="mb-8">
-                <Button
-                    variant="ghost"
-                    onClick={() => router.push('/dashboard')}
-                    className="mb-4"
-                >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Retour au dashboard
-                </Button>
-                <h1 className="text-3xl font-bold">Notifications</h1>
+      <div className="flex flex-col min-h-dvh bg-background">
+        <Header />
+        <TestModeBanner />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-96 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !preferences) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col min-h-dvh bg-background">
+      <Header />
+      <TestModeBanner />
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mb-4"
+              onClick={() => router.back()}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Retour
+            </Button>
+            
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+                  <Settings className="h-8 w-8" />
+                  Configuration des notifications
+                </h1>
                 <p className="text-muted-foreground mt-2">
-                    Gérez vos préférences de notifications et restez informé des mises à jour importantes.
+                  Personnalisez vos préférences de notifications pour ne rien manquer d'important
                 </p>
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetToDefaults}
+                disabled={isSaving}
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Réinitialiser
+              </Button>
             </div>
 
-            {/* Info Alert */}
-            <Alert className="mb-6">
-                <Info className="h-4 w-4" />
-                <AlertDescription>
-                    Nous vous recommandons de garder au moins les notifications par email activées pour ne manquer aucune information importante concernant vos réservations.
-                </AlertDescription>
-            </Alert>
-
-            {/* Notifications par canal */}
-            <Card className="mb-6">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Bell className="h-5 w-5" />
-                        Canaux de notification
-                    </CardTitle>
-                    <CardDescription>
-                        Choisissez comment vous souhaitez recevoir les notifications
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    {/* Email */}
-                    <div className="flex items-center justify-between space-x-4">
-                        <div className="flex items-start gap-3 flex-1">
-                            <Mail className="h-5 w-5 text-muted-foreground mt-1" />
-                            <div className="space-y-1">
-                                <Label htmlFor="email-notifications" className="cursor-pointer">
-                                    Notifications par email
-                                </Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Recevez des emails pour les réservations, rappels et mises à jour importantes.
-                                </p>
-                            </div>
-                        </div>
-                        <Switch
-                            id="email-notifications"
-                            checked={preferences.notifications.email}
-                            onCheckedChange={() => handleToggleNotification('email')}
-                            disabled={saving}
-                        />
-                    </div>
-
-                    {/* SMS */}
-                    <div className="flex items-center justify-between space-x-4">
-                        <div className="flex items-start gap-3 flex-1">
-                            <MessageSquare className="h-5 w-5 text-muted-foreground mt-1" />
-                            <div className="space-y-1">
-                                <Label htmlFor="sms-notifications" className="cursor-pointer">
-                                    Notifications par SMS
-                                </Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Recevez des SMS pour les alertes urgentes et rappels de dernière minute.
-                                </p>
-                                <p className="text-xs text-amber-600 dark:text-amber-400">
-                                    ⚠️ Service actuellement en phase de déploiement
-                                </p>
-                            </div>
-                        </div>
-                        <Switch
-                            id="sms-notifications"
-                            checked={preferences.notifications.sms}
-                            onCheckedChange={() => handleToggleNotification('sms')}
-                            disabled={saving}
-                        />
-                    </div>
-
-                    {/* Push */}
-                    <div className="flex items-center justify-between space-x-4">
-                        <div className="flex items-start gap-3 flex-1">
-                            <Smartphone className="h-5 w-5 text-muted-foreground mt-1" />
-                            <div className="space-y-1">
-                                <Label htmlFor="push-notifications" className="cursor-pointer">
-                                    Notifications push
-                                </Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Recevez des notifications directement sur votre appareil.
-                                </p>
-                                <p className="text-xs text-amber-600 dark:text-amber-400">
-                                    ⚠️ Service actuellement en phase de déploiement
-                                </p>
-                            </div>
-                        </div>
-                        <Switch
-                            id="push-notifications"
-                            checked={preferences.notifications.push}
-                            onCheckedChange={() => handleToggleNotification('push')}
-                            disabled={saving}
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Newsletter et communications marketing */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Mail className="h-5 w-5" />
-                        Newsletter et actualités
-                    </CardTitle>
-                    <CardDescription>
-                        Restez informé des nouveautés et des offres spéciales
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-between space-x-4">
-                        <div className="space-y-1 flex-1">
-                            <Label htmlFor="newsletter" className="cursor-pointer">
-                                S'abonner à la newsletter
-                            </Label>
-                            <p className="text-sm text-muted-foreground">
-                                Recevez nos actualités, conseils et offres promotionnelles par email (environ 2 fois par mois).
-                            </p>
-                        </div>
-                        <Switch
-                            id="newsletter"
-                            checked={preferences.newsletter}
-                            onCheckedChange={handleToggleNewsletter}
-                            disabled={saving}
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Types de notifications */}
-            <Card className="mt-6">
-                <CardHeader>
-                    <CardTitle>Types de notifications que vous recevez</CardTitle>
-                    <CardDescription>
-                        Voici les notifications automatiques auxquelles vous êtes abonné(e)
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <ul className="space-y-3">
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">✓</span>
-                            <div>
-                                <p className="font-medium">Confirmation de réservation</p>
-                                <p className="text-sm text-muted-foreground">
-                                    Dès qu'une réservation est créée et payée
-                                </p>
-                            </div>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">✓</span>
-                            <div>
-                                <p className="font-medium">Rappel avant le trajet</p>
-                                <p className="text-sm text-muted-foreground">
-                                    24 heures avant le départ
-                                </p>
-                            </div>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">✓</span>
-                            <div>
-                                <p className="font-medium">Changement de statut</p>
-                                <p className="text-sm text-muted-foreground">
-                                    Lorsque l'accompagnateur démarre ou termine la mission
-                                </p>
-                            </div>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">✓</span>
-                            <div>
-                                <p className="font-medium">Annulation ou remboursement</p>
-                                <p className="text-sm text-muted-foreground">
-                                    En cas de modification de votre réservation
-                                </p>
-                            </div>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-green-600 mt-1">✓</span>
-                            <div>
-                                <p className="font-medium">Messages de l'accompagnateur</p>
-                                <p className="text-sm text-muted-foreground">
-                                    Lorsque vous recevez un nouveau message
-                                </p>
-                            </div>
-                        </li>
-                    </ul>
-                </CardContent>
-            </Card>
-
-            {/* Indicateur de sauvegarde */}
-            {saving && (
-                <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-4 py-2 rounded-md shadow-lg flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Enregistrement...
-                </div>
+            {hasChanges && (
+              <div className="mt-4 flex items-center gap-2">
+                <Badge variant="secondary">
+                  Modifications en cours...
+                </Badge>
+              </div>
             )}
+          </div>
+
+          {/* Contenu principal */}
+          <div className="space-y-8">
+            {/* Notifications push (FCM) */}
+            <FCMNotificationSettings className="mb-6" />
+
+            {/* Paramètres globaux */}
+            <GlobalNotificationSettings
+              preferences={preferences}
+              isLoading={isSaving}
+              onToggleChannel={handleToggleChannel}
+              onUpdateQuietHours={handleUpdateQuietHours}
+            />
+
+            {/* Préférences par événement */}
+            <EventNotificationSettings
+              preferences={preferences}
+              isLoading={isSaving}
+              onUpdateEventPreferences={handleUpdateEventPreferences}
+            />
+
+            {/* Résumés et paramètres avancés */}
+            <SummaryNotificationSettings
+              preferences={preferences}
+              isLoading={isSaving}
+              onUpdateSummarySettings={handleUpdateSummarySettings}
+            />
+          </div>
+
+          {/* Navigation rapide */}
+          <div className="mt-12 p-6 bg-accent/50 rounded-lg">
+            <h3 className="font-medium mb-3">Actions rapides</h3>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/dashboard">
+                <Button variant="outline" size="sm">
+                  Retour au dashboard
+                </Button>
+              </Link>
+              <Link href="/dashboard/messages">
+                <Button variant="outline" size="sm">
+                  Voir mes messages
+                </Button>
+              </Link>
+              <Link href="/dashboard/profile">
+                <Button variant="outline" size="sm">
+                  Modifier mon profil
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
-    );
+      </main>
+      <Footer />
+    </div>
+  );
 }
