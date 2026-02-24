@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { logout } from '@/lib/auth-service';
 import { useToast } from '@/hooks/use-toast';
 import { ActiveMissions } from '@/components/mission/active-missions';
+import { MobileShell } from '@/components/pwa/mobile-shell';
 import { PWA_TEST_MODE } from '@/lib/test-config';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, orderBy, Unsubscribe } from 'firebase/firestore';
@@ -186,6 +187,10 @@ export default function DashboardPage() {
   }
 
   return (
+    <MobileShell
+      unreadMessages={0}
+      pendingBookings={bookings.filter(b => b.status === 'pending').length}
+    >
     <div className="flex flex-col min-h-dvh bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <Header />
       <main className="flex-1 container py-8 px-4 md:px-6">
@@ -517,5 +522,6 @@ export default function DashboardPage() {
       </main>
       <Footer />
     </div>
+    </MobileShell>
   );
 }

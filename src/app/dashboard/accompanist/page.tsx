@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-import { PWAInstallBanner } from '@/components/pwa/install-banner';
+import { MobileShell } from '@/components/pwa/mobile-shell';
 import { TestModeBanner } from '@/components/testing/test-mode-banner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -201,8 +201,8 @@ export default function AccompanistDashboardPage() {
   }
 
   return (
+    <MobileShell>
     <div className="min-h-screen bg-gray-50">
-      <PWAInstallBanner />
       <TestModeBanner />
       <Header />
       
@@ -445,5 +445,6 @@ export default function AccompanistDashboardPage() {
 
       <Footer />
     </div>
+    </MobileShell>
   );
 }

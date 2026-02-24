@@ -1,12 +1,13 @@
 # TODO - Dashboard Passerelle Jeunesse
 
 **Date:** 25 février 2026  
-**Taux de complétion global:** 99% (+1%) 🚀  
+**Taux de complétion global:** 100% (+1%) 🚀  
 **Sprint 1 Progress:** 4/4 tâches terminées (100%) ✅  
 **Sprint 3 Progress:** Messages + Notifications + FCM + Paramètres terminées ✅  
 **Phase 5 Progress:** Espace accompagnateur complète (100%) ✅  
 **Phase 6 Progress:** Panneau administration complet (100%) ✅  
-**Phase 7 Progress:** Fonctionnalités avancées (avis, fidélité, multilingue) complètes ✅
+**Phase 7 Progress:** Fonctionnalités avancées (avis, fidélité, multilingue) complètes ✅  
+**Phase 8 Progress:** Application mobile PWA universelle complète (100%) ✅
 
 Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
@@ -398,4 +399,20 @@ Voir [dashboard-mapping.md](./dashboard-mapping.md) pour l'analyse complète.
 
 ---
 
-**Prochaine action recommandée:** Phase 7 — Fonctionnalités avancées (système d'avis, programme de fidélité, parrainage, calendrier, statistiques).
+### Phase 8 complète quand
+
+- [x] Manifest PWA parent enrichi (icônes, shortcuts, screenshots, lang) ✅
+- [x] Service Worker parent avec cache avancé (4 stratégies) ✅
+- [x] Page offline dédiée (/offline) ✅
+- [x] IndexedDB offline storage (6 stores + sync engine) ✅
+- [x] Hook PWA universel parents + accompagnateurs ✅
+- [x] Barre de navigation mobile inférieure ✅
+- [x] Pull-to-refresh natif ✅
+- [x] Bannière d'installation améliorée ✅
+- [x] Indicateur offline/sync ✅
+- [x] Carte de suivi temps réel pour parents (Google Maps) ✅
+- [x] MobileShell intégré dans les dashboards ✅
+
+---
+
+**Prochaine action recommandée:** Phase 9 — Préparation production (tests E2E, monitoring, CI/CD, optimisation Lighthouse)

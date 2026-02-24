@@ -321,15 +321,25 @@ Cette roadmap détaille le développement de la plateforme web professionnelle p
 
 ---
 
-## 🎯 Phase 8 - Mobile App (Mois 11-12)
+## ✅ Phase 8 - Application Mobile PWA (Mois 11-12) — TERMINÉ
 
-### 📱 Application native (React Native / Flutter)
+### 📱 PWA universelle (parents + accompagnateurs)
 
-- [ ] App parent iOS/Android
-- [ ] App accompagnateur iOS/Android
-- [ ] Notifications push natives
-- [ ] Mode hors-ligne
-- [ ] Géolocalisation optimisée
+- [x] Manifest PWA parent enrichi (14 icônes, 3 shortcuts, screenshots, lang, categories)
+- [x] Service Worker parent (`sw-parent.js`) avec 4 stratégies de cache
+- [x] Page offline dédiée (`/offline`) avec UX claire
+- [x] IndexedDB offline storage (`offline-storage.ts`) — 6 stores + sync engine automatique
+- [x] Hook PWA universel (`use-universal-pwa.ts`) — installation, mise à jour, offline, sync, notifications
+- [x] Barre de navigation mobile inférieure (`mobile-bottom-nav.tsx`) — 5 onglets avec badges
+- [x] Pull-to-refresh natif (`pull-to-refresh.tsx`) — geste mobile
+- [x] Bannière d'installation améliorée (`enhanced-install-banner.tsx`)
+- [x] Indicateur offline/sync temps réel (`offline-indicator.tsx`)
+- [x] Carte de suivi temps réel pour parents (`live-tracking-map.tsx`) — Google Maps embarqué
+- [x] MobileShell intégré dans dashboards parent et accompagnateur
+- [x] Safe areas (iOS notch + bottom bar) supportées
+- [x] Background Sync pour actions offline (réservations, messages, avis)
+- [x] Notifications push avec actions contextuelles par type
+- [x] Génération icônes toutes tailles (72→512 + maskable)
 
 ---
 
