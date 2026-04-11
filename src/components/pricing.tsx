@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Users, Map, Home, Train, MapPin, Ticket, Utensils, Users2, ShieldCheck, FileText, Phone, MoonStar } from 'lucide-react';
+import { Check, Users, Map, Home, Train, MapPin, Ticket, Utensils, Users2, ShieldCheck, FileText, Phone, MoonStar, Heart, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -59,6 +59,45 @@ const offer2 = {
         { icon: <Ticket className="h-4 w-4 text-accent flex-shrink-0 mt-1" />, text: 'Transport du professionnel : à la charge de la famille' },
         { icon: <Utensils className="h-4 w-4 text-accent flex-shrink-0 mt-1" />, text: 'Repas si mission longue : pris en charge' },
     ]
+};
+
+const offer4 = {
+    offerNumber: 'OFFRE 4',
+    title: 'GARDE & ACCOMPAGNEMENT D\'ENFANTS',
+    subtitle: '"Services flexibles pour familles"',
+    description: 'Pour : garde d\'enfants avec gratifications libres des parents',
+    inclus: [
+        'Garde à domicile (avant/après école, mercredi, vacances)',
+        'Accompagnements locaux (école, activités, rendez-vous)',
+        'Aide aux devoirs et activités ludiques',
+        'Encadrement bienveillant et sécurisé',
+        'Communication régulière avec les parents',
+    ],
+    capacite: ['4-16 ans'],
+    tarifs: [
+        { formule: 'Gratification libre', tarif: 'Recommandé : 15€+/h' },
+        { formule: 'Demi-journée', tarif: 'À convenir' },
+        { formule: 'Journée complète', tarif: 'À convenir' },
+    ],
+};
+
+const offer5 = {
+    offerNumber: 'OFFRE 5',
+    title: 'MISSIONS VARIÉES',
+    subtitle: '"Services diversifiés pour tous"',
+    description: 'Pour : aide ponctuelle avec gratifications libres',
+    inclus: [
+        'Aide ménage légère et rangement',
+        'Courses et commissions',
+        'Aide numérique et accompagnement tech',
+        'Tutorat et soutien pédagogique',
+        'Accompagnement pour seniors',
+    ],
+    capacite: ['Flexibilité adaptée'],
+    tarifs: [
+        { formule: 'Gratification libre', tarif: 'Recommandé : 20€+/h' },
+        { formule: 'Par visite', tarif: 'À convenir' },
+    ],
 };
 
 const importantConditions = [
@@ -345,7 +384,114 @@ export default function Pricing() {
                 </Button>
                 </CardFooter>
             </Card>
-        </div>
+
+            <Card key="offer4" className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="p-6 bg-emerald-50 dark:bg-emerald-900/20">
+                    <div className='flex items-center gap-4'>
+                        <div className="mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 p-4 hidden sm:block">
+                            <Heart className="h-10 w-10 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">OFFRE 4</p>
+                            <CardTitle className="font-headline text-2xl">GARDE & ACCOMPAGNEMENT D'ENFANTS</CardTitle>
+                            <CardDescription className="text-lg !mt-2">"Services flexibles pour familles"</CardDescription>
+                        </div>
+                    </div>
+                    <p className="text-muted-foreground pt-2 !mt-1">Pour : garde d'enfants avec gratifications libres des parents</p>
+                </CardHeader>
+                <CardContent className="flex-grow p-6 grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 className="font-bold text-lg mb-3">Services inclus</h4>
+                        <ul className="space-y-2">
+                            {['Garde à domicile (avant/après école, mercredi, vacances)', 'Accompagnements locaux', 'Aide aux devoirs et activités ludiques', 'Encadrement bienveillant et sécurisé'].map((feature, idx) => (
+                                <li key={idx} className="flex items-start gap-3">
+                                    <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-1" />
+                                    <span className="text-muted-foreground text-sm">{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-lg mb-3">Tarification</h4>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground text-sm">Gratification libre</span>
+                                <span className="font-bold text-foreground">Recommandé : 15€+/h</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground text-sm">Demi-journée</span>
+                                <span className="font-bold text-foreground">À convenir</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground text-sm">Journée complète</span>
+                                <span className="font-bold text-foreground">À convenir</span>
+                            </div>
+                            <div className="pt-3 border-t text-sm text-muted-foreground">
+                                <p><strong className="text-foreground">Âges :</strong> 4-16 ans</p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter className="p-6 pt-4">
+                    <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+                        <Link href="/#contact">
+                            Demander cette offre
+                        </Link>
+                    </Button>
+                </CardFooter>
+            </Card>
+
+            <Card key="offer5" className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="p-6 bg-amber-50 dark:bg-amber-900/20">
+                    <div className='flex items-center gap-4'>
+                        <div className="mb-4 rounded-full bg-amber-100 dark:bg-amber-900/30 p-4 hidden sm:block">
+                            <Briefcase className="h-10 w-10 text-amber-600 dark:text-amber-400" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-amber-600 dark:text-amber-400">OFFRE 5</p>
+                            <CardTitle className="font-headline text-2xl">MISSIONS VARIÉES</CardTitle>
+                            <CardDescription className="text-lg !mt-2">"Services diversifiés pour tous"</CardDescription>
+                        </div>
+                    </div>
+                    <p className="text-muted-foreground pt-2 !mt-1">Pour : aide ponctuelle avec gratifications libres</p>
+                </CardHeader>
+                <CardContent className="flex-grow p-6 grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 className="font-bold text-lg mb-3">Services proposés</h4>
+                        <ul className="space-y-2">
+                            {['Aide ménage légère et rangement', 'Courses et commissions', 'Aide numérique et tech', 'Tutorat et soutien pédagogique'].map((feature, idx) => (
+                                <li key={idx} className="flex items-start gap-3">
+                                    <Check className="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />
+                                    <span className="text-muted-foreground text-sm">{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-lg mb-3">Tarification</h4>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground text-sm">Gratification libre</span>
+                                <span className="font-bold text-foreground">Recommandé : 20€+/h</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-muted-foreground text-sm">Par visite</span>
+                                <span className="font-bold text-foreground">À convenir</span>
+                            </div>
+                            <div className="pt-3 border-t text-sm text-muted-foreground">
+                                <p><strong className="text-foreground">Flexibilité :</strong> Adaptable selon vos besoins</p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter className="p-6 pt-4">
+                    <Button asChild className="w-full bg-amber-600 hover:bg-amber-700 text-white">
+                        <Link href="/#contact">
+                            Demander cette offre
+                        </Link>
+                    </Button>
+                </CardFooter>
+            </Card>
         <Card className="mt-16 bg-background border-2 border-primary/20">
             <CardHeader>
                 <CardTitle className="font-headline text-2xl font-bold text-center">Conditions Importantes</CardTitle>
