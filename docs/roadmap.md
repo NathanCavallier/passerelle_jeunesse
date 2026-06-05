@@ -1,1144 +1,503 @@
-# 🗺️ ROADMAP – Passerelle Jeunesse v2.0
+# 🗺️ ROADMAP – Passerelle Jeunesse v3.0
 
-## Version Professionnelle – Plateforme de réservation et gestion
-
----
-
-## 📋 Vue d'ensemble
-
-Cette roadmap détaille le développement de la plateforme web professionnelle pour **Passerelle Jeunesse**, visant à transformer le service d'accompagnement en une solution complète, digitalisée et scalable.
-
-**Objectif principal :** Créer une plateforme permettant aux familles de réserver, suivre et payer des prestations d'accompagnement en toute sécurité.
+## Vision: Centre Jeunesse Multifonction – Plateforme Complète
 
 ---
 
-## 🎯 Phase 1 - Fondations (Mois 1-2)
+## 📋 Vue d'ensemble stratégique
 
-### ✅ Infrastructure technique
+**Passerelle Jeunesse** évolue d'une activité de mobilité vers un **Centre Jeunesse Multifonction** avec 6 pôles de développement.
 
-- [x] Configuration Next.js + TypeScript
-- [x] Intégration Tailwind CSS + Shadcn/UI
-- [x] Configuration Firebase
-- [x] Architecture des données Firestore
-- [x] Types TypeScript pour Firestore
-- [x] Règles de sécurité Firestore
-- [x] Configuration Firebase Authentication
-- [x] Déploiement initial (Firebase Hosting)
-- [x] Configuration domaine personnalisé (jeunesse.imogo.org)
+Cette roadmap détaille :
 
-### 🎨 Interface utilisateur de base
-
-- [ ] Design system complet (couleurs, typographie, composants)
-- [ ] Page d'accueil optimisée
-- [ ] Pages informatives :
-  - [x] À propos
-  - [x] Services
-  - [x] Tarifs
-  - [x] Sécurité
-  - [x] FAQ
-  - [x] Mentions légales
-  - [x] CGV/CGU
-  - [ ] Politique de confidentialité RGPD
-
-### 📱 Responsive design
-
-- [ ] Optimisation mobile-first
-- [ ] Tests sur tous devices
-- [ ] Performance web (Lighthouse > 90)
+1. **L'opérationnel actuel** (Phase 1 - Activité de mobilité) ✅ 90% complète
+2. **L'expansion progressive** (Phase 2-3 - Ateliers, escape games, numérique)
+3. **La modernisation technologique** (Internationalisation FR/EN, Design system v1.0)
+4. **L'infrastructure long terme** (Multi-pôles, gestion globale, scale)
 
 ---
 
-## ✅ Phase 2 - Authentification & Profils (COMPLÈTE)
+## 🌍 AXE TRANSVERSAL – Internationalisation (FR/EN)
 
-### 👤 Système d'authentification
+### 📅 Timeline: Q3 2026 (Juillet-Août, parallèle Phase 2)
 
-- [x] Inscription parent/tuteur
-- [x] Connexion sécurisée
+### Objectif
+
+Déployer support complet français/anglais pour ouverture à audience anglophone (export, communautés expatriées, plateforme pan-européenne)
+
+### Étapes
+
+#### Phase 1: Setup i18n (Juin-Juillet 2026)
+
+- [ ] Intégration `next-intl` (libraire moderne Next.js)
+- [ ] Structure fichiers traduction:
+
+  ```txt
+  i18n/
+  ├── locales/
+  │   ├── fr.json
+  │   ├── en.json
+  ├── config.ts
+  └── middleware.ts
+  ```
+
+- [ ] Détection automatique langue navigateur
+- [ ] Sélecteur langue (header client)
+- [ ] URLs multilingues (`/fr/...` / `/en/...`)
+- [ ] SEO multilingues (hreflang tags)
+
+#### Phase 2: Traduction contenu (Juillet-Août 2026)
+
+- [ ] Pages publiques (à propos, services, tarifs)
+- [ ] Descriptions pôles (6 services)
+- [ ] FAQ multilingue
+- [ ] Formulaires réservation
+- [ ] Emails SendGrid (templates FR/EN)
+- [ ] Dashboard parent et accompagnateur
+
+#### Phase 3: Marketing & Contenu (Août-Septembre 2026)
+
+- [ ] Blog articles (FR/EN)
+- [ ] Vidéos sous-titrées
+- [ ] Contenu réseaux sociaux LinkedIn/Instagram
+- [ ] Documentation pour développeurs/partenaires
+
+---
+
+## 🎨 AXE TRANSVERSAL – Modernisation UI/UX & Design System
+
+### 📅 Timeline: Q3-Q4 2026 (Juillet-Décembre, parallèle Phase 2)
+
+### Phase 1: Design System v1.0 (Juillet 2026)
+
+- [ ] **Audit composants actuels** : Inventaire Shadcn/UI + customisations
+- [ ] **Identité visuelle Passerelle Jeunesse**:
+  - Palette couleurs finalisée (primaire, secondaire, accents)
+  - Typographie (headings: Inter Bold, body: Inter Regular)
+  - Espacements & grid (8px baseline)
+  - Border radius (md: 6px, lg: 12px)
+  - Ombres & élévations
+
+- [ ] **Composants fondamentaux**:
+  - Boutons (size: xs/sm/md/lg, variant: primary/secondary/ghost, state: hover/active/disabled)
+  - Cartes (service, témoignage, pôle avec overlay)
+  - Timeline (missions, phases, pôles — 4 états)
+  - Modales & drawers
+  - Formulaires avancés (multi-step, validation inline)
+  - Badges & tags (couleurs par statut)
+  - Loader & skeleton
+
+- [ ] **Storybook ou documentation Figma**
+
+### Phase 2: Refonte Page d'accueil (Août 2026)
+
+- [ ] **Section Hero** (existante, révisée)
+  - Baseline CTA claire vers réservation mobilité
+
+- [ ] **Section Vision NOUVELLE**
+  - Accroche: "De la mobilité à un centre jeunesse complet"
+  - Timeline 3 phases (opérationnel → vision 2027)
+  - Composant: `HomepageVisionSection.tsx` (du dossier refonte)
+
+- [ ] **Section Pôles de service NOUVELLE**
+  - 6 pôles: Mobilité, Sciences, Escape games, Périscolaire, Numérique (coming soon), [À venir]
+  - Cartes avec icône, nom, description, CTA "Découvrir"
+  - Grid responsive (1 col mobile, 3 cols desktop)
+  - Animations subtiles au scroll
+
+- [ ] **Réorganisation**:
+  - Hero → Vision → Pôles → Témoignages → CTA finale
+  - Éclairage sur chaque pôle (non plus juste mobilité)
+
+### Phase 3: Pages détail pôles (Août-Septembre 2026)
+
+- [ ] **Structure page générique** (`app/poles/[pole]/page.tsx`):
+  - Hero pôle (image, description)
+  - Services/ateliers listés
+  - Tarification
+  - Avis clients
+  - CTA réservation
+
+- [ ] **Pages pôles créées**:
+  - ✅ `/poles/mobilite` — improve UX
+  - [ ] `/poles/sciences-decouverte` (Ateliers 360)
+  - [ ] `/poles/escape-games`
+  - [ ] `/poles/periscolaire`
+  - [ ] `/poles/numerique` (coming soon — locked)
+
+### Phase 4: Dashboard parent modernisé (Septembre 2026)
+
+- [ ] Redesign layout: sidebar nav + main content
+- [ ] Cartes de statistiques (missions complétées, crédit restant, activités jeunes)
+- [ ] Vue "pôles disponibles" vs "coming soon"
+- [ ] Notifications (system messages) prédominantes
+- [ ] Accès rapide actions
+
+### Phase 5: Optimisations techniques
+
+- [ ] Lighthouse > 95 (all pages)
+- [ ] Web Vitals: LCP < 2.5s, FID < 100ms, CLS < 0.1
+- [ ] Images: next/image + WebP + srcset
+- [ ] Fonts: variable fonts chargement optimisé
+- [ ] Animations: GPU-accelerated (transform/opacity)
+
+---
+
+## ✅ Phase 1 - Fondations & Activité Viable (Terminée à 90%)
+
+### Infrastructure ✅ COMPLÈTE
+
+- [x] Next.js 15 + TypeScript + Tailwind CSS
+- [x] Firebase (Auth, Firestore, Storage, Messaging)
+- [x] Déploiement Firebase Hosting
+- [x] Domaine jeunesse.imogo.org
+
+### Authentification & Profils ✅ COMPLÈTE
+
+- [x] Inscription/connexion parents et jeunes
 - [x] Réinitialisation mot de passe
-- [x] Vérification email
-- [x] Connexion via Google
+- [x] Gestion documents (uploads sécurisés)
+- [x] Dashboard personnel
 
-### 📝 Gestion des profils
+### 🚗 Réservation Mobilité ✅ 85% EN COURS
 
-- [x] Profil parent :
-  - Informations personnelles
-  - Coordonnées d'urgence
-  - Documents administratifs
-- [x] Profils jeunes :
-  - Informations personnelles
-  - Âge et besoins spécifiques
-  - Autorisations parentales
-  - Contacts d'urgence
-  - Allergies/informations médicales
-  - Photo de profil avec compression
-  - Gestion des documents (certificats, autorisations, pièces d'identité)
-- [x] Tableau de bord personnel
-- [x] Liste et gestion des jeunes
-- [x] Upload et stockage sécurisé des documents
+- [x] Moteur demande de prestation
+- [x] Calcul automatique tarif (local/longue distance)
+- [x] Liste et détail réservations
+- [x] Annulation + remboursement Stripe
+- [x] Génération devis & factures PDF
+- [x] Emails de confirmation & rappel 24h
+- [ ] **Sélecteur créneaux UI** (en cours)
+- [ ] **Gestion trajets récurrents** (planifié)
 
----
+### 📍 Suivi Missions Temps Réel ✅ COMPLÈTE 100%
 
-## 🚧 Phase 3 - Système de réservation (EN COURS)
+- [x] 10 statuts de mission (scheduled → completed)
+- [x] API mise à jour statut (accompagnateur)
+- [x] Timeline visuelle + photos confirmation
+- [x] Dashboard missions actives (parent)
+- [x] PWA (offline support, notifications push)
 
-### 📅 Moteur de réservation
+### Espace Accompagnateur ✅ COMPLÈTE 100%
 
-- [x] Formulaire de demande de prestation :
-  - Type de service (local / longue distance)
-  - Date et heure
-  - Lieu de départ / arrivée
-  - Nombre de jeunes
-  - Informations complémentaires
-- [x] Calcul automatique du tarif
-- [x] Service de tarification avec règles métier
-- [x] Page de liste des réservations
-- [x] Page de détail d'une réservation
-- [x] Système d'annulation avec remboursement
-- [ ] Vérification de disponibilité
-- [ ] Système de créneaux horaires
-- [ ] Gestion des trajets récurrents
+- [x] Dashboard avec planning & missions assignées
+- [x] Formulaire rapport de mission
+- [x] Gestion indisponibilités
+- [x] Photos + QR codes
 
-### 💳 Paiement en ligne
+### Admin & Avancé ✅ COMPLÈTE 100%
 
-- [x] Intégration Stripe
-- [x] Paiement sécurisé par carte
-- [x] Génération de devis PDF
-- [x] Génération de factures
-- [x] Gestion des acomptes
-- [x] Remboursements Stripe automatiques
-
-### 📧 Notifications automatiques
-
-- [x] Email de confirmation de réservation
-- [x] Email de confirmation de paiement
-- [x] Service email avec SendGrid
-- [x] Email de rappel automatique (24h avant) avec cron job
-- [ ] SMS de rappel (24h avant)
-- [ ] Notifications en temps réel
-- [ ] Historique des communications
-
-### 🔍 Gestion de disponibilité
-
-- [x] Service de vérification de disponibilité
-- [x] API route pour vérifier créneaux disponibles
-- [x] Calcul de capacité par type de service
-- [x] Validation de date (minimum 24h à l'avance)
-- [ ] Interface utilisateur avec sélecteur de créneaux
-- [ ] Système de créneaux horaires avancé
-- [ ] Gestion des trajets récurrents
+- [x] Dashboard admin (stats, gestion utilisateurs, export)
+- [x] Système d'avis (évaluation post-mission, modération)
+- [x] Programme fidélité (points, codes promo, parrainage)
+- [x] Support 3 langues (FR, DE, EN à ajouter)
 
 ---
 
-## ✅ Phase 4 - Suivi en temps réel (COMPLÈTE - 100%)
+## 🌱 Phase 2 - Expansion Services & Modernisation (Juillet 2026 - Février 2027)
 
-### 📍 Tracking de mission
+### 🎨 Modernisation UI/UX (voir axe transversal)
 
-- [x] **Statut de la mission en direct** (10 états) :
-  - `scheduled` - Mission programmée
-  - `en_route_to_pickup` - En route vers le point de départ
-  - `waiting_at_pickup` - Sur place (attente)
-  - `picked_up` - Prise en charge effectuée
-  - `in_transit` - En transport
-  - `arriving_soon` - Arrivée imminente
-  - `delivered` - Livré à destination
-  - `completed` - Mission terminée
-  - `incident` - Incident signalé
-  - `cancelled` - Mission annulée
+### 🌍 Internationalisation FR/EN (voir axe transversal)
 
-- [x] **API de mise à jour de statut**
-  - Route POST `/api/bookings/[id]/status` (mise à jour)
-  - Route GET `/api/bookings/[id]/status` (récupération)
-  - Authentification Firebase Admin
-  - Autorisation (vérification accompagnateur)
-  - Historique complet des mises à jour
-  - Support notes, photos, GPS
+### 🔬 Pôle Sciences & Découverte (Ateliers 360)
 
-- [x] **Composant Timeline** (`MissionTimeline`)
-  - Visualisation chronologique complète
-  - 10 configurations de statut (icônes, couleurs)
-  - Affichage des notes
-  - Affichage des coordonnées GPS
-  - Photos inline dans la timeline
-  - Grille photos départ/arrivée
-  - Badge "En cours" sur dernière mise à jour
-  - État vide pour missions non démarrées
+**Septembre 2026 - Lancement ateliers pilotes**
 
-- [x] **Dashboard missions en cours** (`ActiveMissions`)
-  - Widget intégré dans dashboard principal
-  - Liste des missions actives uniquement
-  - Badge de statut avec couleur
-  - Trajet (départ → arrivée)
-  - Info: nombre de jeunes, heure
-  - Temps depuis dernière mise à jour
-  - Bouton rafraîchissement
-  - Navigation vers détail
-  - État vide si aucune mission
+- [ ] **Page `/poles/sciences-decouverte`**
+- [ ] **Catalogue ateliers** (6 types):
+  - Chimie: volcan chimique, réactions colorées
+  - Électricité: circuits simples, magnétisme
+  - Physique: fusées à eau, expériences gravité
+  - Électronique: LED, buzzers, capteurs
+  - Robotique: LEGO Mindstorms, Arduino intro
+  - Astronomie: observation, planétarium numérique
 
-- [x] **Système de photos de confirmation**
-  - Service d'upload (`photo-service.ts`)
-  - Compression automatique (1920x1080, 80% qualité)
-  - Validation taille (max 10MB)
-  - Firebase Storage integration
-  - Composant `PhotoCapture` :
-    - Capture via caméra mobile
-    - Sélection depuis galerie
-    - Prévisualisation
-    - Barre de progression
-    - Gestion d'erreurs
-  - Photos départ/arrivée automatiques
+- [ ] **Formats**:
+  - Ateliers ponctuels (1-2h, samedi)
+  - Stages vacances (5 jours)
+  - Clubs hebdomadaires (annuel)
 
-- [x] **Documentation complète**
-  - Guide complet dans `/docs/mission-tracking.md`
-  - Architecture système
-  - Flux d'utilisation (accompagnateur/parent)
-  - Exemples d'API
-  - Configuration Firebase (règles Firestore/Storage)
-  - Tests manuels
-  - Prochaines étapes
+- [ ] **Système réservation ateliers**:
+  - Formulaire inscription atelier
+  - Sélection jeunes (avec filtre âge)
+  - Calcul tarif (forfait groupe)
+  - Confirmation Stripe
+  - Email confirmation + pièces à apporter
 
-### 📊 Tableau de bord parent
+- [ ] **Dashboard accompagnateur ateliers**:
+  - Liste ateliers programmés
+  - Inscrits par atelier
+  - Check-in arrivée
+  - Évaluation participant
 
-- [x] Liste missions en cours (ActiveMissions)
-- [x] Timeline détaillée par mission (MissionTimeline)
-- [x] Historique complet des statuts
-- [x] Photos de confirmation visibles
-- [x] Rafraîchissement manuel
+- [ ] **Contenu marketing**: Photos, vidéos (TikTok), blog
 
-### 🎯 Prochaines améliorations (Phase 4+)
+### 🎭 Pôle Escape Games & Enquêtes
 
-- [ ] Géolocalisation temps réel (carte interactive)
-- [x] Mises à jour en temps réel (Firebase onSnapshot)
-- [x] Notifications push (FCM)
-- [x] Chat sécurisé accompagnateur ↔ parent
-- [x] Application web accompagnateur (PWA)
-- [ ] ETA (estimation temps d'arrivée)
-- [ ] Mode offline pour accompagnateur
+**Septembre 2026 - Prototype**
 
----
+- [ ] **Page `/poles/escape-games-enquetes`**
+- [ ] **Concepts gamifiés**:
+  - Escape Game Scientifique: résoudre panne labo
+  - Escape Game Historique: voyage temporal
+  - Escape Game Logique: cryptographie, déduction
 
-## ✅ Phase 5 - Espace accompagnateur (COMPLÈTE - 100%)
+- [ ] **Réservation**:
+  - Choix scénario
+  - Groupe 6-12 participants
+  - Tarif groupe
+  - Confirmation + instructions
 
-### 👔 Interface professionnelle
+- [ ] **Scoring** (futur): temps résolution, classement
 
-- [x] Connexion accompagnateur (rôle `accompanist` + redirection auto)
-- [x] Dashboard accompagnateur avec statistiques temps réel
-- [x] Planning personnel (calendrier jour/semaine/mois)
-- [x] Missions assignées (liste avec filtres, recherche, onglets)
-- [x] Fiche mission détaillée :
-  - Infos jeune(s) (santé, contacts d'urgence, besoins spéciaux)
-  - Itinéraire (adresses départ/arrivée, distance, durée)
-  - Contacts d'urgence complets
-  - Instructions spéciales et notes comportementales
-- [x] Système de rapport de mission (formulaire avec évaluation)
-- [x] Gestion des indisponibilités (CRUD avec sous-collection Firestore)
-- [x] Page paramètres (sauvegarde Firestore, reset mot de passe, confidentialité)
-- [x] Page messages (intégration messagerie temps réel)
+### 🏡 Pôle Accueil & Périscolaire
 
-### 🔔 Outils de suivi
+**Août 2026 - Préparation**
 
-- [x] Checklist de mission (initialisation et progression)
-- [x] Scan QR code de prise en charge (génération + validation)
-- [x] Upload photos sécurisées (confirmation départ/arrivée)
-- [x] Gestion des incidents (signalement avec type, sévérité, description)
-- [x] Historique des missions (filtres, recherche, revenue total)
+- [ ] **Page `/poles/accueil-periscolaire`**
+- [ ] **Services**:
+  - Accueil après l'école (lun-ven 16h-18h30)
+  - Mercredis éducatifs
+  - Vacances scolaires (stages)
+  - Aide aux devoirs
+  - Activités éducatives
 
-### 🔧 Service layer accompagnateur
+- [ ] **Système d'abonnement** (nouveau):
+  - Forfaits mensuels (5/10/15 créneaux)
+  - Tarification dégressive
+  - Gestion absences
+  - Facturation automatique
 
-- [x] Service complet `accompanist-service.ts` (650+ lignes)
-- [x] Gestion profil (infos personnelles, disponibilités, zones, certifications)
-- [x] Sous-collections Firestore (unavailabilities, settings)
-- [x] Règles de sécurité Firestore mises à jour
-- [x] Inscription avec sélection de rôle (parent/accompagnateur)
+- [ ] **Réservation calendrier** (multi-mois)
+
+### 🎓 Page "À Venir"
+
+**Septembre 2026 - Teasing**
+
+- [ ] **Page `/poles/numerique`** (locked):
+  - Preview: Programmation, création jeux vidéo, IA, cybersécurité, impression 3D
+  - CTA: "S'alerter du lancement"
+
+- [ ] **Page `/poles/coming-soon`**: Autres pôles à explorer
 
 ---
 
-## 🎯 Phase 6 - Administration (Mois 8) — ✅ COMPLÈTE - 100%
+## 🚀 Phase 3 - Vision Long Terme: Centre Jeunesse (Mars 2027 onwards)
 
-### 🛠️ Panneau d'administration
+### 💻 Pôle Numérique
 
-- [x] Dashboard statistiques : ✅
-  - Missions du mois ✅
-  - Chiffre d'affaires ✅
-  - Taux de satisfaction ✅
-  - Taux de réservation ✅
-- [x] Gestion des réservations : ✅
-  - Validation manuelle ✅
-  - Attribution accompagnateur ✅
-  - Modifications ✅
-  - Annulations ✅
-- [x] Gestion des utilisateurs : ✅
-  - Parents ✅
-  - Accompagnateurs ✅
-  - Admins ✅
-  - Suspension / réactivation ✅
-  - Vérification documents ✅
-- [x] Export de données (comptabilité) ✅
-  - CSV réservations (avec filtres dates) ✅
-  - CSV utilisateurs ✅
-  - CSV accompagnateurs ✅
-  - Journal d'audit ✅
+**Avril 2027 - Lancement pilote**
 
-### 📈 Analytics
+- [ ] **Ateliers programmation**:
+  - Scratch intro (7-10 ans)
+  - Python beginner (11+)
+  - Web basics (HTML/CSS/JS)
 
-- [ ] Google Analytics 4
-- [ ] Suivi des conversions
-- [ ] Heatmaps (Hotjar)
-- [ ] Rapports mensuels automatisés
+- [ ] **Création jeux vidéo**: Unity, Godot
+- [ ] **IA & Cybersécurité**: Intro ML, ethical hacking, sécurité mots de passe
+- [ ] **Impression 3D**: Modélisation, impression, projets
 
----
+- [ ] **Système de progression** (certifications juvéniles)
 
-## ✅ Phase 7 - Fonctionnalités avancées (COMPLÈTE)
+### 🏛️ Infrastructure Centre Jeunesse
 
-### ⭐ Système d'avis
+**2027-2028**
 
-- [x] Évaluation post-mission (formulaire avec 5 catégories + note globale)
-- [x] Témoignages parents (page dashboard/reviews avec avis utilisateur)
-- [x] Page d'avis publics (/avis avec stats, distribution, catégories)
-- [x] Modération des avis (panneau admin avec approve/reject/hide + réponses)
-- [x] API routes reviews (POST/GET publics + PUT admin modération)
-- [x] Service review complet (submitReview, moderateReview, respondToReview, getReviewStats)
+- [ ] **Dashboard administrateur**:
+  - Vue consolidée 6 pôles
+  - Statistiques par pôle (inscriptions, revenus, avis)
+  - Gestion accompagnateurs, ressources
+  - Rapports financiers
 
-### 🎁 Programmes de fidélité
+- [ ] **Système de crédit unifié**:
+  - Parent recharge compte
+  - Consommation multi-pôles
+  - Historique crédits
 
-- [x] Carte de fidélité digitale (4 niveaux : Bronze/Silver/Gold/Platinum, progression)
-- [x] Codes promo (validation, application, limites d'utilisation)
-- [x] Parrainage (suivi filleuls, stats temps réel, récompenses automatiques)
-- [x] Système de points (gain/dépense, transactions, échange de récompenses)
-- [ ] Abonnements mensuels (à implémenter dans une future itération)
+- [ ] **CRM accompagnateurs**:
+  - Gestion équipe, planning semaine
+  - Communication intégrée
+  - Feuilles de route générées
 
-### 🤝 Partenariats
+- [ ] **Portal partner** (associations, mairies):
+  - Réservation groupe ateliers
+  - Tarification volume
+  - Statistiques participation
 
-- [ ] Espace partenaires (écoles, associations)
-- [ ] API publique (pour intégrations)
-- [ ] Réservations groupées
-- [ ] Tarification entreprises
+### 📱 Expansion nationale
 
-### 🌍 Multilingue
+**2027-2028**
 
-- [x] Version française (par défaut)
-- [x] Version allemande (Luxembourg)
-- [x] Système i18n custom (contexte React, dictionnaires JSON, sélecteur de langue)
-- [ ] Version anglaise (à ajouter)
+- [ ] Support multi-régions
+- [ ] Locaux partenaires
+- [ ] Accompagnateurs indépendants (marketplace)
+- [ ] Franchising model (exploration)
 
 ---
 
-## ✅ Phase 8 - Application Mobile PWA (Mois 11-12) — TERMINÉ
+## 📊 État actuel par domaine
 
-### 📱 PWA universelle (parents + accompagnateurs)
-
-- [x] Manifest PWA parent enrichi (14 icônes, 3 shortcuts, screenshots, lang, categories)
-- [x] Service Worker parent (`sw-parent.js`) avec 4 stratégies de cache
-- [x] Page offline dédiée (`/offline`) avec UX claire
-- [x] IndexedDB offline storage (`offline-storage.ts`) — 6 stores + sync engine automatique
-- [x] Hook PWA universel (`use-universal-pwa.ts`) — installation, mise à jour, offline, sync, notifications
-- [x] Barre de navigation mobile inférieure (`mobile-bottom-nav.tsx`) — 5 onglets avec badges
-- [x] Pull-to-refresh natif (`pull-to-refresh.tsx`) — geste mobile
-- [x] Bannière d'installation améliorée (`enhanced-install-banner.tsx`)
-- [x] Indicateur offline/sync temps réel (`offline-indicator.tsx`)
-- [x] Carte de suivi temps réel pour parents (`live-tracking-map.tsx`) — Google Maps embarqué
-- [x] MobileShell intégré dans dashboards parent et accompagnateur
-- [x] Safe areas (iOS notch + bottom bar) supportées
-- [x] Background Sync pour actions offline (réservations, messages, avis)
-- [x] Notifications push avec actions contextuelles par type
-- [x] Génération icônes toutes tailles (72→512 + maskable)
-
----
-
-## 🎯 Phase 9 - Expansion & Scale (Année 2)
-
-### 🚀 Croissance
-
-- [ ] Recrutement accompagnateurs
-- [ ] Extension à d'autres villes :
-  - Nancy
-  - Strasbourg
-  - Luxembourg
-- [ ] Marketplace d'accompagnateurs
-- [ ] Système de matching automatique
-
-### 🤖 Intelligence artificielle
-
-- [ ] Optimisation des trajets
-- [ ] Prédiction de demande
-- [ ] Chatbot support client
-- [ ] Détection de fraude
-
-### 🔒 Conformité & Sécurité
-
-- [ ] Certification Qualiopi (si formation)
-- [ ] Audit de sécurité
-- [ ] Conformité RGPD approfondie
-- [ ] Assurance cyber-risques
+| Domaine | Phase | Statut | Priorité | Échéance |
+|---------|-------|--------|----------|----------|
+| **Mobilité** | 1 | ✅ 90% | ✅ Élevée | Juin 2026 |
+| **Auth & Profils** | 1 | ✅ 100% | ✅ Élevée | ✅ Complète |
+| **Réservation mobilité** | 1 | ✅ 85% | ✅ Élevée | Juin 2026 |
+| **Suivi temps réel** | 1 | ✅ 100% | ✅ Élevée | ✅ Complète |
+| **Espace accompagnateur** | 1 | ✅ 100% | ✅ Élevée | ✅ Complète |
+| **Admin** | 1 | ✅ 100% | ✅ Élevée | ✅ Complète |
+| **PWA** | 1 | ✅ 100% | ✅ Élevée | ✅ Complète |
+| **i18n (FR/EN)** | Trans | 🔄 0% | 🟠 Moyenne | Août 2026 |
+| **Design system** | Trans | 🔄 20% | 🟠 Moyenne | Juillet 2026 |
+| **Ateliers sciences** | 2 | 📋 0% | 🟠 Moyenne | Sept 2026 |
+| **Escape games** | 2 | 📋 0% | 🟠 Moyenne | Sept 2026 |
+| **Périscolaire** | 2 | 📋 0% | 🟠 Moyenne | Août 2026 |
+| **Pôle numérique** | 3 | 📋 0% | 🟡 Faible | Avril 2027 |
+| **Admin multi-pôles** | 3 | 📋 0% | 🟡 Faible | 2027 |
 
 ---
 
-## 📊 KPIs & Objectifs
+## 🎯 Prochaines étapes (Juin 2026)
 
-### Année 1
+### Immédiat (Cette semaine)
 
-- 100 familles inscrites
-- 500 missions réalisées
-- Taux de satisfaction > 95%
-- CA : 40 000€
+- [ ] Finaliser Phase 1 mobilité (100%)
+  - [ ] Sélecteur créneaux UI
+  - [ ] Trajets récurrents
+  - [ ] Tests utilisateur
+- [ ] Lancer axe i18n (setup technique)
+- [ ] Démarrer design system
 
-### Année 2
+### Court terme (2-4 semaines)
 
-- 500 familles inscrites
-- 3 000 missions réalisées
-- 5 accompagnateurs actifs
-- CA : 150 000€
+- [ ] Déployer Phase 1 complète (production)
+- [ ] Refonte homepage + vision section
+- [ ] **Intégrer composants refonte**:
+  - `HomepageVisionSection.tsx` (timeline phases)
+  - `ProjectVision.tsx` (page vision complète)
+  - `PolesGrid.tsx` (6 pôles)
 
-### Année 3
+### Moyen terme (Juillet-Août)
 
-- 2 000 familles inscrites
-- Présence dans 5 villes
-- 15 accompagnateurs
-- CA : 400 000€
+- [ ] Traduction complète FR/EN
+- [ ] Pages pôles (Sciences, Escape games, Périscolaire)
+- [ ] Système réservation ateliers
+
+---
+
+## 💡 Notes de conception
+
+### Composants du dossier `/docs/refonte` à intégrer
+
+```
+À créer dans: src/components/
+
+✨ NEW:
+- HomepageVisionSection.tsx (section timeline 3 phases)
+- ProjectVision.tsx (page vision complète)
+- PolesGrid.tsx (6 pôles avec cartes)
+- PoleDetailTemplate.tsx (template pages pôles)
+- UpcomingPoleTease.tsx (coming soon pages)
+```
+
+### Architecture pôles
+
+```
+app/
+├── poles/
+│   ├── page.tsx (overview tous pôles)
+│   ├── [pole]/
+│   │   ├── page.tsx (détail pôle)
+│   │   ├── ateliers/page.tsx
+│   │   └── reserver/page.tsx
+│   ├── mobilite/
+│   ├── sciences-decouverte/
+│   ├── escape-games/
+│   ├── periscolaire/
+│   └── numerique/ (coming soon)
+```
+
+### Données Firestore (structure pôles)
+
+```
+/poles
+├── {poleId}
+│   ├── /info (name, description, icon, image)
+│   ├── /ateliers (subcollection)
+│   └── /pricing (forfaits)
+
+/ateliers (global)
+├── {atelierID}
+│   ├── metadata (name, description, age, format)
+│   ├── /sessions (dates, places)
+│   └── /participants (inscrits)
+
+/abonnements (périscolaire)
+├── {subId}
+│   ├── metadata (forfait, dates)
+│   └── /consommation
+```
+
+---
+
+## 📚 Documentation de référence
+
+- [project_summary.md](./project_summary.md) — Vue d'ensemble projet
+- [firestore-architecture.md](./firestore-architecture.md) — Structure données
+- [mission-tracking.md](./mission-tracking.md) — Suivi temps réel (complète)
+- [refunds-and-reminders.md](./refunds-and-reminders.md) — Remboursements & rappels
+- Dossier `/docs/refonte/` — Composants et vision (à intégrer)
+
+---
+
+## 🎓 Jalons clés
+
+| Jalon | Date cible | Statut |
+|-------|-----------|--------|
+| Phase 1 mobilité 100% | 30 juin 2026 | 🟠 En cours |
+| i18n setup | 15 juillet 2026 | 📋 À démarrer |
+| Design system v1.0 | 31 juillet 2026 | 📋 À démarrer |
+| Homepage refonte + vision | 31 août 2026 | 📋 À démarrer |
+| Ateliers sciences lancé | 30 septembre 2026 | 📋 À démarrer |
+| Escape games beta | 31 octobre 2026 | 📋 À démarrer |
+| i18n traduction complète | 30 novembre 2026 | 📋 À démarrer |
+| Pôle numérique pilote | 30 avril 2027 | 📋 Planifié |
+| Centre jeunesse v1 complète | 30 juin 2027 | 📋 Vision |
 
 ---
 
 ## 🛠️ Stack technique
 
-### Frontend
-
-- Next.js 15 (React 19)
-- TypeScript
-- Tailwind CSS + Shadcn/UI
-- React Hook Form
-- Zustand (state management)
-
-### Backend
-
-- Firebase Auth
-- Firestore Database
-- Firebase Storage
-- Firebase Functions (serverless)
-- Firebase Cloud Messaging
-
-### Paiement & Communication
-
-- Stripe
-- SendGrid / Brevo (emails)
-- Twilio (SMS)
-
-### DevOps
-
-- Firebase Hosting
-- GitHub Actions (CI/CD)
-- Sentry (monitoring erreurs)
-- Vercel (alternative déploiement)
+- **Frontend**: Next.js 15 (React 19), TypeScript, Tailwind CSS, Shadcn/UI
+- **Backend**: Firebase (Auth, Firestore, Storage, Functions, Messaging)
+- **Paiement**: Stripe (paiements, remboursements, webhooks)
+- **Communication**: SendGrid (emails HTML), Twilio (SMS optionnel)
+- **DevOps**: Firebase Hosting, GitHub Actions (CI/CD), Vercel Cron
 
 ---
 
-## ⚠️ Risques & Mitigation
+## 💰 Budget estimé Année 1
 
-| Risque | Impact | Probabilité | Mitigation |
-|--------|--------|-------------|------------|
-| Conformité légale (mineurs) | Élevé | Moyen | Consultation avocat, assurances spécifiques |
-| Sécurité des données | Élevé | Faible | Chiffrement, audit, RGPD strict |
-| Adoption lente | Moyen | Moyen | Marketing ciblé, partenariats locaux |
-| Concurrence | Faible | Moyen | Différenciation qualité, proximité |
-| Coûts tech | Moyen | Faible | Architecture scalable, Firebase gratuit au départ |
-
----
-
-## 💰 Budget prévisionnel
-
-### Développement
-
-- Développeur (toi) : gratuit / sweat equity
-- Design/UX : 2 000€
-- Stack technique : ~100€/mois (Firebase, domaine, outils)
-- Total Année 1 : ~3 500€
-
-### Marketing
-
-- Site web : inclus
-- Google Ads : 2 000€/an
-- Flyers/cartes : 500€
-- Total : ~2 500€
-
-### Légal & Assurances
-
-- Assurance RC Pro : 600€/an
-- Avocat / conseils : 1 500€
-- Total : ~2 100€
-
-**Total investissement Année 1 : ~8 000€**
-
----
-
-## 🎉 Quick Wins (Priorités immédiates)
-
-1. ✅ **Finir les pages informatives** (FAQ, mentions légales)
-2. **Mettre en ligne une v1 statique** pour tester le marché
-3. **Créer un formulaire de contact** simple (Google Forms temporaire)
-4. **Lancer une campagne locale Facebook** pour tester l'intérêt
-5. **Réaliser 10 missions pilotes manuelles** avant d'automatiser
+- **Développement**: 3 500€ (design, domaine, Firebase Spark/Blaze)
+- **Marketing**: 2 500€ (Google Ads, supports imprimés)
+- **Légal & Assurances**: 2 100€ (RC Pro, conseils avocat)
+- **Total**: ~8 000€
 
 ---
 
 ## 📅 Timeline visuelle
 
 ```
-Mois 1-2  : ████████░░░░░░░░░░░░░░░░   Fondations
-Mois 3    : ░░░░░░░░████░░░░░░░░░░░░   Auth & Profils
-Mois 4-5  : ░░░░░░░░░░░░████████░░░░   Réservation
-Mois 6    : ░░░░░░░░░░░░░░░░░░░░████   Suivi temps réel
-Mois 7    : ░░░░░░░░░░░░░░░░░░░░░░░░   Espace pro
-Mois 8    : ████░░░░░░░░░░░░░░░░░░░░   Admin
-Mois 9-10 : ░░░░████████░░░░░░░░░░░░   Avancé
-Mois 11-12: ░░░░░░░░░░░░████████░░░░   Mobile
+Q2 2026 : Phase 1 finalisation (mobilité)
+Q3 2026 : Modernisation UI + i18n + Ateliers sciences
+Q4 2026 : Escape games + Périscolaire + Traduction complète
+Q1 2027 : Pôle numérique préparation
+Q2 2027 : Pôle numérique lancement + Centre jeunesse v1
 ```
 
 ---
 
-## ✅ Next Steps (Cette semaine)
-
-1. [x] Finaliser les pages légales (mentions, CGV, RGPD)
-2. [x] Créer la page FAQ
-3. [x] Définir l'architecture Firestore
-4. [x] Créer les premiers schémas de la base de données
-5. [x] Mettre en place Firebase Authentication
-6. [x] Créer les pages de connexion et d'inscription
-7. [x] Tester l'authentification complète
-8. [x] Déployer en production (jeunesse.imogo.org)
-9. [ ] Créer la gestion des profils jeunes
-10. [ ] Implémenter l'upload de photos
-
----
-
-**Dernière mise à jour :** 15 février 2026  
-**Version :** 1.2  
-**Auteur :** Nathan Imogo – Passerelle Jeunesse
-
----
-
-## 🔄 Dernières modifications (15/02/2026)
-
-### ✅ Phase 3 - Paiements et Documents PDF (TERMINÉE)
-
-#### 📄 Génération de documents PDF
-
-- [x] **Service PDF complet** (`src/lib/pdf-service.ts`) :
-  - Génération de devis professionnels avec logo et détails
-  - Génération de factures avec statut de paiement
-  - Templates responsifs et conformes
-  - Numérotation automatique des documents
-  - Fonction de téléchargement et conversion en Blob
-
-- [x] **Composant DocumentDownloads** :
-  - Boutons de téléchargement dans la page de détail de réservation
-  - Gestion des états de chargement
-  - Toast notifications de succès/erreur
-  - Désactivation conditionnelle (facture disponible après paiement)
-
-- [x] **Intégration UI** :
-  - Card "Documents" dans la sidebar droite
-  - Design cohérent avec le reste de l'interface
-  - Messages d'aide contextuels
-
-#### 📧 Notifications emails automatiques
-
-- [x] **Service email SendGrid** (`src/lib/email-service.ts`) :
-  - Configuration SendGrid avec clé API
-  - 3 types d'emails HTML responsifs :
-    - Confirmation de réservation (avec récapitulatif et lien de paiement)
-    - Confirmation de paiement (acompte ou solde)
-    - Rappel 24h avant la prestation
-  - Templates HTML professionnels avec design moderne
-  - Gestion des erreurs sans bloquer les actions principales
-
-- [x] **Intégration dans les API routes** :
-  - Email envoyé après paiement (webhook Stripe)
-  - API route `/api/bookings/create` pour créer réservation + email
-  - Récupération des informations utilisateur via Firebase Admin
-
-- [x] **Documentation complète** (`docs/sendgrid-setup.md`) :
-  - Guide pas-à-pas de configuration SendGrid
-  - Instructions de vérification d'email expéditeur
-  - Configuration des variables d'environnement
-  - Dépannage et bonnes pratiques
-  - Informations sur les quotas et limites
-
-#### 🔧 Configuration
-
-- [x] Installation des dépendances :
-  - `jspdf` et `jspdf-autotable` pour les PDFs
-  - `@sendgrid/mail` pour les emails
-
-- [x] Variables d'environnement ajoutées :
-  - `SENDGRID_API_KEY` : Clé API SendGrid
-  - `SENDGRID_FROM_EMAIL` : Email expéditeur vérifié
-  - Mise à jour de `.env.example` avec exemples
-
-#### 🎯 Résultat
-
-**Phase 3 complétée à 95% !**
-
-Fonctionnalités manquantes :
-- [ ] Interface utilisateur pour sélection de créneaux horaires
-- [ ] SMS de rappel (24h avant) - alternative aux emails
-- [ ] Trajets récurrents (réservations répétées)
-- [ ] Notifications en temps réel (WebSocket/Firebase)
-
-**Prochaine priorité suggérée** : Phase 4 - Suivi en temps réel ou finaliser l'interface de sélection de créneaux.
-
-### 📦 Fichiers créés/modifiés
-
-**Nouveaux fichiers** :
-- `src/lib/pdf-service.ts` (450 lignes) - Service génération PDF
-- `src/components/documents/document-downloads.tsx` (110 lignes) - Composant téléchargement
-- `src/lib/email-service.ts` (600 lignes) - Service emails SendGrid
-- `src/app/api/bookings/create/route.ts` (80 lignes) - API création réservation + email
-- `docs/sendgrid-setup.md` (350 lignes) - Guide configuration SendGrid
-
-**Fichiers modifiés** :
-- `src/app/dashboard/bookings/[id]/page.tsx` - Ajout composant DocumentDownloads
-- `src/app/api/webhooks/stripe/route.ts` - Envoi email après paiement
-- `.env.example` - Ajout variables SendGrid
-- `docs/roadmap.md` - Mise à jour progression Phase 3
-
----
-
-## 🔄 Dernières modifications (15/02/2026)
-
-### ✅ Finalisation Phase 3 - Option 1
-
-#### 💰 Remboursements Stripe automatiques
-
-- [x] **Service de remboursement** (`src/lib/firestore-admin-service.ts`) :
-  - `cancelBookingAdmin()` : Annule réservation et traite remboursement Stripe
-  - Détection automatique du payment_intent_id (deposit ou balance)
-  - Appel API Stripe `createRefund()` avec montant calculé
-  - Gestion des erreurs avec statut 'pending' pour traitement manuel
-  - Statuts de remboursement : 'pending', 'processed', 'completed', 'not_applicable'
-
-- [x] **API route d'annulation** (`src/app/api/bookings/[id]/cancel/route.ts`) :
-  - Authentification utilisateur via Firebase Auth
-  - Calcul automatique du remboursement selon délai (>48h → remboursement acompte)
-  - Appel de `cancelBookingAdmin()` pour traiter annulation + remboursement
-  - Gestion des erreurs avec messages clairs
-
-- [x] **Webhook Stripe** (`src/app/api/webhooks/stripe/route.ts`) :
-  - Handler pour événement `charge.refunded`
-  - Recherche du booking par payment_intent_id
-  - Mise à jour du statut : 'processed' → 'completed'
-  - Enregistrement de `stripeRefundId` et `refundedAt`
-
-- [x] **Interface utilisateur** (`src/app/dashboard/bookings/[id]/page.tsx`) :
-  - Modification de `handleCancel()` pour appeler l'API route
-  - Affichage du montant du remboursement dans la confirmation
-  - Messages d'erreur clairs en cas d'échec
-
-#### 🔔 Rappels automatiques 24h
-
-- [x] **API route cron** (`src/app/api/cron/send-reminders/route.ts`) :
-  - Recherche des bookings prévus dans 23-25h (fenêtre de 2h)
-  - Filtre les bookings annulés et déjà notifiés (`reminderSent`)
-  - Envoi email de rappel via `sendReminderEmail()`
-  - Marquage `reminderSent: true` après envoi
-  - Authentification par secret (`CRON_SECRET`)
-  - Statistiques détaillées : envoyés, ignorés, erreurs
-
-- [x] **Configuration Vercel Cron** (`vercel.json`) :
-  - Cron job configuré : toutes les heures (`0 */1 * * *`)
-  - Endpoint : `/api/cron/send-reminders`
-  - Activé automatiquement au déploiement
-
-- [x] **Variables d'environnement** (`.env.example`) :
-  - `CRON_SECRET` : Secret pour sécuriser l'endpoint cron
-  - Documentation sur la génération de secret sécurisé
-
-#### 🔍 Système de disponibilité
-
-- [x] **Service de disponibilité** (`src/lib/availability-service.ts`) :
-  - `checkAvailability()` : Vérifie si créneau disponible (fenêtre ±2h)
-  - `getAvailableTimeSlots()` : Liste des créneaux disponibles par jour
-  - `isValidBookingDate()` : Validation date (24h min, 6 mois max)
-  - Gestion de capacité par type (accompagnement: 5, urgence: 2)
-  - Utilise Firebase Admin pour requêtes privilégiées
-
-- [x] **API routes disponibilité** :
-  - `POST /api/availability/check` : Vérifie un créneau spécifique
-  - `GET /api/availability/slots` : Liste créneaux disponibles d'une date
-  - Validation des paramètres et gestion d'erreurs
-
-#### 📚 Documentation complète
-
-- [x] **Guide remboursements et rappels** (`docs/refunds-and-reminders.md`) :
-  - Documentation complète (4000+ lignes)
-  - Architecture détaillée avec diagrammes de flux
-  - Politique d'annulation et remboursement
-  - Configuration cron job (Vercel et alternatives)
-  - Sécurité avec `CRON_SECRET`
-  - Tests et dépannage
-  - Monitoring et KPIs
-  - Améliorations futures
-
-### 📦 Fichiers créés
-
-**Remboursements** :
-- `src/app/api/bookings/[id]/cancel/route.ts` (70 lignes) - API annulation avec remboursement
-- Modifications dans `src/lib/firestore-admin-service.ts` (+80 lignes) - `cancelBookingAdmin()`
-- Modifications dans `src/app/api/webhooks/stripe/route.ts` (+60 lignes) - Handler `charge.refunded`
-
-**Rappels automatiques** :
-- `src/app/api/cron/send-reminders/route.ts` (150 lignes) - Cron job rappels 24h
-- `vercel.json` (10 lignes) - Configuration cron Vercel
-
-**Disponibilité** :
-- `src/lib/availability-service.ts` (150 lignes) - Service de vérification
-- `src/app/api/availability/check/route.ts` (50 lignes) - API vérification
-- `src/app/api/availability/slots/route.ts` (40 lignes) - API créneaux
-
-**Documentation** :
-- `docs/refunds-and-reminders.md` (400+ lignes) - Guide complet
-
-### 🔧 Configuration
-
-- [x] Variable `CRON_SECRET` ajoutée à `.env.example`
-- [x] Import `updateBookingAdmin` dans webhook Stripe
-- [x] Suppression import `cancelBooking` client-side (remplacé par API)
-
-#### 🎯 Résultat
-
-**Phase 3 complétée à 95% !** 🎉
-
-**Fonctionnalités terminées aujourd'hui** :
-✅ Remboursements Stripe automatiques avec webhooks  
-✅ Rappels email 24h automatiques (cron job)  
-✅ Service de vérification de disponibilité  
-✅ API routes pour disponibilité  
-✅ Documentation complète des nouvelles fonctionnalités
-
-**Fonctionnalités restantes Phase 3** :
-- [ ] Interface utilisateur pour sélection de créneaux horaires
-- [ ] SMS de rappel (alternative/complément aux emails)
-- [ ] Trajets récurrents (réservations répétées automatiques)
-
-**Infrastructure prête pour Phase 4** : Suivi en temps réel ! 🚀
-
----
-
-## 🔄 Dernières modifications (16/02/2026)
-
-### ✅ Phase 4 - Suivi en temps réel (COMPLÈTE - 100%)
-
-#### 📍 Système de statuts de mission
-
-- [x] **Types et interfaces** (`src/types/firestore.ts`) :
-  - `MissionStatusUpdate` : Enregistrement d'une mise à jour de statut
-    - Statut, timestamp, lieu GPS, photo, notes, accompagnateur
-  - `SimplifiedMissionTracking` : Suivi complet d'une mission
-    - Statut actuel, historique complet, photos départ/arrivée
-  - Extension de l'interface `Booking` avec `missionTracking`
-  - Extension de `Cancellation` avec détails remboursement Stripe
-
-- [x] **10 statuts de mission** :
-  - `scheduled` : Mission programmée
-  - `en_route_to_pickup` : En route vers le point de départ
-  - `waiting_at_pickup` : Sur place (attente)
-  - `picked_up` : Prise en charge effectuée
-  - `in_transit` : En transport
-  - `arriving_soon` : Arrivée imminente
-  - `delivered` : Livré à destination
-  - `completed` : Mission terminée
-  - `incident` : Incident signalé
-  - `cancelled` : Mission annulée
-
-#### 🔌 API de mise à jour de statut
-
-- [x] **Route POST** (`/api/bookings/[id]/status`) :
-  - Authentification Firebase Admin
-  - Vérification que l'utilisateur est l'accompagnateur assigné
-  - Création de `MissionStatusUpdate` avec timestamp
-  - Support notes, photo URL, coordonnées GPS
-  - Ajout dans `statusHistory` (historique immuable)
-  - Mise à jour de `currentStatus`
-  - Gestion automatique photos départ/arrivée
-  - Mise à jour statut booking quand `completed`
-
-- [x] **Route GET** (`/api/bookings/[id]/status`) :
-  - Récupération du `missionTracking` actuel
-  - Pas d'authentification (parents peuvent consulter)
-  - État par défaut si mission non démarrée
-
-#### 🎨 Composants de visualisation
-
-- [x] **MissionTimeline** (`src/components/mission/mission-timeline.tsx`) :
-  - Timeline verticale avec ligne de connexion
-  - Configuration pour les 10 statuts (icône, couleur, description)
-  - Affichage chronologique des mises à jour
-  - Timestamps formatés (HH:mm)
-  - Notes affichées sous chaque update
-  - Coordonnées GPS (latitude, longitude)
-  - Photos inline dans la timeline
-  - Grille photos départ/arrivée en bas
-  - Badge "En cours" sur dernière mise à jour
-  - État vide pour missions non démarrées
-  - Helper `toSafeDate()` pour conversion Timestamp
-
-- [x] **ActiveMissions** (`src/components/mission/active-missions.tsx`) :
-  - Widget intégré dans dashboard principal
-  - Liste des missions avec statuts actifs uniquement
-    - `en_route_to_pickup`, `waiting_at_pickup`, `picked_up`
-    - `in_transit`, `arriving_soon`
-  - Badge de statut avec icône et couleur
-  - Trajet visuel : départ → arrivée
-  - Infos complémentaires : nombre de jeunes, heure
-  - Temps depuis dernière mise à jour (en minutes)
-  - Clic sur carte → navigation vers détail booking
-  - Bouton de rafraîchissement manuel
-  - État vide si aucune mission active
-  - Tri par date de programmation
-
-#### 📸 Système de photos de confirmation
-
-- [x] **Service d'upload** (`src/lib/photo-service.ts`) :
-  - `uploadMissionPhoto()` : Upload sur Firebase Storage
-  - Compression automatique avant upload
-    - Redimensionnement : max 1920x1080
-    - Qualité JPEG : 80%
-    - Canvas pour traitement côté client
-  - Validation taille : max 10MB avant compression
-  - Validation type : images uniquement
-  - Callback de progression (0-100%)
-  - Génération chemin : `mission-photos/{bookingId}/{timestamp}_{type}.jpg`
-  - Métadonnées customisées : bookingId, photoType, uploadedAt
-  - Retour : URL publique + chemin storage
-
-- [x] **Helpers** :
-  - `fileToBase64()` : Conversion pour prévisualisation
-  - `compressImage()` : Compression avec canvas
-  - `validateImageDimensions()` : Validation dimensions
-
-- [x] **Composant PhotoCapture** (`src/components/mission/photo-capture.tsx`) :
-  - Capture via caméra mobile (attribut `capture="environment"`)
-  - Sélection depuis galerie photo
-  - Prévisualisation avant envoi
-  - Barre de progression pendant upload
-  - Gestion d'erreurs avec messages clairs
-  - État "uploadé" avec aperçu final
-  - Possibilité de reprendre une nouvelle photo
-  - Boutons d'action : Annuler / Envoyer
-  - Support 4 types : departure, arrival, incident, other
-  - Responsive et mobile-friendly
-
-#### 🔗 Intégrations
-
-- [x] **Dashboard principal** (`src/app/dashboard/page.tsx`) :
-  - Composant `ActiveMissions` ajouté
-  - Récupération automatique des bookings
-  - Fonction `fetchBookings()` avec query Firestore
-  - Rafraîchissement manuel avec bouton
-  - Affichage uniquement pour rôle 'parent'
-
-- [x] **Page détail booking** (`src/app/dashboard/bookings/[id]/page.tsx`) :
-  - Composant `MissionTimeline` intégré
-  - Affichage conditionnel :
-    - Masqué si `status === 'cancelled'`
-    - Masqué si `status === 'pending'`
-  - Positionnement : colonne gauche, après infos complémentaires
-
-#### 📚 Documentation complète
-
-- [x] **Guide mission tracking** (`docs/mission-tracking.md`) :
-  - Vue d'ensemble de l'architecture (400+ lignes)
-  - Description détaillée de tous les composants
-  - Flux d'utilisation complet :
-    - Côté accompagnateur (mobile app future)
-    - Côté parent (dashboard web)
-  - Exemples d'API avec requêtes/réponses
-  - Configuration Firebase :
-    - Règles Firestore pour bookings
-    - Règles Storage pour mission-photos
-  - Guide de tests manuels (scénario complet)
-  - Prochaines étapes :
-    - Application mobile accompagnateur
-    - Mises à jour en temps réel (onSnapshot)
-    - Géolocalisation temps réel avec carte
-    - Notifications automatiques (SMS/email)
-  - Dépendances et support
-
-### 📦 Fichiers créés
-
-**Types et API** :
-- Modifications dans `src/types/firestore.ts` (+40 lignes) - Interfaces mission tracking
-- `src/app/api/bookings/[id]/status/route.ts` (200 lignes) - API PUT/GET statuts
-
-**Composants visuels** :
-- `src/components/mission/mission-timeline.tsx` (280 lignes) - Timeline verticale
-- `src/components/mission/active-missions.tsx` (250 lignes) - Widget dashboard missions actives
-
-**Photos** :
-- `src/lib/photo-service.ts` (170 lignes) - Service upload et compression
-- `src/components/mission/photo-capture.tsx` (230 lignes) - Interface capture photo
-
-**Intégrations** :
-- Modifications dans `src/app/dashboard/page.tsx` (+40 lignes) - ActiveMissions widget
-- Modifications dans `src/app/dashboard/bookings/[id]/page.tsx` (+4 lignes) - MissionTimeline
-
-**Documentation** :
-- `docs/mission-tracking.md` (420 lignes) - Guide complet système de suivi
-
-### 🔧 Configuration
-
-- [x] Firebase Storage déjà configuré (`src/lib/firebase.ts`)
-- [x] Export `storage` disponible pour upload
-- [x] Aucune variable d'environnement supplémentaire nécessaire
-
-### 🎯 Résultat
-
-**Phase 4 complétée à 100% !** 🎉
-
-**Fonctionnalités terminées aujourd'hui** :
-✅ Types et interfaces pour mission tracking  
-✅ API routes PUT/GET pour mise à jour statut  
-✅ Composant Timeline avec 10 statuts configurés  
-✅ Widget ActiveMissions pour dashboard  
-✅ Service de photos avec compression automatique  
-✅ Composant PhotoCapture mobile-friendly  
-✅ Documentation complète du système  
-✅ Intégration dans dashboard parent et détail booking
-
-**Fonctionnalités bonus prêtes** :
-✅ Support coordonnées GPS dans MissionStatusUpdate  
-✅ Support notes textuelles à chaque mise à jour  
-✅ Historique immuable (statusHistory)  
-✅ Helper pour conversion Timestamp Firestore  
-✅ Gestion automatique photos départ/arrivée  
-✅ Bouton rafraîchissement manuel
-
-**Prochaines améliorations (Phase 4+)** :
-- [x] Application web accompagnateur (PWA) ✅
-- [x] Mises à jour en temps réel (Firebase onSnapshot) ✅
-- [x] Notifications push pour parents (FCM) ✅
-- [ ] Géolocalisation temps réel avec carte interactive
-- [x] Chat sécurisé accompagnateur ↔ parent ✅
-- [ ] ETA (estimation temps d'arrivée) basée sur GPS
-
-**✅ Phase 7 complète** : Avis (formulaire 5 catégories, page publique, modération admin), fidélité (4 niveaux, points, récompenses, parrainage temps réel), multilingue FR/DE avec i18n custom ! 🚀
-
----
-
-## 🔄 Dernières modifications (25/02/2026)
-
-### ✅ Phase 6 - Panneau d'administration (COMPLÈTE - 100%)
-
-#### 📊 Service d'administration
-
-- [x] **Service admin** (`src/lib/admin-service.ts` — 340+ lignes) :
-  - Statistiques globales (CA, utilisateurs, réservations, note)
-  - Écoute temps réel réservations (onSnapshot)
-  - Écoute temps réel utilisateurs (onSnapshot)
-  - Gestion statut réservations (confirmer, annuler)
-  - Attribution accompagnateur
-  - Gestion statut utilisateurs (suspendre, activer)
-  - Vérification documents accompagnateur
-  - Export CSV réservations (BOM UTF-8)
-  - Export CSV utilisateurs
-  - Journal d'audit (audit log)
-
-#### 🖥️ Pages administration
-
-- [x] **Layout admin** (`src/app/dashboard/admin/layout.tsx`) :
-  - Navigation latérale avec icônes
-  - Guard admin (redirect si non admin)
-  - Badge rôle admin avec email
-  - Responsive (sidebar/horizontal mobile)
-
-- [x] **Dashboard** (`src/app/dashboard/admin/page.tsx`) :
-  - 4 cartes statistiques principales (réservations, CA, utilisateurs, note)
-  - 3 indicateurs secondaires (en attente, terminées, annulées)
-  - 3 accès rapides (réservations, utilisateurs, export)
-  - Tableau réservations récentes en temps réel (🔴 Live)
-  - Bouton actualiser stats
-
-- [x] **Gestion réservations** (`src/app/dashboard/admin/bookings/page.tsx`) :
-  - Tableau complet avec recherche/filtres (statut, dates)
-  - 4 cartes stats rapides cliquables (filtres dynamiques)
-  - Actions : confirmer, assigner accompagnateur, annuler
-  - Dialog détail réservation (trajet, montant, acompte, jeunes)
-  - Dialog attribution accompagnateur (sélection avec note)
-  - Dialog annulation avec motif obligatoire
-  - Audit log automatique sur chaque action
-
-- [x] **Gestion utilisateurs** (`src/app/dashboard/admin/users/page.tsx`) :
-  - Onglets par rôle (Tous, Parents, Accompagnateurs, Admins)
-  - Recherche par nom, email, téléphone
-  - 4 cartes stats (total, parents, accompagnateurs, admins)
-  - Actions : voir détails, suspendre, réactiver
-  - Dialog détail avec profil accompagnateur (note, missions, revenus)
-  - Vérification documents (casier, assurance, pièce d'identité)
-  - Protection : impossible de suspendre un admin
-
-- [x] **Export données** (`src/app/dashboard/admin/export/page.tsx`) :
-  - Filtre par période (date début/fin)
-  - Export CSV réservations (13 colonnes)
-  - Export CSV tous les utilisateurs (12 colonnes)
-  - Export CSV accompagnateurs uniquement
-  - Notice RGPD
-  - Audit log automatique des exports
-
-#### 🔌 API Routes administration
-
-- [x] **Stats admin** (`src/app/api/admin/stats/route.ts`) :
-  - GET avec vérification token + rôle admin
-  - Agrégation server-side via Admin SDK
-
-- [x] **Attribution booking** (`src/app/api/admin/bookings/[id]/assign/route.ts`) :
-  - POST avec vérification admin
-  - Validation booking et accompagnateur existants
-  - Audit log automatique
-
-- [x] **Gestion utilisateur** (`src/app/api/admin/users/[id]/route.ts`) :
-  - PATCH avec vérification admin
-  - Suspension/réactivation avec sync Firebase Auth (`disabled`)
-  - Vérification documents accompagnateur
-  - Audit log automatique
-
-#### 🔀 Redirection admin
-
-- [x] **Dashboard principal** (`src/app/dashboard/page.tsx`) :
-  - Ajout redirect `isAdmin` → `/dashboard/admin`
-  - Priorité : admin > accompagnateur > parent
-
-### 📦 Fichiers créés
-
-**Service layer** :
-- `src/lib/admin-service.ts` (340+ lignes) — Service complet administration
-
-**Pages admin** :
-- `src/app/dashboard/admin/layout.tsx` — Layout avec sidebar navigation
-- `src/app/dashboard/admin/page.tsx` — Dashboard statistiques
-- `src/app/dashboard/admin/bookings/page.tsx` — Gestion réservations
-- `src/app/dashboard/admin/users/page.tsx` — Gestion utilisateurs
-- `src/app/dashboard/admin/export/page.tsx` — Export données
-
-**API routes** :
-- `src/app/api/admin/stats/route.ts` — Stats server-side
-- `src/app/api/admin/bookings/[id]/assign/route.ts` — Attribution accompagnateur
-- `src/app/api/admin/users/[id]/route.ts` — Gestion utilisateurs
-
-**Fichiers modifiés** :
-- `src/app/dashboard/page.tsx` — Ajout redirect admin
-
----
-
-## 🔄 Dernières modifications (24/02/2026)
-
-### ✅ Phase 5 - Espace accompagnateur (COMPLÈTE - 100%)
-
-#### 👔 Service layer complet
-
-- [x] **Service accompagnateur** (`src/lib/accompanist-service.ts` — 650+ lignes) :
-  - Gestion profil complet (infos personnelles, biographie, expérience)
-  - Disponibilités hebdomadaires (CRUD créneaux par jour)
-  - Paramètres de service (max jeunes, longue distance)
-  - Zones d'intervention (ajout/suppression)
-  - Certifications (ajout/suppression dans Firestore)
-  - Indisponibilités (sous-collection `users/{uid}/unavailabilities`)
-  - Checklist de mission (initialisation, progression)
-  - QR code prise en charge (génération, validation)
-  - Rapport de mission (soumission complète)
-  - Signalement d'incidents (type, sévérité, description)
-
-#### 🖥️ Pages accompagnateur
-
-- [x] **Dashboard** (`src/app/dashboard/accompanist/page.tsx`) :
-  - Statistiques temps réel (missions, évaluations, revenus)
-  - Navigation vers toutes les sections
-  - Redirection automatique depuis `/dashboard` pour rôle accompanist
-
-- [x] **Planning** (`src/app/dashboard/accompanist/planning/page.tsx` — 370+ lignes) :
-  - Vues jour, semaine, mois
-  - Intégration missions assignées
-  - Navigation entre dates
-
-- [x] **Missions** (`src/app/dashboard/accompanist/missions/page.tsx`) :
-  - Liste avec onglets (à venir, terminées, annulées)
-  - Barre de recherche par adresse et prénom
-  - 4 cartes statistiques (total, à venir, terminées, revenus)
-  - Filtrage en temps réel
-
-- [x] **Détail mission** (`src/app/dashboard/accompanist/missions/[id]/page.tsx` — 700+ lignes) :
-  - Fiche complète jeune (santé, contacts, besoins spéciaux)
-  - Checklist interactive
-  - QR code de prise en charge
-  - Upload photos (départ/arrivée)
-  - Signalement d'incidents
-  - Formulaire rapport de mission
-  - Navigation mobile par sections
-
-- [x] **Profil** (`src/app/dashboard/accompanist/profile/page.tsx` — 660+ lignes) :
-  - 5 onglets (Personnel, Disponibilités, Indisponibilités, Qualifications, Documents)
-  - Disponibilités hebdomadaires avec créneaux
-  - CRUD indisponibilités (sous-collection Firestore)
-  - Gestion certifications
-  - Zones d'intervention
-  - Statut vérification documents
-
-- [x] **Paramètres** (`src/app/dashboard/accompanist/settings/page.tsx`) :
-  - Sauvegarde persistante Firestore (`users/{uid}/settings`)
-  - Réinitialisation mot de passe via Firebase Auth
-  - Switches confidentialité (profil public, stats visibles)
-
-- [x] **Messages** (`src/app/dashboard/accompanist/messages/page.tsx`) :
-  - Intégration messagerie temps réel existante
-
-#### 🔐 Authentification accompagnateur
-
-- [x] **Inscription** (`src/components/auth/signup-form.tsx`) :
-  - Sélection rôle (parent / accompagnateur)
-  - Initialisation `accompanistProfile` dans Firestore
-
-- [x] **Service Firestore** (`src/lib/firestore-service.ts`) :
-  - `createUserDocument` enrichi pour rôle accompanist
-  - Champs initiaux : availability, zones, certifications, documents
-
-#### 🐛 Corrections de bugs (24/02/2026)
-
-- [x] **Boucle infinie corrigée** : `useTestAuth()` mémorisé avec `useMemo`, guard `useRef` dans useEffect du profil
-- [x] **Hydration mismatch corrigée** : `suppressHydrationWarning` ajouté sur `<body>` (extension ColorZilla)
-- [x] **Permissions Firestore corrigées** : Règles ajoutées pour sous-collections `unavailabilities` et `settings`
-- [x] **Context auth optimisé** : `useMemo` sur le value du `AuthContext.Provider`
-
-### 📦 Fichiers créés
-
-**Service layer** :
-- `src/lib/accompanist-service.ts` (650+ lignes) — Service complet accompagnateur
-
-**Pages** :
-- `src/app/dashboard/accompanist/page.tsx` — Dashboard
-- `src/app/dashboard/accompanist/planning/page.tsx` (370+ lignes) — Planning calendrier
-- `src/app/dashboard/accompanist/missions/page.tsx` — Liste missions avec recherche
-- `src/app/dashboard/accompanist/missions/[id]/page.tsx` (700+ lignes) — Détail mission
-- `src/app/dashboard/accompanist/profile/page.tsx` (660+ lignes) — Profil complet
-- `src/app/dashboard/accompanist/settings/page.tsx` — Paramètres
-- `src/app/dashboard/accompanist/messages/page.tsx` — Messages
-
-**Fichiers modifiés** :
-- `src/components/auth/signup-form.tsx` — Sélection rôle
-- `src/lib/firestore-service.ts` — Init profil accompanist
-- `src/lib/test-config.ts` — Mémoisation `useTestAuth`
-- `src/contexts/auth-context.tsx` — `useMemo` sur value
-- `src/app/layout.tsx` — `suppressHydrationWarning` sur body
-- `firestore.rules` — Règles unavailabilities + settings
-
----
-
-## 🔄 Dernières modifications (15/02/2026)
-
-### ✅ Corrections de bugs
-
-- [x] **Sélecteur de date corrigé** : Les calendriers dans les formulaires (ajout de jeune, réservation) fonctionnent maintenant correctement avec la locale française
-- [x] **Logo officiel intégré** : Remplacement de l'icône temporaire par le logo officiel dans tout le site
-- [x] **Métadonnées SEO et PWA** : Amélioration des métadonnées Open Graph, Twitter Card, et ajout du manifeste PWA
-
-### 📦 Fichiers ajoutés
-
-- Logo officiel (1024x1024) dans `public/images/`
-- Favicon et icône iOS
-- Manifeste PWA pour installation sur mobile
-
----
+**Mise à jour**: 5 juin 2026  
+**Version**: 3.0  
+**Responsable**: Nathan Imogo – Passerelle Jeunesse  
+**Prochaine révision**: 20 juin 2026
