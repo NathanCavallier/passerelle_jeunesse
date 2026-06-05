@@ -1,11 +1,10 @@
 import Header from '@/components/header';
 import Hero from '@/components/hero';
-import Services from '@/components/services';
+import HomepageVisionSection from '@/components/homepage-vision-section';
+import PolesGrid from '@/components/poles-grid';
 import Testimonials from '@/components/testimonials';
 import Contact from '@/components/contact';
 import Footer from '@/components/footer';
-import ProfessionalFramework from '@/components/professional-framework';
-import TargetAudience from '@/components/target-audience';
 
 export default function Home() {
   return (
@@ -13,9 +12,8 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
-        <Services />
-        <ProfessionalFramework />
-        <TargetAudience />
+        <HomepageVisionSection />
+        <PolesGrid />
         <Testimonials />
         <Contact />
       </main>
