@@ -29,6 +29,7 @@ Ouvrir [http://localhost:9002](http://localhost:9002)
 📘 **[Guide de configuration Firebase](./docs/firebase-setup.md)**
 
 Étapes essentielles :
+
 1. Activer Firestore Database dans Firebase Console
 2. Se connecter à Firebase CLI : `firebase login`
 3. Déployer les règles : `firebase deploy --only firestore:rules`
@@ -133,24 +134,28 @@ npm run lint         # Vérifier le code
 Le projet suit un développement en 9 phases sur 12+ mois :
 
 ### ✅ Phase 1 - Fondations (COMPLÈTE)
+
 - Configuration Firebase
 - Système d'authentification
 - Architecture base de données
 - Pages légales (FAQ, CGV, Mentions légales)
 
 ### ✅ Phase 2 - Profils utilisateurs (COMPLÈTE)
+
 - Gestion des profils jeunes
 - Upload de photos avec compression
 - Upload et gestion des documents
 - Informations médicales et contacts d'urgence
 
 ### 🚧 Phase 3 - Système de réservation (EN COURS)
+
 - Formulaire de réservation avec calcul automatique des tarifs
 - Liste et détail des réservations
 - Service de tarification avec réductions
 - Système d'annulation avec remboursement
 
 ### Phases suivantes
+
 - Phase 4 : Paiements Stripe
 - Phase 5 : Dashboard accompagnateurs
 - Phase 6 : Messagerie interne
@@ -175,11 +180,13 @@ Le projet suit un développement en 9 phases sur 12+ mois :
 ## 📞 Contact
 
 **Passerelle Jeunesse**
-- **Email** : contact@jeunesse.imogo.org
+
+- **Email** : <contact@jeunesse.imogo.org>
 - **Site** : [jeunesse.imogo.org](https://jeunesse.imogo.org)
 - **Zones d'intervention** : Metz et Saint-Avold
 
 **Développeur**
+
 - Nathan Imogo
 - GitHub : [@nathanimogo](https://github.com/nathanimogo)
 
@@ -196,6 +203,5 @@ Tous droits réservés © 2026 Passerelle Jeunesse
 
 ---
 
-**Version actuelle :** 2.0 (Phase 1 complète)  
+**Version actuelle :** 2.0 (Phase 1 complète)
 **Dernière mise à jour :** 12 février 2026
-
