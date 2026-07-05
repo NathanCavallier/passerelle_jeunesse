@@ -1,23 +1,166 @@
-# 🗺️ ROADMAP – Passerelle Jeunesse v3.0
+# 🗺️ ROADMAP PRODUIT – Passerelle Jeunesse
 
-## Vision: Centre Jeunesse Multifonction – Plateforme Complète
+## Vision produit
 
----
+Passerelle Jeunesse doit devenir une application métier autonome, multi-page et orientée service, hébergée sur un sous-domaine dédié. L’objectif est de transformer le projet existant en un produit clair, avec un parcours client structuré, des pages services visibles, une navigation cohérente et des dashboards métiers fiables.
 
-## 📋 Vue d'ensemble stratégique
+## Objectif
 
-**Passerelle Jeunesse** évolue d'une activité de mobilité vers un **Centre Jeunesse Multifonction** avec 6 pôles de développement.
+Déployer Passerelle Jeunesse comme un vrai produit autonome, non pas comme une simple SPA marketing :
 
-Cette roadmap détaille :
+- une page d’accueil produit et des pages services
+- un tunnel de réservation public
+- une plateforme parent/jeune/accompagnateur/admin complète
+- un déploiement propre sur sous-domaine dédié
+- une base évolutive pour ajouter des services (ateliers, escape, périscolaire, etc.)
 
-1. **L'opérationnel actuel** (Phase 1 - Activité de mobilité) ✅ 90% complète
-2. **L'expansion progressive** (Phase 2-3 - Ateliers, escape games, numérique)
-3. **La modernisation technologique** (Internationalisation FR/EN, Design system v1.0)
-4. **L'infrastructure long terme** (Multi-pôles, gestion globale, scale)
+## Statut actuel
 
----
+### Solidités déjà en place
 
-## 🌍 AXE TRANSVERSAL – Internationalisation (FR/EN)
+- application Next.js App Router
+- pages publiques et dashboards
+- authentification parent/accompagnateur/admin
+- gestion de profils jeunes et parents
+- réservation de prestations et calcul tarifaire
+- paiement Stripe Checkout
+- webhooks Stripe pour paiements
+- emails transactionnels SendGrid
+- annulation avec remboursement
+- dashboard parent, accompagnateur et admin
+- support PWA partiel
+
+### Points à stabiliser pour devenir produit
+
+- navigation produit multi-page claire et directe
+- pages service accessibles sans passer par une SPA one-page
+- sous-domaine dédié avec DNS et certificats
+- SEO de base et URLs stables
+- tunnel de réservation avant login, avec retour après connexion
+- documentation du déploiement et du produit
+
+## Roadmap de transformation
+
+### Phase 1 – Productisation immédiate (1 à 2 semaines)
+
+#### 1.1 Déploiement sur sous-domaine dédié
+
+- [ ] définir et réserver le sous-domaine `xxxx.ateliers360.fr`
+- [ ] configurer le DNS et le certificat TLS
+- [ ] séparer le déploiement du site marketing principal
+- [ ] vérifier que le déploiement est indépendant et stable
+
+#### 1.2 Structuration multi-page
+
+- [ ] définir le layout global produit dans `src/app/layout.tsx`
+- [ ] ajouter un menu top-level : Accueil, Services, Réserver, FAQ, Avis, Contact, Connexion
+- [ ] rendre chaque page directement accessible via URL
+- [ ] isoler les pages de contenu et limiter les transitions SPA sur les pages produit
+- [ ] documenter la structure des routes
+
+#### 1.3 Pages produit immédiates
+
+- [ ] `/` – page d’accueil produit
+- [ ] `/poles` – page liste des services
+- [ ] `/poles/mobilite` – service mobilité
+- [ ] `/pricing` – tarification et modalités
+- [ ] `/faq` – FAQ produit
+- [ ] `/avis` – témoignages et avis
+- [ ] `/safety` – sécurité et conformité
+- [ ] `/login`, `/signup`, `/reset-password`
+- [ ] `/dashboard/bookings/new` accessible depuis les pages marketing
+
+#### 1.4 Tunnel de conversion
+
+- [ ] CTA “Réserver” présent sur toutes les pages service
+- [ ] permettre une pré-réservation visible avant login
+- [ ] rediriger vers login/signup puis revenir au tunnel
+- [ ] afficher un prix estimé immédiatement
+- [ ] simplifier le formulaire de réservation en étapes logiques
+
+#### 1.5 Positionnement produit
+
+- [ ] clarifier le message produit : “Accompagnement sécurisé des jeunes”
+- [ ] uniformiser les textes vers une proposition de valeur claire
+- [ ] prioriser les bénéfices : sécurité, sérénité, accompagnement humain
+- [ ] afficher des preuves sociales et labels de confiance
+
+### Phase 2 – Stabilisation produit (3 à 4 semaines)
+
+#### 2.1 Stabilisation backend métier
+
+- [ ] inventorier et documenter les routes API existantes
+- [ ] sécuriser correctement l’accès aux routes
+- [ ] vérifier la robustesse des paiements Stripe
+- [ ] garantir la fiabilité des webhooks
+- [ ] ajouter un email de confirmation de remboursement
+- [ ] stabiliser le workflow disponibilité / créneaux
+- [ ] aligner les statuts de booking avec les dashboards
+
+#### 2.2 Expérience client
+
+- [ ] améliorer la page de détail de réservations
+- [ ] rendre le statut et actions clairement visibles
+- [ ] expliquer le paiement accompté vs solde
+- [ ] proposer un suivi de mission lisible pour les parents
+- [ ] rendre l’annulation explicite et transparente
+
+#### 2.3 SEO et pages publiques
+
+- [ ] ajouter des métadonnées SEO par page
+- [ ] générer sitemap et robots.txt si nécessaire
+- [ ] tester l’accès direct aux pages publiques
+- [ ] vérifier les pages 404 et les redirections
+
+#### 2.4 Branding du sous-domaine
+
+- [ ] aligner le domaine et les liens dans les emails
+- [ ] structurer mentions légales / CGV / politique de confidentialité
+- [ ] mettre à jour `apphosting.yaml` / configuration de déploiement
+
+### Phase 3 – MVP produit (4 à 6 semaines)
+
+#### 3.1 Lancement MVP
+
+- [ ] déployer la version publique stable sur le sous-domaine
+- [ ] parcours réservation fonctionnel et testé
+- [ ] dashboards parent et accompagnateur utilisables
+- [ ] paiement Stripe en production
+- [ ] envoi d’emails transactionnels validé
+- [ ] reporting admin basique opérationnel
+
+#### 3.2 Qualité produit
+
+- [ ] vérifier performance et accessibilité
+- [ ] tester les principaux parcours utilisateurs
+- [ ] produire une documentation de mise en production
+- [ ] documenter le routage et l’architecture produit
+
+#### 3.3 Préparer le lancement
+
+- [ ] config analytics / tracking
+- [ ] plan de mise en route équipe
+- [ ] checklist de livraison
+
+### Phase 4 – Extension produit
+
+- [ ] ajouter un catalogue de services sur `/poles`
+- [ ] structurer les pages par pôle service
+- [ ] prévoir des offres évolutives : ateliers, escape games, périscolaire
+- [ ] intégrer un système de feedback utilisateur
+- [ ] ouvrir des pistes de monétisation complémentaires
+
+## Priorités immédiates
+
+1. Renforcer le layout et la navigation produit
+2. Créer les pages public-targeted manquantes
+3. Déployer sur sous-domaine dédié
+4. Vérifier le tunnel de réservation avant et après login
+5. Documenter les routes API et le workflow paiement
+
+## Résumé
+
+Ce plan repositionne Passerelle Jeunesse comme un produit autonome, prêt à évoluer au-delà de la simple page web. L’objectif concret est un site multi-page cohérent, un domaine dédié et un parcours client produit professionnel.
 
 ### 📅 Timeline: Q3 2026 (Juillet-Août, parallèle Phase 2)
 
@@ -497,7 +640,7 @@ Q2 2027 : Pôle numérique lancement + Centre jeunesse v1
 
 ---
 
-**Mise à jour**: 5 juin 2026  
-**Version**: 3.0  
-**Responsable**: Nathan Imogo – Passerelle Jeunesse  
+**Mise à jour**: 5 juin 2026
+**Version**: 3.0
+**Responsable**: Nathan Imogo – Passerelle Jeunesse
 **Prochaine révision**: 20 juin 2026
