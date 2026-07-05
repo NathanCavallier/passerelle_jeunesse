@@ -5,10 +5,22 @@
 
 import Stripe from 'stripe';
 
-// Initialisation Stripe avec la clé secrète
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-    // apiVersion est géré automatiquement par le SDK
-});
+let stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+        throw new Error('STRIPE_SECRET_KEY is not configured. Please set it in your environment.');
+    }
+
+    if (!stripe) {
+        stripe = new Stripe(secretKey, {
+            // apiVersion est géré automatiquement par le SDK
+        });
+    }
+
+    return stripe;
+}
 
 export interface CreatePaymentSessionParams {
     bookingId: string;
@@ -38,7 +50,8 @@ export async function createPaymentSession(params: CreatePaymentSessionParams): 
     const amountInCents = Math.round(amount * 100);
 
     try {
-        const session = await stripe.checkout.sessions.create({
+        const stripeClient = getStripe();
+        const session = await stripeClient.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
             line_items: [
@@ -89,7 +102,8 @@ export async function createPaymentSession(params: CreatePaymentSessionParams): 
  */
 export async function getPaymentSession(sessionId: string): Promise<Stripe.Checkout.Session> {
     try {
-        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        const stripeClient = getStripe();
+        const session = await stripeClient.checkout.sessions.retrieve(sessionId);
         return session;
     } catch (error) {
         console.error('Erreur récupération session:', error);
@@ -106,6 +120,7 @@ export async function createRefund(
     reason?: Stripe.RefundCreateParams.Reason
 ): Promise<Stripe.Refund> {
     try {
+        const stripeClient = getStripe();
         const refundParams: Stripe.RefundCreateParams = {
             payment_intent: paymentIntentId,
             reason: reason || 'requested_by_customer',
@@ -115,7 +130,7 @@ export async function createRefund(
             refundParams.amount = Math.round(amount * 100); // Convertir en centimes
         }
 
-        const refund = await stripe.refunds.create(refundParams);
+        const refund = await stripeClient.refunds.create(refundParams);
         return refund;
     } catch (error) {
         console.error('Erreur création remboursement:', error);
@@ -132,7 +147,8 @@ export function verifyWebhookSignature(
     webhookSecret: string
 ): Stripe.Event {
     try {
-        const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+        const stripeClient = getStripe();
+        const event = stripeClient.webhooks.constructEvent(payload, signature, webhookSecret);
         return event;
     } catch (error) {
         console.error('Erreur vérification signature webhook:', error);
@@ -145,7 +161,8 @@ export function verifyWebhookSignature(
  */
 export async function getPaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
     try {
-        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        const stripeClient = getStripe();
+        const paymentIntent = await stripeClient.paymentIntents.retrieve(paymentIntentId);
         return paymentIntent;
     } catch (error) {
         console.error('Erreur récupération PaymentIntent:', error);
@@ -158,7 +175,8 @@ export async function getPaymentIntent(paymentIntentId: string): Promise<Stripe.
  */
 export async function listCustomerPayments(customerEmail: string, limit: number = 10): Promise<Stripe.Charge[]> {
     try {
-        const charges = await stripe.charges.list({
+        const stripeClient = getStripe();
+        const charges = await stripeClient.charges.list({
             limit,
         });
 
