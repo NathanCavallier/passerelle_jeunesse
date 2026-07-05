@@ -1,5 +1,4 @@
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import PageShell from '@/components/page-shell';
 import MentionsLegales from '@/components/mentions-legales';
 
 export const metadata = {
@@ -9,12 +8,8 @@ export const metadata = {
 
 export default function MentionsLegalesPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
-      <Header />
-      <main className="flex-1">
-        <MentionsLegales />
-      </main>
-      <Footer />
-    </div>
+    <PageShell>
+      <MentionsLegales />
+    </PageShell>
   );
 }

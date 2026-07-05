@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://jeunesse.imogo.org',
+    url: 'https://jeunesse.ateliers360.fr',
     title: 'Passerelle Jeunesse | Accompagnement & Mobilité pour Jeunes',
     description: 'Service professionnel d\'accompagnement et de transport pour jeunes.',
     siteName: 'Passerelle Jeunesse',

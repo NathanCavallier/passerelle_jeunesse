@@ -1,5 +1,4 @@
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import PageShell from '@/components/page-shell';
 import CGV from '@/components/cgv';
 
 export const metadata = {
@@ -9,12 +8,8 @@ export const metadata = {
 
 export default function CGVPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
-      <Header />
-      <main className="flex-1">
-        <CGV />
-      </main>
-      <Footer />
-    </div>
+    <PageShell>
+      <CGV />
+    </PageShell>
   );
 }

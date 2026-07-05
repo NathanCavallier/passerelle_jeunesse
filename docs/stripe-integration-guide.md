@@ -12,11 +12,60 @@
    - `src/app/api/payments/create-checkout-session/route.ts` : Création de sessions de paiement
    - `src/app/api/webhooks/stripe/route.ts` : Gestion des événements webhooks Stripe
 
-3. **Composants UI**
+### Détails des endpoints
+
+#### `POST /api/payments/create-checkout-session`
+
+- Crée une session Stripe Checkout pour un acompte ou un solde.
+- Corps JSON attendu :
+
+  ```json
+  {
+    "bookingId": "string",
+    "paymentType": "deposit" | "balance",
+    "customerEmail": "string",
+    "customerName": "string"
+  }
+  ```
+
+- Validation incluse :
+  - `bookingId` et `paymentType` obligatoires
+  - `paymentType` doit être `deposit` ou `balance`
+  - vérifie que la réservation existe
+  - empêche un acompte ou un solde déjà payé
+  - empêche le paiement du solde avant l'acompte
+- Réponse réussite :
+
+  ```json
+  {
+    "sessionId": "cs_test_...",
+    "url": "https://checkout.stripe.com/pay/cs_test_..."
+  }
+  ```
+
+- Erreurs communes :
+  - `400` : paiement invalide ou déjà effectué
+  - `404` : réservation introuvable
+  - `500` : erreur serveur
+
+#### `POST /api/webhooks/stripe`
+
+- Reçoit les événements Stripe en entrée brute.
+- Doit inclure l'en-tête `stripe-signature`.
+- Vérifie la signature avec `STRIPE_WEBHOOK_SECRET`.
+- Événements traités :
+  - `checkout.session.completed` : confirmation de paiement, mise à jour de la réservation Firestore, envoi d'email de confirmation
+  - `payment_intent.succeeded` : log métier si nécessaire
+  - `payment_intent.payment_failed` : log d'erreur métier
+  - `charge.refunded` : recherche du `payment_intent` et mise à jour du statut de remboursement
+- Le webhook retourne systématiquement `200 OK` à Stripe pour éviter les réessaies lorsque l'événement est bien reçu.
+- Important : ne pas exposer de détails de clés Stripe côté client.
+
+1. **Composants UI**
    - `src/components/payments/payment-button.tsx` : Bouton de paiement réutilisable
    - Intégration dans `/dashboard/bookings/[id]` : Boutons pour acompte et solde
 
-4. **Configuration**
+2. **Configuration**
    - `.env.local` : Variables d'environnement Stripe (avec valeurs placeholder)
    - `.env.example` : Template de configuration avec documentation
 
