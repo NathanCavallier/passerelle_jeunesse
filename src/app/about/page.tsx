@@ -1,15 +1,15 @@
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import PageShell from '@/components/page-shell';
 import About from '@/components/about';
+
+export const metadata = {
+  title: 'À propos - Passerelle Jeunesse',
+  description: 'Passerelle Jeunesse propose de l’accompagnement et de la mobilité sécurisée pour les jeunes et leurs familles.',
+};
 
 export default function AboutPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
-      <Header />
-      <main className="flex-1">
-        <About />
-      </main>
-      <Footer />
-    </div>
+    <PageShell>
+      <About />
+    </PageShell>
   );
 }

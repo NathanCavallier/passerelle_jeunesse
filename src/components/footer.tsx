@@ -2,12 +2,12 @@ import Link from 'next/link';
 import Logo from './logo';
 
 const navLinks = [
-  { href: '/#services', label: 'Services' },
+  { href: '/poles', label: 'Services' },
   { href: '/about', label: 'À propos' },
   { href: '/safety', label: 'Cadre & Sécurité' },
   { href: '/pricing', label: 'Tarifs' },
-  { href: '/#testimonials', label: 'Témoignages' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/avis', label: 'Témoignages' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 const legalLinks = [

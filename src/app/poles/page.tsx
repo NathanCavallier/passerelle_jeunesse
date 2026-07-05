@@ -3,12 +3,11 @@
 /**
  * Page récapitulative des pôles de service
  * Route: /poles
- * 
+ *
  * Affiche vue d'ensemble de tous les pôles avec CTA
  */
 
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import PageShell from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import {
@@ -78,11 +77,14 @@ const poles = [
   },
 ];
 
+export const metadata = {
+  title: 'Nos services - Passerelle Jeunesse',
+  description: 'Découvrez les services de Passerelle Jeunesse : mobilité, ateliers, escape games, périscolaire et numérique.',
+};
+
 export default function PolesPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
-      <Header />
-      
+    <PageShell>
       <main className="flex-1">
         {/* Hero */}
         <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-violet-50">
@@ -162,8 +164,6 @@ export default function PolesPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 }

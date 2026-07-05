@@ -5,6 +5,7 @@
 
 'use client';
 
+import PageShell from '@/components/page-shell';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,6 +43,11 @@ function StarDisplay({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'm
         </div>
     );
 }
+
+export const metadata = {
+  title: 'Avis - Passerelle Jeunesse',
+  description: 'Avis et témoignages des familles sur les services d’accompagnement et de mobilité de Passerelle Jeunesse.',
+};
 
 export default function PublicReviewsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);
@@ -89,7 +95,8 @@ export default function PublicReviewsPage() {
     }
 
     return (
-        <div className="container max-w-6xl py-8 px-4">
+        <PageShell>
+          <div className="container max-w-6xl py-8 px-4">
             {/* Header */}
             <div className="mb-8">
                 <Link href="/">

@@ -1,15 +1,15 @@
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import PageShell from '@/components/page-shell';
 import Safety from '@/components/safety';
+
+export const metadata = {
+  title: 'Sécurité - Passerelle Jeunesse',
+  description: 'Découvrez les engagements de sécurité et les bonnes pratiques de Passerelle Jeunesse pour accompagner les jeunes.',
+};
 
 export default function SafetyPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
-      <Header />
-      <main className="flex-1">
-        <Safety />
-      </main>
-      <Footer />
-    </div>
+    <PageShell>
+      <Safety />
+    </PageShell>
   );
 }

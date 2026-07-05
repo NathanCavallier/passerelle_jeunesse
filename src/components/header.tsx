@@ -11,12 +11,12 @@ import { useAuth } from '@/contexts/auth-context';
 import { LanguageSwitcher } from './language-switcher';
 
 const navLinks = [
-  { href: '/#services', label: 'Services' },
+  { href: '/poles', label: 'Services' },
   { href: '/about', label: 'À propos' },
   { href: '/safety', label: 'Cadre & Sécurité' },
   { href: '/pricing', label: 'Tarifs' },
-  { href: '/#testimonials', label: 'Témoignages' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '/avis', label: 'Témoignages' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 export default function Header() {
@@ -42,7 +42,7 @@ export default function Header() {
         <Link href="/">
           <Logo />
         </Link>
-        
+
         {/* Navigation desktop */}
         <nav className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
@@ -103,7 +103,7 @@ export default function Header() {
                     </Link>
                   ))}
                 </nav>
-                
+
                 {/* Boutons d'authentification - Mobile */}
                 <div className="flex flex-col gap-3 border-t pt-6">
                   <LanguageSwitcher variant="outline" />

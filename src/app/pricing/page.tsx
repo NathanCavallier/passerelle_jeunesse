@@ -1,15 +1,15 @@
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import PageShell from '@/components/page-shell';
 import Pricing from '@/components/pricing';
+
+export const metadata = {
+  title: 'Tarifs - Passerelle Jeunesse',
+  description: 'Consultez les tarifs de Passerelle Jeunesse pour l’accompagnement, la mobilité et les services jeunesse.',
+};
 
 export default function PricingPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
-      <Header />
-      <main className="flex-1">
-        <Pricing />
-      </main>
-      <Footer />
-    </div>
+    <PageShell>
+      <Pricing />
+    </PageShell>
   );
 }
