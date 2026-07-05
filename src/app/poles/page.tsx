@@ -1,5 +1,3 @@
-'use client';
-
 /**
  * Page récapitulative des pôles de service
  * Route: /poles

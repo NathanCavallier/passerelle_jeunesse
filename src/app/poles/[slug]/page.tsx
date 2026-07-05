@@ -1,11 +1,42 @@
-'use client';
-
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import type { Metadata } from 'next';
+import PageShell from '@/components/page-shell';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
+
+const colorClasses = {
+  blue: {
+    bgFrom: 'from-blue-50',
+    bgTo: 'to-blue-100',
+    icon: 'text-blue-600',
+    status: 'text-blue-600',
+  },
+  violet: {
+    bgFrom: 'from-violet-50',
+    bgTo: 'to-violet-100',
+    icon: 'text-violet-600',
+    status: 'text-violet-600',
+  },
+  amber: {
+    bgFrom: 'from-amber-50',
+    bgTo: 'to-amber-100',
+    icon: 'text-amber-600',
+    status: 'text-amber-600',
+  },
+  emerald: {
+    bgFrom: 'from-emerald-50',
+    bgTo: 'to-emerald-100',
+    icon: 'text-emerald-600',
+    status: 'text-emerald-600',
+  },
+  cyan: {
+    bgFrom: 'from-cyan-50',
+    bgTo: 'to-cyan-100',
+    icon: 'text-cyan-600',
+    status: 'text-cyan-600',
+  },
+} as const;
 
 const polesData: Record<string, {
   title: string;
@@ -15,13 +46,13 @@ const polesData: Record<string, {
   features: string[];
   ctaText: string;
   ctaHref: string;
-  color: string;
+  color: keyof typeof colorClasses;
 }> = {
   mobilite: {
     title: 'Mobilité',
     subtitle: 'Accompagnement local et longue distance',
-    description: `Passerelle Jeunesse propose un accompagnement personnalisé pour tous les jeunes ayant besoin 
-    de se déplacer. Que ce soit pour un trajet local à Metz/Saint-Avold ou une aventure à travers la France, 
+    description: `Passerelle Jeunesse propose un accompagnement personnalisé pour tous les jeunes ayant besoin
+    de se déplacer. Que ce soit pour un trajet local à Metz/Saint-Avold ou une aventure à travers la France,
     nous sommes là pour faciliter vos déplacements en toute sécurité et confiance.`,
     status: '✓ Disponible',
     features: [
@@ -38,8 +69,8 @@ const polesData: Record<string, {
   'sciences-decouverte': {
     title: 'Sciences & Découverte',
     subtitle: 'Ateliers scientifiques avec Ateliers 360',
-    description: `Découvrez le monde fascinant des sciences à travers des ateliers pratiques et ludiques. 
-    Chimie, physique, électricité, robotique : des expériences concrètes pour comprendre et apprendre 
+    description: `Découvrez le monde fascinant des sciences à travers des ateliers pratiques et ludiques.
+    Chimie, physique, électricité, robotique : des expériences concrètes pour comprendre et apprendre
     en s'amusant.`,
     status: '📅 Bientôt (Septembre 2026)',
     features: [
@@ -57,8 +88,8 @@ const polesData: Record<string, {
   'escape-games': {
     title: 'Escape Games & Enquêtes',
     subtitle: 'Jeux d\'évasion éducatifs',
-    description: `Immergez-vous dans des aventures captivantes où logique, observation et travail 
-    d'équipe sont essentiels. Nos escape games sont conçus pour développer l'esprit critique 
+    description: `Immergez-vous dans des aventures captivantes où logique, observation et travail
+    d'équipe sont essentiels. Nos escape games sont conçus pour développer l'esprit critique
     tout en s'amusant.`,
     status: '📅 Bientôt (Septembre 2026)',
     features: [
@@ -76,8 +107,8 @@ const polesData: Record<string, {
   periscolaire: {
     title: 'Accueil Périscolaire',
     subtitle: 'Après l\'école et mercredis éducatifs',
-    description: `Un espace bienveillant où les jeunes trouvent aide aux devoirs, activités créatives 
-    et moments de détente. Du lundi au vendredi après les cours et les mercredis, un encadrement 
+    description: `Un espace bienveillant où les jeunes trouvent aide aux devoirs, activités créatives
+    et moments de détente. Du lundi au vendredi après les cours et les mercredis, un encadrement
     de qualité pour réussir à l'école et s'épanouir.`,
     status: '📅 Bientôt (Août 2026)',
     features: [
@@ -95,8 +126,8 @@ const polesData: Record<string, {
   numerique: {
     title: 'Numérique & IA',
     subtitle: 'Programmation, IA, cybersécurité, création',
-    description: `Préparez-vous au futur numérique en apprenant la programmation, la création de jeux 
-    vidéo, les bases de l'IA et de la cybersécurité. L'impression 3D et les technologies modernes 
+    description: `Préparez-vous au futur numérique en apprenant la programmation, la création de jeux
+    vidéo, les bases de l'IA et de la cybersécurité. L'impression 3D et les technologies modernes
     n'auront plus de secrets pour vous.`,
     status: '📅 Prochainement (Avril 2027)',
     features: [
@@ -113,6 +144,26 @@ const polesData: Record<string, {
   },
 };
 
+export function generateStaticParams() {
+  return Object.keys(polesData).map((slug) => ({ slug }));
+}
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const pole = polesData[params.slug];
+
+  if (!pole) {
+    return {
+      title: 'Pôle non trouvé - Passerelle Jeunesse',
+      description: 'Pôle introuvable dans Passerelle Jeunesse.',
+    };
+  }
+
+  return {
+    title: `${pole.title} - Passerelle Jeunesse`,
+    description: pole.description,
+  };
+}
+
 export default function PoleDetailPage({ params }: { params: { slug: string } }) {
   const pole = polesData[params.slug];
 
@@ -120,13 +171,13 @@ export default function PoleDetailPage({ params }: { params: { slug: string } })
     notFound();
   }
 
-  return (
-    <div className="flex flex-col min-h-dvh bg-background">
-      <Header />
+  const color = colorClasses[pole.color];
 
+  return (
+    <PageShell>
       <main className="flex-1">
         {/* Hero */}
-        <section className={`py-16 px-4 bg-gradient-to-r from-${pole.color}-50 to-${pole.color}-100`}>
+        <section className={`py-16 px-4 bg-gradient-to-r ${color.bgFrom} ${color.bgTo}`}>
           <div className="max-w-5xl mx-auto">
             <Link
               href="/poles"
@@ -137,7 +188,7 @@ export default function PoleDetailPage({ params }: { params: { slug: string } })
             </Link>
             <h1 className="text-5xl font-bold text-foreground mb-2">{pole.title}</h1>
             <p className="text-xl text-muted-foreground mb-4">{pole.subtitle}</p>
-            <span className="inline-block text-sm font-semibold text-blue-600">
+            <span className={`inline-block text-sm font-semibold ${color.status}`}>
               {pole.status}
             </span>
           </div>
@@ -154,7 +205,7 @@ export default function PoleDetailPage({ params }: { params: { slug: string } })
             <ul className="space-y-3 mb-12">
               {pole.features.map((feature) => (
                 <li key={feature} className="flex items-start gap-3">
-                  <span className={`text-${pole.color}-600 font-bold mt-1`}>✓</span>
+                  <span className={`${color.icon} font-bold mt-1`}>✓</span>
                   <span className="text-muted-foreground">{feature}</span>
                 </li>
               ))}
@@ -185,21 +236,24 @@ export default function PoleDetailPage({ params }: { params: { slug: string } })
               {Object.entries(polesData)
                 .filter(([slug]) => slug !== params.slug)
                 .slice(0, 2)
-                .map(([slug, related]) => (
-                  <Link key={slug} href={`/poles/${slug}`}>
-                    <div className="p-6 bg-white rounded-lg border hover:shadow-md transition-shadow cursor-pointer">
-                      <h3 className="font-bold text-foreground mb-2">{related.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{related.subtitle}</p>
-                      <span className="text-xs font-semibold text-blue-600">{related.status}</span>
-                    </div>
-                  </Link>
-                ))}
+                .map(([slug, related]) => {
+                  const relatedColor = colorClasses[related.color];
+                  return (
+                    <Link key={slug} href={`/poles/${slug}`}>
+                      <div className="p-6 bg-white rounded-lg border hover:shadow-md transition-shadow cursor-pointer">
+                        <h3 className="font-bold text-foreground mb-2">{related.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3">{related.subtitle}</p>
+                        <span className={`text-xs font-semibold ${relatedColor.status}`}>
+                          {related.status}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
             </div>
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 }

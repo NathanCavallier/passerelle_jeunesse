@@ -44,11 +44,6 @@ function StarDisplay({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'm
     );
 }
 
-export const metadata = {
-  title: 'Avis - Passerelle Jeunesse',
-  description: 'Avis et témoignages des familles sur les services d’accompagnement et de mobilité de Passerelle Jeunesse.',
-};
-
 export default function PublicReviewsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [stats, setStats] = useState<{
@@ -305,6 +300,7 @@ export default function PublicReviewsPage() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
+          </div>
+        </PageShell>
     );
 }

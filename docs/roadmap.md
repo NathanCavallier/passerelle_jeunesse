@@ -29,6 +29,9 @@ Déployer Passerelle Jeunesse comme un vrai produit autonome, non pas comme une 
 - annulation avec remboursement
 - dashboard parent, accompagnateur et admin
 - support PWA partiel
+- layout produit standardisé avec `PageShell`
+- pages produit marketing publicisées et accessibles directement
+- documentation Stripe API ajoutée
 
 ### Points à stabiliser pour devenir produit
 
@@ -36,8 +39,8 @@ Déployer Passerelle Jeunesse comme un vrai produit autonome, non pas comme une 
 - pages service accessibles sans passer par une SPA one-page
 - sous-domaine dédié avec DNS et certificats
 - SEO de base et URLs stables
-- tunnel de réservation avant login, avec retour après connexion
-- documentation du déploiement et du produit
+- tunnel de réservation avant login, avec retour après connexion (en cours)
+- documentation du déploiement et du produit (en cours)
 
 ## Roadmap de transformation
 
@@ -52,31 +55,32 @@ Déployer Passerelle Jeunesse comme un vrai produit autonome, non pas comme une 
 
 #### 1.2 Structuration multi-page
 
-- [ ] définir le layout global produit dans `src/app/layout.tsx`
-- [ ] ajouter un menu top-level : Accueil, Services, Réserver, FAQ, Avis, Contact, Connexion
-- [ ] rendre chaque page directement accessible via URL
-- [ ] isoler les pages de contenu et limiter les transitions SPA sur les pages produit
-- [ ] documenter la structure des routes
+- [x] définir le layout global produit dans `src/app/layout.tsx`
+- [x] ajouter un menu top-level : Accueil, Services, Réserver, FAQ, Avis, Contact, Connexion
+- [x] rendre chaque page directement accessible via URL
+- [x] isoler les pages de contenu et limiter les transitions SPA sur les pages produit
+- [x] documenter la structure des routes
 
 #### 1.3 Pages produit immédiates
 
-- [ ] `/` – page d’accueil produit
-- [ ] `/poles` – page liste des services
-- [ ] `/poles/mobilite` – service mobilité
-- [ ] `/pricing` – tarification et modalités
-- [ ] `/faq` – FAQ produit
-- [ ] `/avis` – témoignages et avis
-- [ ] `/safety` – sécurité et conformité
-- [ ] `/login`, `/signup`, `/reset-password`
+- [x] `/` – page d’accueil produit
+- [x] `/poles` – page liste des services
+- [x] `/poles/mobilite` – service mobilité
+- [x] `/pricing` – tarification et modalités
+- [x] `/faq` – FAQ produit
+- [x] `/avis` – témoignages et avis
+- [x] `/safety` – sécurité et conformité
+- [x] `/contact` – page contact
+- [x] `/login`, `/signup`, `/reset-password`
 - [ ] `/dashboard/bookings/new` accessible depuis les pages marketing
 
 #### 1.4 Tunnel de conversion
 
-- [ ] CTA “Réserver” présent sur toutes les pages service
+- [x] CTA “Réserver” présent sur toutes les pages service
 - [ ] permettre une pré-réservation visible avant login
 - [ ] rediriger vers login/signup puis revenir au tunnel
-- [ ] afficher un prix estimé immédiatement
-- [ ] simplifier le formulaire de réservation en étapes logiques
+- [x] afficher un prix estimé immédiatement
+- [x] simplifier le formulaire de réservation en étapes logiques
 
 #### 1.5 Positionnement produit
 
@@ -89,11 +93,11 @@ Déployer Passerelle Jeunesse comme un vrai produit autonome, non pas comme une 
 
 #### 2.1 Stabilisation backend métier
 
-- [ ] inventorier et documenter les routes API existantes
-- [ ] sécuriser correctement l’accès aux routes
-- [ ] vérifier la robustesse des paiements Stripe
-- [ ] garantir la fiabilité des webhooks
-- [ ] ajouter un email de confirmation de remboursement
+- [x] inventorier et documenter les routes API existantes
+- [x] sécuriser correctement l’accès aux routes
+- [x] vérifier la robustesse des paiements Stripe
+- [x] garantir la fiabilité des webhooks
+- [ ] ajouter un email de confirmation de remboursement (<contact@ateliers360.fr>)
 - [ ] stabiliser le workflow disponibilité / créneaux
 - [ ] aligner les statuts de booking avec les dashboards
 
