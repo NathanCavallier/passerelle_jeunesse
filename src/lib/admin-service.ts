@@ -3,7 +3,7 @@
  * Fonctions côté client pour le panneau admin (requêtes Firestore)
  */
 
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import {
   collection,
   query,
@@ -73,11 +73,11 @@ export async function getAdminStats(): Promise<AdminStats> {
 
   // Requêtes parallèles
   const [usersSnap, bookingsSnap, monthBookingsSnap] = await Promise.all([
-    getDocs(collection(db, 'users')),
-    getDocs(collection(db, 'bookings')),
+    getDocs(collection(getFirebaseDb(), 'users')),
+    getDocs(collection(getFirebaseDb(), 'bookings')),
     getDocs(
       query(
-        collection(db, 'bookings'),
+        collection(getFirebaseDb(), 'bookings'),
         where('createdAt', '>=', startOfMonthTs)
       )
     ),
@@ -132,10 +132,10 @@ export async function getAdminStats(): Promise<AdminStats> {
  * Récupère toutes les réservations avec filtres optionnels
  */
 export async function getAllBookings(filters?: AdminBookingFilters): Promise<Booking[]> {
-  let q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
+  let q = query(collection(getFirebaseDb(), 'bookings'), orderBy('createdAt', 'desc'));
 
   if (filters?.status) {
-    q = query(collection(db, 'bookings'), where('status', '==', filters.status), orderBy('createdAt', 'desc'));
+    q = query(collection(getFirebaseDb(), 'bookings'), where('status', '==', filters.status), orderBy('createdAt', 'desc'));
   }
 
   const snap = await getDocs(q);
@@ -188,7 +188,7 @@ export function onBookingsSnapshot(
   callback: (bookings: Booking[]) => void,
   onError?: (error: Error) => void
 ): Unsubscribe {
-  const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'));
+  const q = query(collection(getFirebaseDb(), 'bookings'), orderBy('createdAt', 'desc'));
   return onSnapshot(
     q,
     (snapshot) => {
@@ -203,7 +203,7 @@ export function onBookingsSnapshot(
  * Met à jour le statut d'une réservation (admin)
  */
 export async function updateBookingStatus(bookingId: string, status: BookingStatus, notes?: string): Promise<void> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   const updateData: any = {
     status,
     updatedAt: serverTimestamp(),
@@ -221,7 +221,7 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
  * Assigne un accompagnateur à une réservation
  */
 export async function assignAccompanist(bookingId: string, accompanistId: string): Promise<void> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   await updateDoc(bookingRef, {
     accompanistId,
     status: 'assigned',
@@ -233,7 +233,7 @@ export async function assignAccompanist(bookingId: string, accompanistId: string
  * Ajoute des notes internes à une réservation
  */
 export async function addInternalNote(bookingId: string, note: string): Promise<void> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   await updateDoc(bookingRef, {
     internalNotes: note,
     updatedAt: serverTimestamp(),
@@ -251,9 +251,9 @@ export async function getAllUsers(filters?: AdminUserFilters): Promise<(User & {
   let q;
 
   if (filters?.role) {
-    q = query(collection(db, 'users'), where('role', '==', filters.role), orderBy('createdAt', 'desc'));
+    q = query(collection(getFirebaseDb(), 'users'), where('role', '==', filters.role), orderBy('createdAt', 'desc'));
   } else {
-    q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+    q = query(collection(getFirebaseDb(), 'users'), orderBy('createdAt', 'desc'));
   }
 
   const snap = await getDocs(q);
@@ -284,7 +284,7 @@ export function onUsersSnapshot(
   callback: (users: (User & { id: string })[]) => void,
   onError?: (error: Error) => void
 ): Unsubscribe {
-  const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
+  const q = query(collection(getFirebaseDb(), 'users'), orderBy('createdAt', 'desc'));
   return onSnapshot(
     q,
     (snapshot) => {
@@ -299,7 +299,7 @@ export function onUsersSnapshot(
  * Met à jour le statut d'un utilisateur
  */
 export async function updateUserStatus(userId: string, status: UserStatus): Promise<void> {
-  const userRef = doc(db, 'users', userId);
+  const userRef = doc(getFirebaseDb(), 'users', userId);
   await updateDoc(userRef, {
     status,
     updatedAt: serverTimestamp(),
@@ -314,7 +314,7 @@ export async function verifyAccompanistDocument(
   documentType: 'criminalRecord' | 'insurance' | 'idCard',
   verified: boolean
 ): Promise<void> {
-  const userRef = doc(db, 'users', userId);
+  const userRef = doc(getFirebaseDb(), 'users', userId);
   await updateDoc(userRef, {
     [`accompanistProfile.documents.${documentType}.verified`]: verified,
     [`accompanistProfile.documents.${documentType}.verifiedAt`]: verified ? serverTimestamp() : null,
@@ -327,7 +327,7 @@ export async function verifyAccompanistDocument(
  */
 export async function getAvailableAccompanists(): Promise<(User & { id: string })[]> {
   const q = query(
-    collection(db, 'users'),
+    collection(getFirebaseDb(), 'users'),
     where('role', '==', 'accompanist'),
     where('status', '==', 'active')
   );
@@ -351,7 +351,7 @@ export async function logAuditAction(
   targetId?: string,
   details?: any
 ): Promise<void> {
-  await addDoc(collection(db, 'audit'), {
+  await addDoc(collection(getFirebaseDb(), 'audit'), {
     action,
     actorId,
     actorRole,

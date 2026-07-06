@@ -8,13 +8,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-    ArrowLeft, 
-    TrendingUp, 
+import {
+    ArrowLeft,
+    TrendingUp,
     DollarSign,
     MapPin,
     Calendar,
@@ -28,18 +28,18 @@ import { format, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Booking, ParentProfile } from '@/types/firestore';
 import { getUserDocument } from '@/lib/firestore-service';
-import { 
-    ChartContainer, 
-    ChartTooltip, 
-    ChartTooltipContent 
+import {
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent
 } from '@/components/ui/chart';
-import { 
-    Line, 
-    LineChart, 
-    Bar, 
-    BarChart, 
-    XAxis, 
-    YAxis, 
+import {
+    Line,
+    LineChart,
+    Bar,
+    BarChart,
+    XAxis,
+    YAxis,
     CartesianGrid,
     ResponsiveContainer,
     Pie,
@@ -87,7 +87,7 @@ export default function StatsPage() {
                 }
 
                 // Charger les réservations
-                const bookingsRef = collection(db, 'bookings');
+                const bookingsRef = collection(getFirebaseDb(), 'bookings');
                 const q = query(
                     bookingsRef,
                     where('userId', '==', user.uid)
@@ -100,7 +100,7 @@ export default function StatsPage() {
                 snapshot.forEach((doc) => {
                     const booking = { id: doc.id, ...doc.data() } as Booking;
                     bookingsData.push(booking);
-                    
+
                     // Simuler la distance (entre 10 et 150 km)
                     const simulatedDistance = Math.floor(Math.random() * 140) + 10;
                     distance += simulatedDistance;
@@ -136,7 +136,7 @@ export default function StatsPage() {
             if (booking.createdAt) {
                 const monthKey = format(booking.createdAt.toDate(), 'yyyy-MM');
                 const existing = statsMap.get(monthKey) || { bookings: 0, spending: 0 };
-                
+
                 statsMap.set(monthKey, {
                     bookings: existing.bookings + 1,
                     spending: existing.spending + booking.pricing.total
@@ -180,7 +180,7 @@ export default function StatsPage() {
 
     const handleExportCSV = () => {
         let csv = 'Date,Départ,Arrivée,Jeunes,Prix,Statut\n';
-        
+
         bookings.forEach(booking => {
             const date = booking.createdAt ? format(booking.createdAt.toDate(), 'dd/MM/yyyy') : 'N/A';
             csv += `"${date}","${booking.trip.departure.city}","${booking.trip.arrival.city}",${booking.youngstersIds.length},${booking.pricing.total}€,"${booking.status}"\n`;
@@ -354,10 +354,10 @@ export default function StatsPage() {
                                                 <XAxis dataKey="month" />
                                                 <YAxis />
                                                 <ChartTooltip content={<ChartTooltipContent />} />
-                                                <Line 
-                                                    type="monotone" 
-                                                    dataKey="bookings" 
-                                                    stroke="hsl(var(--primary))" 
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="bookings"
+                                                    stroke="hsl(var(--primary))"
                                                     strokeWidth={2}
                                                     dot={{ r: 4 }}
                                                 />
@@ -393,9 +393,9 @@ export default function StatsPage() {
                                                 <XAxis dataKey="month" />
                                                 <YAxis />
                                                 <ChartTooltip content={<ChartTooltipContent />} />
-                                                <Bar 
-                                                    dataKey="spending" 
-                                                    fill="#10b981" 
+                                                <Bar
+                                                    dataKey="spending"
+                                                    fill="#10b981"
                                                     radius={[8, 8, 0, 0]}
                                                 />
                                             </BarChart>

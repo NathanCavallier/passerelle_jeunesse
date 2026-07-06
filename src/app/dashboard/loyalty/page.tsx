@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { collection, query, where, orderBy, getDocs, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,11 +18,11 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { 
-    ArrowLeft, 
-    TrendingUp, 
-    Gift, 
-    Star, 
+import {
+    ArrowLeft,
+    TrendingUp,
+    Gift,
+    Star,
     Award,
     Sparkles,
     Calendar,
@@ -215,7 +215,7 @@ export default function LoyaltyPage() {
                 }
 
                 // Charger l'historique des bookings pour simuler les transactions
-                const bookingsRef = collection(db, 'bookings');
+                const bookingsRef = collection(getFirebaseDb(), 'bookings');
                 const q = query(
                     bookingsRef,
                     where('parentId', '==', user.uid),
@@ -227,11 +227,11 @@ export default function LoyaltyPage() {
                 const txs: PointsTransaction[] = [];
                 bookingsSnapshot.forEach((doc) => {
                     const booking = { id: doc.id, ...doc.data() } as Booking;
-                    
+
                     // Points gagnés = 1 point par euro dépensé (niveau Bronze)
                     // On pourrait ajuster selon le niveau au moment de la transaction
                     const pointsEarned = Math.floor(booking.pricing.total);
-                    
+
                     if (booking.createdAt) {
                         txs.push({
                             id: booking.id,
@@ -360,8 +360,8 @@ export default function LoyaltyPage() {
                                     Niveau {currentTier.name}
                                 </h2>
                                 <p className="text-muted-foreground text-sm">
-                                    Membre depuis {user?.metadata?.creationTime ? 
-                                        format(new Date(user.metadata.creationTime), 'MMMM yyyy', { locale: fr }) 
+                                    Membre depuis {user?.metadata?.creationTime ?
+                                        format(new Date(user.metadata.creationTime), 'MMMM yyyy', { locale: fr })
                                         : 'récemment'}
                                 </p>
                             </div>
@@ -422,7 +422,7 @@ export default function LoyaltyPage() {
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 {REWARDS_CATALOG.map((reward) => {
                                     const canAfford = (userProfile?.loyaltyPoints || 0) >= reward.pointsCost;
-                                    
+
                                     return (
                                         <Card key={reward.id} className={canAfford ? 'border-primary' : 'opacity-60'}>
                                             <CardContent className="pt-6">
@@ -438,7 +438,7 @@ export default function LoyaltyPage() {
                                                 <p className="text-sm text-muted-foreground mb-4">
                                                     {reward.description}
                                                 </p>
-                                                <Button 
+                                                <Button
                                                     className="w-full"
                                                     disabled={!canAfford || redeemingId === reward.id}
                                                     onClick={() => handleRedeemReward(reward)}
@@ -494,8 +494,8 @@ export default function LoyaltyPage() {
                                         <div key={tx.id} className="flex items-center justify-between p-3 rounded-lg border">
                                             <div className="flex items-center gap-3">
                                                 <div className={`p-2 rounded-full ${
-                                                    tx.type === 'earned' 
-                                                        ? 'bg-green-50 text-green-600' 
+                                                    tx.type === 'earned'
+                                                        ? 'bg-green-50 text-green-600'
                                                         : 'bg-red-50 text-red-600'
                                                 }`}>
                                                     {tx.type === 'earned' ? (
@@ -574,7 +574,7 @@ export default function LoyaltyPage() {
                                                     )}
                                                 </CardTitle>
                                                 <CardDescription>
-                                                    {tier.maxPoints === Infinity 
+                                                    {tier.maxPoints === Infinity
                                                         ? `${tier.minPoints}+ points`
                                                         : `${tier.minPoints} - ${tier.maxPoints} points`}
                                                 </CardDescription>
@@ -600,7 +600,7 @@ export default function LoyaltyPage() {
                                     {!isUnlocked && (
                                         <div className="mt-4 p-3 bg-muted rounded-lg">
                                             <p className="text-sm text-muted-foreground">
-                                                Encore {tier.minPoints - (userProfile?.loyaltyPoints || 0)} points 
+                                                Encore {tier.minPoints - (userProfile?.loyaltyPoints || 0)} points
                                                 pour débloquer ce niveau
                                             </p>
                                         </div>

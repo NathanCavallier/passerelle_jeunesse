@@ -47,7 +47,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Booking, BookingStatus } from '@/types/firestore';
 import { formatPrice, getDiscountLabel } from '@/lib/pricing-service';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { doc, onSnapshot, Unsubscribe } from 'firebase/firestore';
 
 /**
@@ -58,22 +58,22 @@ function toSafeDate(timestamp: any): Date {
     if (!timestamp) {
         return new Date();
     }
-    
+
     // Si c'est déjà une Date
     if (timestamp instanceof Date) {
         return timestamp;
     }
-    
+
     // Si c'est un Timestamp Firestore avec la méthode toDate()
     if (typeof timestamp.toDate === 'function') {
         return timestamp.toDate();
     }
-    
+
     // Si c'est un objet plain avec seconds et nanoseconds
     if (timestamp.seconds !== undefined) {
         return new Date(timestamp.seconds * 1000 + (timestamp.nanoseconds || 0) / 1000000);
     }
-    
+
     // Fallback : essayer de créer une Date depuis la valeur
     return new Date(timestamp);
 }
@@ -124,8 +124,8 @@ export default function BookingDetailPage({ params }: PageProps) {
         }
 
         setLoading(true);
-        const bookingRef = doc(db, 'bookings', id);
-        
+        const bookingRef = doc(getFirebaseDb(), 'bookings', id);
+
         // Listener en temps réel
         const unsubscribe: Unsubscribe = onSnapshot(
             bookingRef,
@@ -241,9 +241,9 @@ export default function BookingDetailPage({ params }: PageProps) {
         return null;
     }
 
-    const canCancel = 
-        booking.status !== 'cancelled' && 
-        booking.status !== 'completed' && 
+    const canCancel =
+        booking.status !== 'cancelled' &&
+        booking.status !== 'completed' &&
         toSafeDate(booking.scheduledFor) > new Date();
 
     return (
@@ -565,7 +565,7 @@ export default function BookingDetailPage({ params }: PageProps) {
                                             className="w-full"
                                         />
                                     )}
-                                    
+
                                     {booking.pricing.depositPaid && !booking.pricing.balancePaid && (
                                         <PaymentButton
                                             bookingId={booking.id}
@@ -583,8 +583,8 @@ export default function BookingDetailPage({ params }: PageProps) {
                     {user && (
                         <DocumentDownloads
                             booking={booking}
-                            parentName={`${user.firstName} ${user.lastName}`}
-                            parentEmail={user.email}
+                            parentName={`${user.displayName || ''}`}
+                            parentEmail={user.email ?? ''}
                         />
                     )}
 

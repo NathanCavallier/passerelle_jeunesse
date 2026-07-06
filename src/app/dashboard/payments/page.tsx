@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { collection, query, where, orderBy, getDocs, onSnapshot, Unsubscribe } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
@@ -101,7 +101,7 @@ export default function PaymentsPage() {
 
         // Listener temps réel
         const bookingsQuery = query(
-            collection(db, 'bookings'),
+            collection(getFirebaseDb(), 'bookings'),
             where('parentId', '==', user.uid)
         );
 
@@ -112,7 +112,7 @@ export default function PaymentsPage() {
                     id: doc.id,
                     ...doc.data(),
                 } as Booking));
-                
+
                 // Trier côté client par createdAt décroissant
                 bookingsData.sort((a, b) => {
                     const timeA = a.createdAt?.toDate().getTime() || 0;

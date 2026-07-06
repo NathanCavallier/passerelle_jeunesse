@@ -17,11 +17,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { collection, query, where, orderBy, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import type { Booking } from '@/types/firestore';
 import { Input } from '@/components/ui/input';
-import { 
+import {
   ArrowLeft,
   Calendar,
   Clock,
@@ -43,7 +43,7 @@ export default function AccompanistMissionsPage() {
   const router = useRouter();
   const { user, userProfile, loading, isAuthenticated, isAccompanist } = useAuth();
   const { toast } = useToast();
-  
+
   const [allBookings, setAllBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -69,7 +69,7 @@ export default function AccompanistMissionsPage() {
 
     // Query pour récupérer TOUTES les bookings assignés (même annulés/terminés)
     const bookingsQuery = query(
-      collection(db, 'bookings'),
+      collection(getFirebaseDb(), 'bookings'),
       where('accompanistId', '==', user.uid),
       orderBy('scheduledDate', 'desc')
     );
@@ -89,10 +89,10 @@ export default function AccompanistMissionsPage() {
               updatedAt: data.updatedAt?.toDate?.() instanceof Date ? data.updatedAt.toDate() : new Date(data.updatedAt),
           } as unknown as Booking);
         });
-        
+
         setAllBookings(bookingsList);
         setLoadingBookings(false);
-        
+
         console.log(`📋 ${bookingsList.length} missions chargées`);
       },
       (error) => {
@@ -117,13 +117,13 @@ export default function AccompanistMissionsPage() {
       case 'upcoming':
         return allBookings.filter(booking => {
           const scheduledDate = booking.scheduledFor instanceof Date ? booking.scheduledFor : booking.scheduledFor.toDate();
-          return isAfter(scheduledDate, now) && 
+          return isAfter(scheduledDate, now) &&
             !['cancelled', 'completed'].includes(booking.status);
         });
       case 'past':
         return allBookings.filter(booking => {
           const scheduledDate = booking.scheduledFor instanceof Date ? booking.scheduledFor : booking.scheduledFor.toDate();
-          return isBefore(scheduledDate, now) || 
+          return isBefore(scheduledDate, now) ||
             ['completed'].includes(booking.status);
         });
       case 'cancelled':
@@ -144,7 +144,7 @@ export default function AccompanistMissionsPage() {
       cancelled: { variant: "destructive" as const, label: "Annulée" }
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || 
+    const config = statusConfig[status as keyof typeof statusConfig] ||
                   { variant: "secondary" as const, label: status };
 
     return (
@@ -173,7 +173,7 @@ export default function AccompanistMissionsPage() {
     };
 
     const currentStatus = missionTracking.currentStatus || 'scheduled';
-    const config = statusConfig[currentStatus as keyof typeof statusConfig] || 
+    const config = statusConfig[currentStatus as keyof typeof statusConfig] ||
                   { variant: "outline" as const, label: currentStatus, icon: AlertCircle };
 
     const IconComponent = config.icon;
@@ -226,7 +226,7 @@ export default function AccompanistMissionsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <main className="container mx-auto px-4 py-8">
         {/* En-tête */}
         <div className="flex items-center justify-between mb-8">
@@ -328,8 +328,8 @@ export default function AccompanistMissionsPage() {
           </TabsList>
 
           <TabsContent value="upcoming" className="mt-6">
-            <MissionsList 
-              bookings={filteredUpcoming} 
+            <MissionsList
+              bookings={filteredUpcoming}
               loading={loadingBookings}
               emptyMessage="Aucune mission programmée"
               emptyDescription="Vous n'avez actuellement aucune mission à venir."
@@ -339,8 +339,8 @@ export default function AccompanistMissionsPage() {
           </TabsContent>
 
           <TabsContent value="past" className="mt-6">
-            <MissionsList 
-              bookings={filteredPast} 
+            <MissionsList
+              bookings={filteredPast}
               loading={loadingBookings}
               emptyMessage="Aucune mission terminée"
               emptyDescription="Vous n'avez encore terminé aucune mission."
@@ -350,8 +350,8 @@ export default function AccompanistMissionsPage() {
           </TabsContent>
 
           <TabsContent value="cancelled" className="mt-6">
-            <MissionsList 
-              bookings={filteredCancelled} 
+            <MissionsList
+              bookings={filteredCancelled}
               loading={loadingBookings}
               emptyMessage="Aucune mission annulée"
               emptyDescription="Vous n'avez aucune mission annulée."
@@ -368,13 +368,13 @@ export default function AccompanistMissionsPage() {
 }
 
 // Composant pour afficher la liste des missions
-function MissionsList({ 
-  bookings, 
-  loading, 
-  emptyMessage, 
+function MissionsList({
+  bookings,
+  loading,
+  emptyMessage,
   emptyDescription,
   getStatusBadge,
-  getMissionStatusBadge 
+  getMissionStatusBadge
 }: {
   bookings: Booking[];
   loading: boolean;
@@ -411,8 +411,8 @@ function MissionsList({
   return (
     <div className="space-y-4">
       {bookings.map((booking) => (
-        <Link 
-          key={booking.id} 
+        <Link
+          key={booking.id}
           href={`/dashboard/accompanist/missions/${booking.id}`}
         >
           <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
@@ -426,19 +426,19 @@ function MissionsList({
                       {booking.trip.arrival.address}
                     </CardTitle>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 flex-wrap">
                     {getStatusBadge(booking.status)}
                     {getMissionStatusBadge(booking.missionTracking)}
                   </div>
                 </div>
-                
+
                 <div className="ml-4">
                   <Eye className="h-5 w-5 text-gray-400" />
                 </div>
               </div>
             </CardHeader>
-            
+
             <CardContent className="pt-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                 <div className="flex items-center text-gray-600">

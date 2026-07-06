@@ -22,10 +22,10 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { logout } from '@/lib/auth-service';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { 
+import { getFirebaseAuth } from '@/lib/firebase';
+import {
   ArrowLeft,
   Settings,
   Bell,
@@ -43,7 +43,7 @@ export default function AccompanistSettingsPage() {
   const router = useRouter();
   const { user, userProfile, loading, isAuthenticated, isAccompanist } = useAuth();
   const { toast } = useToast();
-  
+
   const [isSaving, setIsSaving] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfilePublic, setIsProfilePublic] = useState(true);
@@ -87,7 +87,7 @@ export default function AccompanistSettingsPage() {
     if (!user) return;
     setIsSaving(true);
     try {
-      const userRef = doc(db, 'users', user.uid);
+      const userRef = doc(getFirebaseDb(), 'users', user.uid);
       await updateDoc(userRef, {
         'settings.notifications': notifications,
         'settings.darkMode': isDarkMode,
@@ -95,7 +95,7 @@ export default function AccompanistSettingsPage() {
         'settings.statsVisible': statsVisible,
         updatedAt: serverTimestamp(),
       });
-      
+
       toast({
         title: "Paramètres sauvegardés",
         description: "Vos préférences ont été mises à jour avec succès."
@@ -115,7 +115,7 @@ export default function AccompanistSettingsPage() {
   const handleResetPassword = async () => {
     if (!user?.email) return;
     try {
-      await sendPasswordResetEmail(auth, user.email);
+      await sendPasswordResetEmail(getFirebaseAuth(), user.email);
       toast({
         title: "Email envoyé",
         description: "Un email de réinitialisation de mot de passe a été envoyé."
@@ -137,7 +137,7 @@ export default function AccompanistSettingsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <main className="container mx-auto px-4 py-8">
         {/* En-tête */}
         <div className="flex items-center justify-between mb-8">
@@ -209,9 +209,9 @@ export default function AccompanistSettingsPage() {
                       Recevoir des emails pour les nouvelles missions et messages
                     </p>
                   </div>
-                  <Switch 
+                  <Switch
                     checked={notifications.email}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       setNotifications(prev => ({ ...prev, email: checked }))
                     }
                   />
@@ -227,9 +227,9 @@ export default function AccompanistSettingsPage() {
                       Recevoir des notifications push sur vos appareils
                     </p>
                   </div>
-                  <Switch 
+                  <Switch
                     checked={notifications.push}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       setNotifications(prev => ({ ...prev, push: checked }))
                     }
                   />
@@ -245,9 +245,9 @@ export default function AccompanistSettingsPage() {
                       Recevoir des SMS pour les missions urgentes
                     </p>
                   </div>
-                  <Switch 
+                  <Switch
                     checked={notifications.sms}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       setNotifications(prev => ({ ...prev, sms: checked }))
                     }
                   />
@@ -257,7 +257,7 @@ export default function AccompanistSettingsPage() {
                   <Smartphone className="h-4 w-4" />
                   <AlertTitle>Astuce</AlertTitle>
                   <AlertDescription>
-                    Les notifications push nécessitent l'autorisation de votre navigateur. 
+                    Les notifications push nécessitent l'autorisation de votre navigateur.
                     Activez-les pour ne manquer aucune nouvelle mission.
                   </AlertDescription>
                 </Alert>
@@ -283,7 +283,7 @@ export default function AccompanistSettingsPage() {
                         Permettre aux familles de voir votre profil dans les recherches
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={isProfilePublic}
                       onCheckedChange={setIsProfilePublic}
                     />
@@ -298,7 +298,7 @@ export default function AccompanistSettingsPage() {
                         Afficher votre note et nombre de missions sur votre profil
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={statsVisible}
                       onCheckedChange={setStatsVisible}
                     />
@@ -362,7 +362,7 @@ export default function AccompanistSettingsPage() {
                       Interface avec thème sombre pour réduire la fatigue oculaire
                     </p>
                   </div>
-                  <Switch 
+                  <Switch
                     checked={isDarkMode}
                     onCheckedChange={setIsDarkMode}
                   />
@@ -384,9 +384,9 @@ export default function AccompanistSettingsPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <Label>Adresse email</Label>
-                    <Input 
-                      value={userProfile?.email || ''} 
-                      disabled 
+                    <Input
+                      value={userProfile?.email || ''}
+                      disabled
                       className="bg-gray-50"
                     />
                     <p className="text-xs text-gray-500 mt-1">
@@ -396,9 +396,9 @@ export default function AccompanistSettingsPage() {
 
                   <div>
                     <Label>Dernière connexion</Label>
-                    <Input 
-                      value={userProfile?.lastLoginAt?.toLocaleString() || 'Jamais'} 
-                      disabled 
+                    <Input
+                      value={userProfile?.lastLoginAt?.toLocaleString() || 'Jamais'}
+                      disabled
                       className="bg-gray-50"
                     />
                   </div>
@@ -425,8 +425,8 @@ export default function AccompanistSettingsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={handleLogout}
                     className="w-full"
                   >
@@ -440,13 +440,13 @@ export default function AccompanistSettingsPage() {
                     <AlertDescription className="text-red-700">
                       <div className="space-y-3 mt-2">
                         <p>
-                          La suppression de votre compte est irréversible. 
+                          La suppression de votre compte est irréversible.
                           Toutes vos données seront définitivement supprimées.
                         </p>
-                        <Button 
-                          variant="destructive" 
-                          size="sm" 
-                          className="w-full" 
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="w-full"
                           disabled
                         >
                           <Trash2 className="h-4 w-4 mr-2" />

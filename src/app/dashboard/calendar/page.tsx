@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -62,7 +62,7 @@ export default function CalendarPage() {
 
         const loadBookings = async () => {
             try {
-                const bookingsRef = collection(db, 'bookings');
+                const bookingsRef = collection(getFirebaseDb(), 'bookings');
                 const q = query(
                     bookingsRef,
                     where('parentId', '==', user.uid)
@@ -86,7 +86,7 @@ export default function CalendarPage() {
                 // Extraire les jours avec des réservations
                 const days = bookingsData
                     .map(b => b.trip.departure.date.toDate())
-                    .filter((date, index, self) => 
+                    .filter((date, index, self) =>
                         self.findIndex(d => isSameDay(d, date)) === index
                     );
                 setBookingDays(days);
@@ -120,11 +120,11 @@ export default function CalendarPage() {
     const handleExportICal = () => {
         // Générer un fichier iCal simple
         let icalContent = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Passerelle Jeunesse//Calendar//FR\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n';
-        
+
         bookings.forEach((booking) => {
             const startDate = booking.trip.departure.date.toDate();
             const formattedDate = format(startDate, "yyyyMMdd'T'HHmmss");
-            
+
             icalContent += `BEGIN:VEVENT\n`;
             icalContent += `UID:booking-${booking.id}@passerelle-jeunesse.fr\n`;
             icalContent += `DTSTAMP:${formattedDate}\n`;
@@ -135,9 +135,9 @@ export default function CalendarPage() {
             icalContent += `STATUS:${booking.status === 'confirmed' ? 'CONFIRMED' : 'TENTATIVE'}\n`;
             icalContent += `END:VEVENT\n`;
         });
-        
+
         icalContent += 'END:VCALENDAR';
-        
+
         // Télécharger le fichier
         const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
         const link = document.createElement('a');
@@ -148,28 +148,28 @@ export default function CalendarPage() {
 
     const getDayModifiers = () => {
         const modifiers: Record<string, Date[]> = {};
-        
+
         // Grouper les jours par statut
         bookings.forEach(booking => {
             const status = booking.status;
             const date = booking.trip.departure.date.toDate();
-            
+
             if (!modifiers[status]) {
                 modifiers[status] = [];
             }
             modifiers[status].push(date);
         });
-        
+
         return modifiers;
     };
 
     const getDayModifiersClassNames = () => {
         const classNames: Record<string, string> = {};
-        
+
         Object.keys(STATUS_COLORS).forEach(status => {
             classNames[status] = `${STATUS_COLORS[status as keyof typeof STATUS_COLORS].bg} ${STATUS_COLORS[status as keyof typeof STATUS_COLORS].text} font-semibold`;
         });
-        
+
         return classNames;
     };
 
@@ -305,7 +305,7 @@ export default function CalendarPage() {
                                                     <CardContent className="pt-4">
                                                         <div className="space-y-2">
                                                             <div className="flex items-center justify-between">
-                                                                <Badge 
+                                                                <Badge
                                                                     className={`${STATUS_COLORS[booking.status].bg} ${STATUS_COLORS[booking.status].text}`}
                                                                 >
                                                                     {STATUS_LABELS[booking.status]}
@@ -314,7 +314,7 @@ export default function CalendarPage() {
                                                                     {booking.trip.departure.time}
                                                                 </span>
                                                             </div>
-                                                            
+
                                                             <div className="flex items-start gap-2">
                                                                 <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                                                                 <div className="text-sm">
@@ -358,7 +358,7 @@ export default function CalendarPage() {
                                         const date = b.trip.departure.date.toDate();
                                         return date >= monthStart && date <= monthEnd;
                                     });
-                                    
+
                                     return (
                                         <div className="space-y-2 text-sm">
                                             <div className="flex justify-between">

@@ -20,10 +20,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { logout } from '@/lib/auth-service';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, orderBy, Unsubscribe } from 'firebase/firestore';
 import type { Booking } from '@/types/firestore';
-import { 
+import {
   Calendar,
   MapPin,
   Clock,
@@ -49,7 +49,7 @@ export default function AccompanistDashboardPage() {
   const router = useRouter();
   const { user, userProfile, loading, isAuthenticated, isAccompanist } = useAuth();
   const { toast } = useToast();
-  
+
   const [assignedBookings, setAssignedBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -83,7 +83,7 @@ export default function AccompanistDashboardPage() {
 
     // Query pour récupérer les bookings assignés à cet accompagnateur
     const bookingsQuery = query(
-      collection(db, 'bookings'),
+      collection(getFirebaseDb(), 'bookings'),
       where('accompanistId', '==', user.uid),
       where('status', 'in', ['confirmed', 'paid', 'assigned', 'in_progress']),
       orderBy('scheduledDate', 'desc')
@@ -103,11 +103,11 @@ export default function AccompanistDashboardPage() {
               updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
           } as Booking);
         });
-        
+
         setAssignedBookings(bookingsList);
         setLoadingBookings(false);
         setLastUpdate(new Date());
-        
+
         console.log(`📋 ${bookingsList.length} missions assignées chargées`);
       },
       handleBookingError
@@ -141,7 +141,7 @@ export default function AccompanistDashboardPage() {
       in_progress: { variant: "default" as const, label: "En cours" }
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || 
+    const config = statusConfig[status as keyof typeof statusConfig] ||
                   { variant: "secondary" as const, label: status };
 
     return (
@@ -170,7 +170,7 @@ export default function AccompanistDashboardPage() {
     };
 
     const currentStatus = missionTracking.currentStatus || 'scheduled';
-    const config = statusConfig[currentStatus as keyof typeof statusConfig] || 
+    const config = statusConfig[currentStatus as keyof typeof statusConfig] ||
                   { variant: "outline" as const, label: currentStatus };
 
     return (
@@ -205,7 +205,7 @@ export default function AccompanistDashboardPage() {
     <div className="min-h-screen bg-gray-50">
       <TestModeBanner />
       <Header />
-      
+
       <main className="container mx-auto px-4 py-8">
         {/* En-tête du dashboard */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
@@ -217,7 +217,7 @@ export default function AccompanistDashboardPage() {
               Accompagnateur Passerelle Jeunesse
             </p>
           </div>
-          
+
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
             {lastUpdate && (
               <span className="text-sm text-gray-500">
@@ -347,7 +347,7 @@ export default function AccompanistDashboardPage() {
                   </CardContent>
                 </Card>
               </Link>
-              
+
               <Link href="/dashboard/accompanist/missions">
                 <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white">
                   <CardContent className="p-4 text-center">
@@ -395,8 +395,8 @@ export default function AccompanistDashboardPage() {
             ) : (
               <div className="space-y-4">
                 {assignedBookings.map((booking) => (
-                  <Link 
-                    key={booking.id} 
+                  <Link
+                    key={booking.id}
                     href={`/dashboard/accompanist/missions/${booking.id}`}
                   >
                     <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
@@ -412,7 +412,7 @@ export default function AccompanistDashboardPage() {
                               {getStatusBadge(booking.status)}
                               {getMissionStatusBadge(booking.missionTracking)}
                             </div>
-                            
+
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-600">
                               <div className="flex items-center">
                                 <Clock className="h-4 w-4 mr-2" />
@@ -428,7 +428,7 @@ export default function AccompanistDashboardPage() {
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="ml-4">
                             <Navigation className="h-5 w-5 text-blue-600" />
                           </div>

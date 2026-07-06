@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { isGoogleMapsAvailable } from '@/lib/google-maps-service';
 import {
@@ -105,7 +105,7 @@ export function LiveTrackingMap({
   useEffect(() => {
     if (!bookingId) return;
 
-    const missionRef = doc(db, 'missions', bookingId);
+    const missionRef = doc(getFirebaseDb(), 'missions', bookingId);
     const unsubscribe = onSnapshot(
       missionRef,
       (snapshot) => {

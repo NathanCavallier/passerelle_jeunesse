@@ -20,7 +20,7 @@ import {
   increment,
   writeBatch
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import type {
   Conversation,
   ConversationParticipant,
@@ -81,7 +81,7 @@ export async function createConversation(
       createdBy: parentId,
     };
 
-    const docRef = await addDoc(collection(db, 'conversations'), conversationData);
+    const docRef = await addDoc(collection(getFirebaseDb(), 'conversations'), conversationData);
     return docRef.id;
   } catch (error) {
     console.error('Erreur création conversation:', error);
@@ -94,7 +94,7 @@ export async function createConversation(
  */
 export async function getConversation(conversationId: string): Promise<Conversation | null> {
   try {
-    const docRef = doc(db, 'conversations', conversationId);
+    const docRef = doc(getFirebaseDb(), 'conversations', conversationId);
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
@@ -116,7 +116,7 @@ export async function getUserConversations(userId: string): Promise<Conversation
     // Solution temporaire : requête simple puis filtre côté client
     // Une fois les index créés, on reviendra à la requête optimisée
     const conversationsQuery = query(
-      collection(db, 'conversations'),
+      collection(getFirebaseDb(), 'conversations'),
       orderBy('updatedAt', 'desc')
     );
 
@@ -140,7 +140,7 @@ export async function getUserConversations(userId: string): Promise<Conversation
 export async function getConversationByBooking(bookingId: string): Promise<Conversation | null> {
   try {
     const conversationQuery = query(
-      collection(db, 'conversations'),
+      collection(getFirebaseDb(), 'conversations'),
       where('bookingId', '==', bookingId),
       limit(1)
     );
@@ -165,7 +165,7 @@ export async function updateConversationStatus(
   userId: string
 ): Promise<void> {
   try {
-    const conversationRef = doc(db, 'conversations', conversationId);
+    const conversationRef = doc(getFirebaseDb(), 'conversations', conversationId);
     const updates: any = {
       status,
       updatedAt: serverTimestamp()
@@ -204,7 +204,7 @@ export async function sendMessage(
   missionId?: string
 ): Promise<string> {
   try {
-    const batch = writeBatch(db);
+    const batch = writeBatch(getFirebaseDb());
 
     // 1. Créer le message
     const messageData: Omit<Message, 'id'> = {
@@ -219,11 +219,11 @@ export async function sendMessage(
       createdAt: serverTimestamp() as Timestamp,
     };
 
-    const messageRef = doc(collection(db, 'conversations', conversationId, 'messages'));
+    const messageRef = doc(collection(getFirebaseDb(), 'conversations', conversationId, 'messages'));
     batch.set(messageRef, messageData);
 
     // 2. Mettre à jour la conversation
-    const conversationRef = doc(db, 'conversations', conversationId);
+    const conversationRef = doc(getFirebaseDb(), 'conversations', conversationId);
     batch.update(conversationRef, {
       messagesCount: increment(1),
       lastMessageId: messageRef.id,
@@ -251,7 +251,7 @@ export async function getConversationMessages(
 ): Promise<Message[]> {
   try {
     const messagesQuery = query(
-      collection(db, 'conversations', conversationId, 'messages'),
+      collection(getFirebaseDb(), 'conversations', conversationId, 'messages'),
       orderBy('createdAt', 'desc'),
       limit(limitCount)
     );
@@ -275,12 +275,12 @@ export async function markMessagesAsRead(
   messageIds: string[]
 ): Promise<void> {
   try {
-    const batch = writeBatch(db);
+    const batch = writeBatch(getFirebaseDb());
     const now = serverTimestamp();
 
     // Marquer les messages comme lus
     for (const messageId of messageIds) {
-      const messageRef = doc(db, 'conversations', conversationId, 'messages', messageId);
+      const messageRef = doc(getFirebaseDb(), 'conversations', conversationId, 'messages', messageId);
       batch.update(messageRef, {
         status: 'read',
         readAt: now
@@ -288,7 +288,7 @@ export async function markMessagesAsRead(
     }
 
     // Mettre à jour le compteur nnon lu dans la conversation
-    const conversationRef = doc(db, 'conversations', conversationId);
+    const conversationRef = doc(getFirebaseDb(), 'conversations', conversationId);
     batch.update(conversationRef, {
       [`unreadCount.${userId}`]: 0,
       [`lastReadBy.${userId}`]: now,
@@ -311,7 +311,7 @@ export async function deleteMessage(
   userId: string
 ): Promise<void> {
   try {
-    const messageRef = doc(db, 'conversations', conversationId, 'messages', messageId);
+    const messageRef = doc(getFirebaseDb(), 'conversations', conversationId, 'messages', messageId);
 
     // Vérifier que l'utilisateur est bien l'auteur
     const messageDoc = await getDoc(messageRef);
@@ -352,7 +352,7 @@ export function subscribeToUserConversations(
     // Solution temporaire : requête simple puis filtre côté client
     // Une fois les index créés, on reviendra à la requête optimisée
     const conversationsQuery = query(
-      collection(db, 'conversations'),
+      collection(getFirebaseDb(), 'conversations'),
       orderBy('updatedAt', 'desc')
     );
 
@@ -388,7 +388,7 @@ export function subscribeToConversationMessages(
 ) {
   try {
     const messagesQuery = query(
-      collection(db, 'conversations', conversationId, 'messages'),
+      collection(getFirebaseDb(), 'conversations', conversationId, 'messages'),
       orderBy('createdAt', 'desc'),
       limit(limitCount)
     );

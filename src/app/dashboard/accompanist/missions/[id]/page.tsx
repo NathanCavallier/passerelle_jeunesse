@@ -23,7 +23,7 @@ import { MissionTimeline } from '@/components/mission/mission-timeline';
 import { PhotoCapture } from '@/components/mission/photo-capture';
 import { LocationTracker } from '@/components/mission/location-tracker';
 import { GPSNavigation } from '@/components/mission/gps-navigation';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { doc, onSnapshot, Unsubscribe, getDoc } from 'firebase/firestore';
 import {
   submitMissionReport,
@@ -135,7 +135,7 @@ export default function AccompanistMissionDetailPage({ params }: PageProps) {
 
     setLoadingBooking(true);
 
-    const bookingRef = doc(db, 'bookings', id);
+    const bookingRef = doc(getFirebaseDb(), 'bookings', id);
     const unsubscribe: Unsubscribe = onSnapshot(
       bookingRef,
       (docSnap) => {
@@ -180,7 +180,7 @@ export default function AccompanistMissionDetailPage({ params }: PageProps) {
       const details: Record<string, Youngster> = {};
       for (const yId of booking.youngstersIds) {
         try {
-          const yDoc = await getDoc(doc(db, 'youngsters', yId));
+          const yDoc = await getDoc(doc(getFirebaseDb(), 'youngsters', yId));
           if (yDoc.exists()) {
             details[yId] = { id: yDoc.id, ...yDoc.data() } as Youngster;
           }

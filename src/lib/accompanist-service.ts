@@ -22,7 +22,7 @@ import {
   limit,
   Unsubscribe,
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { getFirebaseDb } from './firebase';
 import type {
   User,
   AccompanistProfile,
@@ -78,7 +78,7 @@ export async function updateAccompanistProfile(
   uid: string,
   profileData: Partial<AccompanistProfile>
 ): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
 
   // Construire les champs à mettre à jour avec la notation dot
   const updateData: Record<string, any> = {};
@@ -103,7 +103,7 @@ export async function updateAccompanistPersonalInfo(
     experience?: string;
   }
 ): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   const updateData: Record<string, any> = { updatedAt: serverTimestamp() };
 
   if (data.firstName !== undefined) updateData.firstName = data.firstName;
@@ -126,7 +126,7 @@ export async function updateWeeklyAvailability(
   uid: string,
   availability: WeeklyAvailability
 ): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   await updateDoc(userRef, {
     'accompanistProfile.availability': availability,
     updatedAt: serverTimestamp(),
@@ -141,7 +141,7 @@ export async function addTimeSlot(
   day: keyof WeeklyAvailability,
   slot: DayAvailability
 ): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   await updateDoc(userRef, {
     [`accompanistProfile.availability.${day}`]: arrayUnion(slot),
     updatedAt: serverTimestamp(),
@@ -156,7 +156,7 @@ export async function removeTimeSlot(
   day: keyof WeeklyAvailability,
   slot: DayAvailability
 ): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   await updateDoc(userRef, {
     [`accompanistProfile.availability.${day}`]: arrayRemove(slot),
     updatedAt: serverTimestamp(),
@@ -167,7 +167,7 @@ export async function removeTimeSlot(
  * Met à jour les zones d'intervention
  */
 export async function updateZones(uid: string, zones: string[]): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   await updateDoc(userRef, {
     'accompanistProfile.zones': zones,
     updatedAt: serverTimestamp(),
@@ -184,7 +184,7 @@ export async function updateServiceSettings(
     longDistanceAvailable?: boolean;
   }
 ): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   const updateData: Record<string, any> = { updatedAt: serverTimestamp() };
 
   if (settings.maxYoungsters !== undefined) {
@@ -216,7 +216,7 @@ export async function addUnavailability(
   uid: string,
   data: { startDate: string; endDate: string; reason: string }
 ): Promise<string> {
-  const unavailabilitiesRef = collection(db, 'users', uid, 'unavailabilities');
+  const unavailabilitiesRef = collection(getFirebaseDb(), 'users', uid, 'unavailabilities');
   const docRef = await addDoc(unavailabilitiesRef, {
     ...data,
     createdAt: serverTimestamp(),
@@ -228,7 +228,7 @@ export async function addUnavailability(
  * Supprime une période d'indisponibilité
  */
 export async function removeUnavailability(uid: string, unavailabilityId: string): Promise<void> {
-  const ref = doc(db, 'users', uid, 'unavailabilities', unavailabilityId);
+  const ref = doc(getFirebaseDb(), 'users', uid, 'unavailabilities', unavailabilityId);
   const { deleteDoc } = await import('firebase/firestore');
   await deleteDoc(ref);
 }
@@ -237,7 +237,7 @@ export async function removeUnavailability(uid: string, unavailabilityId: string
  * Récupère toutes les périodes d'indisponibilité
  */
 export async function getUnavailabilities(uid: string): Promise<UnavailabilityPeriod[]> {
-  const ref = collection(db, 'users', uid, 'unavailabilities');
+  const ref = collection(getFirebaseDb(), 'users', uid, 'unavailabilities');
   const q = query(ref, orderBy('startDate', 'asc'));
   const snapshot = await getDocs(q);
   return snapshot.docs.map((doc) => ({
@@ -253,7 +253,7 @@ export function onUnavailabilitiesSnapshot(
   uid: string,
   callback: (unavailabilities: UnavailabilityPeriod[]) => void
 ): Unsubscribe {
-  const ref = collection(db, 'users', uid, 'unavailabilities');
+  const ref = collection(getFirebaseDb(), 'users', uid, 'unavailabilities');
   const q = query(ref, orderBy('startDate', 'asc'));
   return onSnapshot(q, (snapshot) => {
     const items = snapshot.docs.map((doc) => ({
@@ -272,7 +272,7 @@ export function onUnavailabilitiesSnapshot(
  * Ajoute une certification
  */
 export async function addCertification(uid: string, certification: string): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   await updateDoc(userRef, {
     'accompanistProfile.certifications': arrayUnion(certification),
     updatedAt: serverTimestamp(),
@@ -283,7 +283,7 @@ export async function addCertification(uid: string, certification: string): Prom
  * Supprime une certification
  */
 export async function removeCertification(uid: string, certification: string): Promise<void> {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   await updateDoc(userRef, {
     'accompanistProfile.certifications': arrayRemove(certification),
     updatedAt: serverTimestamp(),
@@ -306,8 +306,8 @@ export async function submitMissionReport(
     recommendations?: string;
   }
 ): Promise<void> {
-  const bookingRef = doc(db, 'bookings', bookingId);
-  
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
+
   const missionReport: MissionReport = {
     ...report,
     submittedAt: Timestamp.now(),
@@ -323,7 +323,7 @@ export async function submitMissionReport(
  * Récupère le rapport d'une mission
  */
 export async function getMissionReport(bookingId: string): Promise<MissionReport | null> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   const snap = await getDoc(bookingRef);
   if (!snap.exists()) return null;
   return snap.data()?.missionTracking?.report || null;
@@ -344,7 +344,7 @@ export async function reportIncident(
     description: string;
   }
 ): Promise<void> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
 
   const newIncident: Incident = {
     ...incident,
@@ -366,7 +366,7 @@ export async function resolveIncident(
   incidentIndex: number,
   resolution: string
 ): Promise<void> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   const snap = await getDoc(bookingRef);
   if (!snap.exists()) throw new Error('Booking introuvable');
 
@@ -423,7 +423,7 @@ const DEFAULT_CHECKLIST: Omit<ChecklistItem, 'id' | 'checked'>[] = [
  * Initialise une checklist pour une mission
  */
 export async function initMissionChecklist(bookingId: string): Promise<ChecklistItem[]> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   const snap = await getDoc(bookingRef);
 
   // Si checklist existe déjà, la retourner
@@ -453,7 +453,7 @@ export async function updateChecklistItem(
   itemId: string,
   checked: boolean
 ): Promise<void> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   const snap = await getDoc(bookingRef);
   if (!snap.exists()) throw new Error('Booking introuvable');
 
@@ -478,7 +478,7 @@ export async function updateChecklistItem(
  * Récupère la checklist d'une mission
  */
 export async function getMissionChecklist(bookingId: string): Promise<ChecklistItem[]> {
-  const bookingRef = doc(db, 'bookings', bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
   const snap = await getDoc(bookingRef);
   if (!snap.exists()) return [];
   return snap.data()?.missionTracking?.checklist || [];
@@ -525,7 +525,7 @@ export async function validateHandoverQR(
     }
 
     // Vérifier que le booking existe et est bien assigné
-    const bookingRef = doc(db, 'bookings', payload.bookingId);
+    const bookingRef = doc(getFirebaseDb(), 'bookings', payload.bookingId);
     const bookingSnap = await getDoc(bookingRef);
 
     if (!bookingSnap.exists()) {
@@ -558,7 +558,7 @@ export async function validateHandoverQR(
  * Récupère toutes les missions terminées d'un accompagnateur
  */
 export async function getCompletedMissions(uid: string): Promise<Booking[]> {
-  const bookingsRef = collection(db, 'bookings');
+  const bookingsRef = collection(getFirebaseDb(), 'bookings');
   const q = query(
     bookingsRef,
     where('accompanistId', '==', uid),
@@ -581,7 +581,7 @@ export async function getMissionsByDateRange(
   startDate: Date,
   endDate: Date
 ): Promise<Booking[]> {
-  const bookingsRef = collection(db, 'bookings');
+  const bookingsRef = collection(getFirebaseDb(), 'bookings');
   const q = query(
     bookingsRef,
     where('accompanistId', '==', uid),
@@ -608,7 +608,7 @@ export async function recalculateAccompanistStats(uid: string): Promise<{
   totalEarnings: number;
   rating: number;
 }> {
-  const bookingsRef = collection(db, 'bookings');
+  const bookingsRef = collection(getFirebaseDb(), 'bookings');
   const q = query(
     bookingsRef,
     where('accompanistId', '==', uid),
@@ -636,7 +636,7 @@ export async function recalculateAccompanistStats(uid: string): Promise<{
   };
 
   // Mettre à jour dans Firestore
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(getFirebaseDb(), 'users', uid);
   await updateDoc(userRef, {
     'accompanistProfile.totalMissions': stats.totalMissions,
     'accompanistProfile.totalEarnings': stats.totalEarnings,

@@ -3,7 +3,7 @@
  */
 
 import { doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import type {
     NotificationPreferences,
     NotificationEventType,
@@ -83,12 +83,62 @@ export const getDefaultNotificationPreferences = (): Omit<NotificationPreference
 // GESTION DES PRÉFÉRENCES
 // ============================================================================
 
+const buildDefaultPreferences = (): NotificationPreferences => ({
+    globalSettings: {
+        email: { ...defaultChannelSettings },
+        sms: { enabled: false },
+        push: { enabled: true }
+    },
+    events: {
+        booking_confirmed: { ...defaultEventSettings },
+        booking_cancelled: { ...defaultEventSettings },
+        mission_status_update: {
+            email: { enabled: true },
+            sms: { enabled: false },
+            push: { enabled: true }
+        },
+        new_message: {
+            email: { enabled: false },
+            sms: { enabled: false },
+            push: { enabled: true }
+        },
+        payment_processed: { ...defaultEventSettings },
+        payment_failed: {
+            email: { enabled: true },
+            sms: { enabled: true },
+            push: { enabled: true }
+        },
+        reminder_mission: { ...defaultEventSettings },
+        reminder_payment: {
+            email: { enabled: true },
+            sms: { enabled: true },
+            push: { enabled: true }
+        },
+        review_request: {
+            email: { enabled: true },
+            sms: { enabled: false },
+            push: { enabled: false }
+        },
+        account_update: {
+            email: { enabled: true },
+            sms: { enabled: false },
+            push: { enabled: false }
+        }
+    },
+    summary: {
+        dailyEnabled: false,
+        weeklyEnabled: true,
+        preferredTime: '18:00'
+    },
+    updatedAt: new Date() as unknown as NotificationPreferences['updatedAt']
+});
+
 /**
  * Récupérer les préférences de notifications d'un utilisateur
  */
 export async function getUserNotificationPreferences(userId: string): Promise<NotificationPreferences> {
     try {
-        const userDoc = await getDoc(doc(db, 'users', userId));
+        const userDoc = await getDoc(doc(getFirebaseDb(), 'users', userId));
 
         if (!userDoc.exists()) {
             throw new Error('Utilisateur non trouvé');
@@ -98,20 +148,13 @@ export async function getUserNotificationPreferences(userId: string): Promise<No
         const preferences = userData.preferences?.notifications;
 
         if (!preferences) {
-            // Retourner les préférences par défaut avec timestamp
-            return {
-                ...getDefaultNotificationPreferences(),
-                updatedAt: new Date() as any
-            };
+            return buildDefaultPreferences();
         }
 
         return preferences as NotificationPreferences;
     } catch (error) {
         console.error('Erreur récupération préférences notifications:', error);
-        return {
-            ...getDefaultNotificationPreferences(),
-            updatedAt: new Date() as any
-        };
+        return buildDefaultPreferences();
     }
 }
 
@@ -123,7 +166,7 @@ export async function updateNotificationPreferences(
     preferences: Partial<NotificationPreferences>
 ): Promise<void> {
     try {
-        const userRef = doc(db, 'users', userId);
+        const userRef = doc(getFirebaseDb(), 'users', userId);
 
         await updateDoc(userRef, {
             'preferences.notifications': {

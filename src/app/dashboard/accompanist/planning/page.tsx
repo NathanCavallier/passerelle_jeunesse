@@ -16,7 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { collection, query, where, orderBy, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import type { Booking } from '@/types/firestore';
 import {
@@ -79,7 +79,7 @@ export default function AccompanistPlanningPage() {
     setLoadingBookings(true);
 
     const bookingsQuery = query(
-      collection(db, 'bookings'),
+      collection(getFirebaseDb(), 'bookings'),
       where('accompanistId', '==', user.uid),
       orderBy('scheduledDate', 'asc')
     );
@@ -140,7 +140,7 @@ export default function AccompanistPlanningPage() {
     return allBookings.filter((booking) => {
       const bookingDate = booking.scheduledFor instanceof Date
         ? booking.scheduledFor
-        : new Date(booking.scheduledFor);
+        : new Date((booking.scheduledFor?.toDate()) || booking.scheduledFor);
       return isSameDay(bookingDate, date) && booking.status !== 'cancelled';
     });
   };
@@ -179,6 +179,50 @@ export default function AccompanistPlanningPage() {
         return format(currentDate, 'MMMM yyyy', { locale: fr });
     }
   }, [currentDate, viewMode]);
+
+  const getBookingTimeLabel = (booking: Booking) => {
+    const scheduledDate = booking.scheduledFor instanceof Date
+      ? booking.scheduledFor
+      : booking.scheduledFor?.toDate?.();
+
+    if (!scheduledDate || Number.isNaN(scheduledDate.getTime())) {
+      return 'Horaire à définir';
+    }
+
+    return format(scheduledDate, 'HH:mm');
+  };
+
+  const getServiceLabel = (booking: Booking) => {
+    switch (booking.serviceType) {
+      case 'local':
+        return '📍 Local';
+      case 'long_distance':
+        return '🛣️ Longue distance';
+      default:
+        return '📍 Trajet';
+    }
+  };
+
+  const getServiceTitle = (booking: Booking) => {
+    switch (booking.serviceType) {
+      case 'local':
+        return 'Accompagnement local';
+      case 'long_distance':
+        return 'Accompagnement longue distance';
+      default:
+        return 'Accompagnement trajet';
+    }
+  };
+
+  const getTripSummary = (booking: Booking) => {
+    const departure = booking.trip?.departure?.address || 'Départ à définir';
+    const arrival = booking.trip?.arrival?.address || 'Arrivée à définir';
+    return `${departure} → ${arrival}`;
+  };
+
+  const getBookingNotes = (booking: Booking) => {
+    return booking.additionalInfo || booking.internalNotes || '';
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -318,7 +362,7 @@ export default function AccompanistPlanningPage() {
                           key={m.id}
                           className={`text-xs px-1 py-0.5 rounded mb-0.5 truncate ${getStatusColor(m.status)}`}
                         >
-                          {m.timeSlot || 'Mission'}
+                          {getBookingTimeLabel(m)}
                         </div>
                       ))}
                       {missions.length > 2 && (
@@ -369,13 +413,11 @@ export default function AccompanistPlanningPage() {
                                   <div className="flex items-center gap-3">
                                     <div>
                                       <p className="font-medium text-sm">
-                                        {mission.serviceType === 'school' ? '🏫 Scolaire' :
-                                         mission.serviceType === 'medical' ? '🏥 Médical' :
-                                         mission.serviceType === 'leisure' ? '🎨 Loisir' : '📍 Trajet'}
+                                        {getServiceLabel(mission)}
                                       </p>
                                       <div className="flex items-center gap-2 text-xs mt-1 opacity-75">
                                         <Clock className="h-3 w-3" />
-                                        {mission.timeSlot || 'Horaire à définir'}
+                                        {getBookingTimeLabel(mission)}
                                         {mission.youngsters && mission.youngsters.length > 0 && (
                                           <>
                                             <Users className="h-3 w-3 ml-2" />
@@ -432,14 +474,10 @@ export default function AccompanistPlanningPage() {
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
                             <span className="text-xl">
-                              {mission.serviceType === 'school' ? '🏫' :
-                               mission.serviceType === 'medical' ? '🏥' :
-                               mission.serviceType === 'leisure' ? '🎨' : '📍'}
+                              {mission.serviceType === 'local' ? '📍' : '🛣️'}
                             </span>
                             <h3 className="font-medium">
-                              {mission.serviceType === 'school' ? 'Accompagnement scolaire' :
-                               mission.serviceType === 'medical' ? 'Accompagnement médical' :
-                               mission.serviceType === 'leisure' ? 'Accompagnement loisir' : 'Accompagnement trajet'}
+                              {getServiceTitle(mission)}
                             </h3>
                           </div>
                           <Badge variant="outline">{getStatusLabel(mission.status)}</Badge>
@@ -448,14 +486,12 @@ export default function AccompanistPlanningPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                           <div className="flex items-center gap-2 text-gray-600">
                             <Clock className="h-4 w-4" />
-                            {mission.timeSlot || 'Horaire à définir'}
+                            {getBookingTimeLabel(mission)}
                           </div>
-                          {mission.departure && (
-                            <div className="flex items-center gap-2 text-gray-600">
-                              <MapPin className="h-4 w-4" />
-                              {mission.departure}
-                            </div>
-                          )}
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <MapPin className="h-4 w-4" />
+                            {getTripSummary(mission)}
+                          </div>
                           {mission.youngsters && mission.youngsters.length > 0 && (
                             <div className="flex items-center gap-2 text-gray-600">
                               <Users className="h-4 w-4" />
@@ -464,9 +500,9 @@ export default function AccompanistPlanningPage() {
                           )}
                         </div>
 
-                        {mission.specialInstructions && (
+                        {getBookingNotes(mission) && (
                           <p className="mt-3 text-sm text-gray-500 bg-yellow-50 p-2 rounded">
-                            📋 {mission.specialInstructions}
+                            📋 {getBookingNotes(mission)}
                           </p>
                         )}
                       </div>

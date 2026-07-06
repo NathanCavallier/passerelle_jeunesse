@@ -21,7 +21,7 @@ import {
     User as FirebaseUser,
     UserCredential,
 } from 'firebase/auth';
-import { auth } from './firebase';
+import { getFirebaseAuth } from './firebase';
 import { createUserDocument, getUserDocument } from './firestore-service';
 import type { UserRole } from '@/types/firestore';
 
@@ -67,7 +67,7 @@ export async function signUp(data: SignUpData): Promise<UserCredential> {
     try {
         // Créer le compte Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(
-            auth,
+            getFirebaseAuth(),
             data.email,
             data.password
         );
@@ -106,7 +106,7 @@ export async function signUp(data: SignUpData): Promise<UserCredential> {
 export async function signIn(data: SignInData): Promise<UserCredential> {
     try {
         const userCredential = await signInWithEmailAndPassword(
-            auth,
+            getFirebaseAuth(),
             data.email,
             data.password
         );
@@ -125,7 +125,7 @@ export async function signIn(data: SignInData): Promise<UserCredential> {
  */
 export async function signInWithGoogle(): Promise<UserCredential> {
     try {
-        const userCredential = await signInWithPopup(auth, googleProvider);
+        const userCredential = await signInWithPopup(getFirebaseAuth(), googleProvider);
 
         // Vérifier si c'est une première connexion
         const userDoc = await getUserDocument(userCredential.user.uid);
@@ -163,7 +163,7 @@ export async function signInWithGoogle(): Promise<UserCredential> {
  */
 export async function logout(): Promise<void> {
     try {
-        await signOut(auth);
+        await signOut(getFirebaseAuth());
     } catch (error: any) {
         throw handleAuthError(error);
     }
@@ -178,7 +178,7 @@ export async function logout(): Promise<void> {
  */
 export async function resetPassword(email: string): Promise<void> {
     try {
-        await sendPasswordResetEmail(auth, email, {
+        await sendPasswordResetEmail(getFirebaseAuth(), email, {
             url: `${window.location.origin}/login`,
             handleCodeInApp: false,
         });
@@ -196,7 +196,7 @@ export async function resetPassword(email: string): Promise<void> {
  */
 export async function resendVerificationEmail(): Promise<void> {
     try {
-        const user = auth.currentUser;
+        const user = getFirebaseAuth().currentUser;
         if (!user) {
             throw new Error('Aucun utilisateur connecté');
         }
@@ -219,28 +219,28 @@ export async function resendVerificationEmail(): Promise<void> {
  * Écoute les changements d'état d'authentification
  */
 export function onAuthChange(callback: (user: FirebaseUser | null) => void) {
-    return onAuthStateChanged(auth, callback);
+    return onAuthStateChanged(getFirebaseAuth(), callback);
 }
 
 /**
  * Récupère l'utilisateur actuellement connecté
  */
 export function getCurrentUser(): FirebaseUser | null {
-    return auth.currentUser;
+    return getFirebaseAuth().currentUser;
 }
 
 /**
  * Vérifie si un utilisateur est connecté
  */
 export function isAuthenticated(): boolean {
-    return auth.currentUser !== null;
+    return getFirebaseAuth().currentUser !== null;
 }
 
 /**
  * Récupère le token ID de l'utilisateur actuel
  */
 export async function getIdToken(): Promise<string | null> {
-    const user = auth.currentUser;
+    const user = getFirebaseAuth().currentUser;
     if (!user) return null;
 
     try {
@@ -261,7 +261,7 @@ export async function getIdToken(): Promise<string | null> {
  */
 export async function reauthenticateUser(currentPassword: string): Promise<void> {
     try {
-        const user = auth.currentUser;
+        const user = getFirebaseAuth().currentUser;
         if (!user || !user.email) {
             throw new Error('Aucun utilisateur connecté');
         }
@@ -281,7 +281,7 @@ export async function updateUserProfile(data: {
     photoURL?: string;
 }): Promise<void> {
     try {
-        const user = auth.currentUser;
+        const user = getFirebaseAuth().currentUser;
         if (!user) {
             throw new Error('Aucun utilisateur connecté');
         }
@@ -301,7 +301,7 @@ export async function updateUserEmail(
     currentPassword: string
 ): Promise<void> {
     try {
-        const user = auth.currentUser;
+        const user = getFirebaseAuth().currentUser;
         if (!user) {
             throw new Error('Aucun utilisateur connecté');
         }
@@ -328,7 +328,7 @@ export async function updateUserPassword(
     newPassword: string
 ): Promise<void> {
     try {
-        const user = auth.currentUser;
+        const user = getFirebaseAuth().currentUser;
         if (!user) {
             throw new Error('Aucun utilisateur connecté');
         }
@@ -373,7 +373,7 @@ function handleAuthError(error: any): AuthError {
     };
 }
 
-export { auth };
+export { getFirebaseAuth, handleAuthError };
 
 // ============================================================================
 // SUPPRESSION DE COMPTE
@@ -384,7 +384,7 @@ export { auth };
  * Nécessite une réauthentification récente
  */
 export async function deleteAccount(currentPassword: string): Promise<void> {
-    const user = auth.currentUser;
+    const user = getFirebaseAuth().currentUser;
     if (!user || !user.email) {
         throw new Error('Utilisateur non connecté.');
     }

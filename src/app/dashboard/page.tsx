@@ -15,15 +15,15 @@ import { useToast } from '@/hooks/use-toast';
 import { ActiveMissions } from '@/components/mission/active-missions';
 import { MobileShell } from '@/components/pwa/mobile-shell';
 import { PWA_TEST_MODE } from '@/lib/test-config';
-import { db } from '@/lib/firebase';
+import { getFirebaseDb } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, orderBy, Unsubscribe } from 'firebase/firestore';
 import type { Booking } from '@/types/firestore';
-import { 
-  User, 
-  Calendar, 
-  CreditCard, 
-  Bell, 
-  Settings, 
+import {
+  User,
+  Calendar,
+  CreditCard,
+  Bell,
+  Settings,
   LogOut,
   AlertCircle,
   Gift,
@@ -75,7 +75,7 @@ export default function DashboardPage() {
     // Vérifier si on est sur la page dashboard parent (pas accompagnateur)
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
     const isParentDashboard = currentPath === '/dashboard';
-    
+
     // Ne charger que si on est sur le dashboard parent et authentifié comme parent
     if (!isParentDashboard || !isAuthenticated || !user || loadingBookings || isAccompanist) {
       setLoadingBookings(false);
@@ -88,8 +88,8 @@ export default function DashboardPage() {
     }
 
     setLoadingBookings(true);
-    
-    const bookingsRef = collection(db, 'bookings');
+
+    const bookingsRef = collection(getFirebaseDb(), 'bookings');
     const q = query(
       bookingsRef,
       where('parentId', '==', user.uid)
@@ -103,14 +103,14 @@ export default function DashboardPage() {
           id: doc.id,
           ...doc.data()
         } as Booking));
-        
+
         // Trier côté client par createdAt décroissant
         bookingsData.sort((a, b) => {
           const timeA = a.createdAt?.toDate().getTime() || 0;
           const timeB = b.createdAt?.toDate().getTime() || 0;
           return timeB - timeA;
         });
-        
+
         setBookings(bookingsData);
         setLastUpdate(new Date());
         setLoadingBookings(false);
@@ -123,7 +123,7 @@ export default function DashboardPage() {
               if (booking.missionTracking?.currentStatus) {
                 toast({
                   title: 'Mise à jour de mission',
-                  description: `La mission pour ${booking.youngsterName || 'votre enfant'} a été mise à jour`,
+                  description: `La mission pour ${booking.youngsters[0].firstName || 'votre enfant'} a été mise à jour`,
                 });
               }
             }
@@ -227,7 +227,7 @@ export default function DashboardPage() {
 
           {/* Missions en cours (suivi temps réel) */}
           {userProfile.role === 'parent' && (
-            <ActiveMissions 
+            <ActiveMissions
               bookings={bookings}
               lastUpdate={lastUpdate}
             />
@@ -269,8 +269,8 @@ export default function DashboardPage() {
                   {loadingBookings ? '...' : bookings.length}
                 </p>
                 <p className="text-sm text-muted-foreground">réservation(s)</p>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full mt-4 border-green-300 hover:bg-green-50"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -293,8 +293,8 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full border-emerald-300 hover:bg-emerald-50"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -337,8 +337,8 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full border-orange-300 hover:bg-orange-50"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -361,8 +361,8 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full border-slate-300 hover:bg-slate-50"
                   onClick={(e) => {
                     e.stopPropagation();
