@@ -17,7 +17,7 @@ import {
   increment,
   Unsubscribe,
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { getFirebaseDb } from './firebase';
 import type { Review, ReviewCategories, ReviewStatus } from '@/types/firestore';
 
 // ============================================================================
@@ -39,7 +39,7 @@ export interface SubmitReviewData {
 export async function submitReview(data: SubmitReviewData): Promise<string> {
   // Vérifier qu'un avis n'existe pas déjà pour cette réservation
   const existingQuery = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     where('bookingId', '==', data.bookingId),
     where('authorId', '==', data.authorId)
   );
@@ -69,10 +69,10 @@ export async function submitReview(data: SubmitReviewData): Promise<string> {
     updatedAt: serverTimestamp(),
   };
 
-  const docRef = await addDoc(collection(db, 'reviews'), reviewData);
+  const docRef = await addDoc(collection(getFirebaseDb(), 'reviews'), reviewData);
 
   // Mettre à jour le booking pour indiquer qu'un avis a été laissé
-  const bookingRef = doc(db, 'bookings', data.bookingId);
+  const bookingRef = doc(getFirebaseDb(), 'bookings', data.bookingId);
   await updateDoc(bookingRef, {
     hasReview: true,
     reviewId: docRef.id,
@@ -91,16 +91,16 @@ export async function submitReview(data: SubmitReviewData): Promise<string> {
 
 async function updateAccompanistRating(bookingId: string): Promise<void> {
   // Récupérer le booking pour trouver l'accompagnateur
-  const bookingSnap = await getDoc(doc(db, 'bookings', bookingId));
+  const bookingSnap = await getDoc(doc(getFirebaseDb(), 'bookings', bookingId));
   if (!bookingSnap.exists()) return;
-  
+
   const booking = bookingSnap.data();
   const accompanistId = booking.accompanistId;
   if (!accompanistId) return;
 
   // Récupérer tous les avis pour cet accompagnateur
   const bookingsQuery = query(
-    collection(db, 'bookings'),
+    collection(getFirebaseDb(), 'bookings'),
     where('accompanistId', '==', accompanistId),
     where('hasReview', '==', true)
   );
@@ -110,12 +110,12 @@ async function updateAccompanistRating(bookingId: string): Promise<void> {
 
   // Récupérer tous les avis approuvés
   const reviewsQuery = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     where('status', '==', 'approved')
   );
   const reviewsSnap = await getDocs(reviewsQuery);
   const relevantReviews = reviewsSnap.docs.filter(d => bookingIds.includes(d.data().bookingId));
-  
+
   if (relevantReviews.length === 0) return;
 
   const totalRating = relevantReviews.reduce((sum, d) => sum + d.data().overallRating, 0);
@@ -123,7 +123,7 @@ async function updateAccompanistRating(bookingId: string): Promise<void> {
   const totalMissions = relevantReviews.length;
 
   // Mettre à jour le profil accompagnateur
-  const userRef = doc(db, 'users', accompanistId);
+  const userRef = doc(getFirebaseDb(), 'users', accompanistId);
   await updateDoc(userRef, {
     'accompanistProfile.rating': averageRating,
     'accompanistProfile.totalMissions': totalMissions,
@@ -137,7 +137,7 @@ async function updateAccompanistRating(bookingId: string): Promise<void> {
 
 export async function getReviewByBookingId(bookingId: string): Promise<Review | null> {
   const q = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     where('bookingId', '==', bookingId),
     limit(1)
   );
@@ -148,7 +148,7 @@ export async function getReviewByBookingId(bookingId: string): Promise<Review | 
 
 export async function getUserReviews(userId: string): Promise<Review[]> {
   const q = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     where('authorId', '==', userId),
     orderBy('createdAt', 'desc')
   );
@@ -158,7 +158,7 @@ export async function getUserReviews(userId: string): Promise<Review[]> {
 
 export async function getPublicReviews(limitCount: number = 20): Promise<Review[]> {
   const q = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     where('status', '==', 'approved'),
     where('isPublic', '==', true),
     orderBy('createdAt', 'desc'),
@@ -176,7 +176,7 @@ export async function getReviewStats(): Promise<{
   categoryAverages: ReviewCategories;
 }> {
   const q = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     where('status', '==', 'approved')
   );
   const snap = await getDocs(q);
@@ -235,7 +235,7 @@ export function onPublicReviewsSnapshot(
   limitCount: number = 50
 ): Unsubscribe {
   const q = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     where('status', '==', 'approved'),
     where('isPublic', '==', true),
     orderBy('createdAt', 'desc'),
@@ -257,7 +257,7 @@ export async function moderateReview(
   moderatorId: string,
   notes?: string
 ): Promise<void> {
-  const reviewRef = doc(db, 'reviews', reviewId);
+  const reviewRef = doc(getFirebaseDb(), 'reviews', reviewId);
   await updateDoc(reviewRef, {
     status: action,
     moderatedBy: moderatorId,
@@ -272,7 +272,7 @@ export function onAllReviewsSnapshot(
   callback: (reviews: Review[]) => void
 ): Unsubscribe {
   const q = query(
-    collection(db, 'reviews'),
+    collection(getFirebaseDb(), 'reviews'),
     orderBy('createdAt', 'desc'),
     limit(100)
   );
@@ -291,7 +291,7 @@ export async function respondToReview(
   text: string,
   respondedBy: string
 ): Promise<void> {
-  const reviewRef = doc(db, 'reviews', reviewId);
+  const reviewRef = doc(getFirebaseDb(), 'reviews', reviewId);
   await updateDoc(reviewRef, {
     response: {
       text,
@@ -309,12 +309,12 @@ export async function respondToReview(
 export async function getPendingReviewBookings(userId: string): Promise<string[]> {
   // Récupérer les bookings complétés sans avis
   const bookingsQuery = query(
-    collection(db, 'bookings'),
+    collection(getFirebaseDb(), 'bookings'),
     where('userId', '==', userId),
     where('status', '==', 'completed'),
   );
   const bookingsSnap = await getDocs(bookingsQuery);
-  
+
   const pendingBookingIds: string[] = [];
   for (const bookingDoc of bookingsSnap.docs) {
     const data = bookingDoc.data();
@@ -322,6 +322,6 @@ export async function getPendingReviewBookings(userId: string): Promise<string[]
       pendingBookingIds.push(bookingDoc.id);
     }
   }
-  
+
   return pendingBookingIds;
 }

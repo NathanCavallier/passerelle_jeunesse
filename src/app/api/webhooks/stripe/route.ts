@@ -1,7 +1,7 @@
 /**
  * API Route - Webhooks Stripe
  * POST /api/webhooks/stripe
- * 
+ *
  * Reçoit les événements de Stripe (paiements réussis, remboursements, etc.)
  */
 
@@ -10,6 +10,7 @@ import { verifyWebhookSignature } from '@/lib/stripe-server';
 import { confirmDepositPaymentAdmin, confirmBalancePaymentAdmin, getBookingAdmin, updateBookingAdmin } from '@/lib/firestore-admin-service';
 import { sendPaymentConfirmationEmail } from '@/lib/email-service';
 import { adminAuth } from '@/lib/firebase-admin';
+import admin from '@/lib/firebase-admin';
 import Stripe from 'stripe';
 
 export async function POST(request: NextRequest) {
@@ -139,7 +140,7 @@ export async function POST(request: NextRequest) {
                     try {
                         // Rechercher le booking correspondant à ce payment_intent
                         // On doit chercher dans payment.deposit.paymentIntentId ou payment.balance.paymentIntentId
-                        const bookingsRef = await adminAuth.app.firestore().collection('bookings')
+                        const bookingsRef = await admin.firestore().collection('bookings')
                             .where('payment.deposit.paymentIntentId', '==', paymentIntentId)
                             .limit(1)
                             .get();
@@ -152,7 +153,7 @@ export async function POST(request: NextRequest) {
                                 ...bookingsRef.docs[0].data(),
                             };
                         } else {
-                            const bookingsRefBalance = await adminAuth.app.firestore().collection('bookings')
+                            const bookingsRefBalance = await admin.firestore().collection('bookings')
                                 .where('payment.balance.paymentIntentId', '==', paymentIntentId)
                                 .limit(1)
                                 .get();
@@ -167,9 +168,12 @@ export async function POST(request: NextRequest) {
 
                         if (booking && booking.cancellation) {
                             // Mettre à jour le statut de remboursement
+                            // extraire l'ID du remboursement depuis la liste refunds (Stripe Charge)
+                            const refundId = (charge as any).refunds?.data?.[0]?.id as string | undefined;
+
                             await updateBookingAdmin(booking.id, {
                                 'cancellation.refundStatus': 'completed',
-                                'cancellation.stripeRefundId': charge.refund as string,
+                                'cancellation.stripeRefundId': refundId || null,
                                 'cancellation.refundedAt': new Date(),
                             });
 

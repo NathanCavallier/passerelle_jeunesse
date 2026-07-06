@@ -3,7 +3,7 @@
  * Gère l'upload, la compression et le stockage des photos de confirmation
  */
 
-import { storage } from '@/lib/firebase';
+import { getFirebaseStorage } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export interface PhotoUploadOptions {
@@ -103,7 +103,7 @@ export async function uploadMissionPhoto(
         const storagePath = `mission-photos/${bookingId}/${filename}`;
 
         // Créer la référence Firebase Storage
-        const storageRef = ref(storage, storagePath);
+        const storageRef = ref(getFirebaseStorage(), storagePath);
 
         // Upload le blob compressé
         onProgress?.(50);

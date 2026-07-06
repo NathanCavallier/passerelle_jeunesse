@@ -16,10 +16,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Settings, Save, RotateCcw } from 'lucide-react';
-import type { 
-  NotificationPreferences, 
-  NotificationChannel, 
-  NotificationEventType 
+import type {
+  NotificationPreferences,
+  NotificationChannel,
+  NotificationEventType
 } from '@/types/firestore';
 import {
   getUserNotificationPreferences,
@@ -34,7 +34,7 @@ export default function NotificationsPage() {
   const router = useRouter();
   const { user, loading, isAuthenticated } = useAuth();
   const { toast } = useToast();
-  
+
   const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -56,7 +56,7 @@ export default function NotificationsPage() {
 
   const loadPreferences = async () => {
     if (!user?.uid) return;
-    
+
     try {
       setIsLoading(true);
       const prefs = await getUserNotificationPreferences(user.uid);
@@ -70,9 +70,9 @@ export default function NotificationsPage() {
       });
       // Utiliser les préférences par défaut
       setPreferences({
-        ...getDefaultNotificationPreferences(),
+        ...(getDefaultNotificationPreferences() as any),
         updatedAt: new Date() as any
-      });
+      } as NotificationPreferences);
     } finally {
       setIsLoading(false);
     }
@@ -84,9 +84,9 @@ export default function NotificationsPage() {
     try {
       setIsSaving(true);
       setHasChanges(true);
-      
+
       await toggleGlobalChannel(user.uid, channel, enabled);
-      
+
       // Mettre à jour l'état local
       setPreferences(prev => prev ? {
         ...prev,
@@ -98,12 +98,12 @@ export default function NotificationsPage() {
           }
         }
       } : null);
-      
+
       toast({
         title: 'Paramètres sauvegardés',
         description: `Notifications ${channel} ${enabled ? 'activées' : 'désactivées'}`,
       });
-      
+
       setHasChanges(false);
     } catch (error) {
       console.error('Erreur toggle canal:', error);
@@ -118,7 +118,7 @@ export default function NotificationsPage() {
   };
 
   const handleUpdateQuietHours = async (
-    channel: NotificationChannel, 
+    channel: NotificationChannel,
     quietHours: { start: string; end: string } | undefined
   ) => {
     if (!user?.uid || !preferences) return;
@@ -126,9 +126,9 @@ export default function NotificationsPage() {
     try {
       setIsSaving(true);
       setHasChanges(true);
-      
+
       await updateQuietHours(user.uid, channel, quietHours);
-      
+
       // Mettre à jour l'état local
       setPreferences(prev => prev ? {
         ...prev,
@@ -140,14 +140,14 @@ export default function NotificationsPage() {
           }
         }
       } : null);
-      
+
       toast({
         title: 'Heures silencieuses mises à jour',
-        description: quietHours 
+        description: quietHours
           ? `${channel}: ${quietHours.start} - ${quietHours.end}`
           : `Heures silencieuses désactivées pour ${channel}`,
       });
-      
+
       setHasChanges(false);
     } catch (error) {
       console.error('Erreur heures silencieuses:', error);
@@ -171,11 +171,11 @@ export default function NotificationsPage() {
     try {
       setIsSaving(true);
       setHasChanges(true);
-      
+
       await updateEventPreferences(user.uid, eventType, {
         [channel]: { enabled }
       });
-      
+
       // Mettre à jour l'état local
       setPreferences(prev => prev ? {
         ...prev,
@@ -190,7 +190,7 @@ export default function NotificationsPage() {
           }
         }
       } : null);
-      
+
       setHasChanges(false);
     } catch (error) {
       console.error('Erreur mise à jour événement:', error);
@@ -214,7 +214,7 @@ export default function NotificationsPage() {
     try {
       setIsSaving(true);
       setHasChanges(true);
-      
+
       const updatedPrefs = {
         ...preferences,
         summary: {
@@ -222,15 +222,15 @@ export default function NotificationsPage() {
           ...settings
         }
       };
-      
+
       await updateNotificationPreferences(user.uid, updatedPrefs);
       setPreferences(updatedPrefs);
-      
+
       toast({
         title: 'Résumés mis à jour',
         description: 'Paramètres des résumés sauvegardés',
       });
-      
+
       setHasChanges(false);
     } catch (error) {
       console.error('Erreur mise à jour résumés:', error);
@@ -246,22 +246,22 @@ export default function NotificationsPage() {
 
   const resetToDefaults = async () => {
     if (!user?.uid) return;
-    
+
     try {
       setIsSaving(true);
       const defaultPrefs = {
-        ...getDefaultNotificationPreferences(),
+        ...(getDefaultNotificationPreferences() as any),
         updatedAt: new Date() as any
-      };
-      
+      } as NotificationPreferences;
+
       await updateNotificationPreferences(user.uid, defaultPrefs);
       setPreferences(defaultPrefs);
-      
+
       toast({
         title: 'Paramètres réinitialisés',
         description: 'Les paramètres par défaut ont été rétablis',
       });
-      
+
       setHasChanges(false);
     } catch (error) {
       console.error('Erreur réinitialisation:', error);
@@ -313,7 +313,7 @@ export default function NotificationsPage() {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour
             </Button>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
@@ -324,7 +324,7 @@ export default function NotificationsPage() {
                   Personnalisez vos préférences de notifications pour ne rien manquer d'important
                 </p>
               </div>
-              
+
               <Button
                 variant="outline"
                 size="sm"

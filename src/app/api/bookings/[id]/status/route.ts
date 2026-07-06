@@ -1,7 +1,7 @@
 /**
  * API Route - Mise à jour statut de mission
  *POST /api/bookings/[id]/status
- * 
+ *
  * Met à jour le statut en temps réel d'une mission (accompagnateur)
  */
 
@@ -11,9 +11,10 @@ import type { MissionStatus } from '@/types/firestore';
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: any }
 ) {
     try {
+        const params = typeof context.params?.then === 'function' ? await context.params : context.params;
         const bookingId = params.id;
 
         // Récupérer les données de la requête
@@ -152,14 +153,15 @@ export async function POST(
 
 /**
  * GET /api/bookings/[id]/status
- * 
+ *
  * Récupère le statut actuel de la mission
  */
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: any }
 ) {
     try {
+        const params = typeof context.params?.then === 'function' ? await context.params : context.params;
         const bookingId = params.id;
 
         // Récupérer le booking

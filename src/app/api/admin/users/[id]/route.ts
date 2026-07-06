@@ -1,7 +1,7 @@
 /**
  * API Route - Gestion des utilisateurs (admin)
  * PATCH /api/admin/users/[id]
- * 
+ *
  * Met à jour le statut d'un utilisateur (suspendre, activer, etc.)
  */
 
@@ -11,9 +11,10 @@ import { FieldValue } from 'firebase-admin/firestore';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: any }
 ) {
   try {
+    const params = typeof context.params?.then === 'function' ? await context.params : context.params;
     const userId = params.id;
 
     // Token d'authentification

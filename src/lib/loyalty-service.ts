@@ -17,7 +17,7 @@ import {
   increment,
   Unsubscribe,
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { getFirebaseDb } from './firebase';
 import type {
   LoyaltyTier,
   LoyaltyTierConfig,
@@ -110,6 +110,7 @@ export async function addLoyaltyPoints(
   description: string,
   referenceId?: string
 ): Promise<void> {
+  const db = await getFirebaseDb();
   // Récupérer le solde actuel
   const userRef = doc(db, 'users', userId);
   const userSnap = await getDoc(userRef);
@@ -142,6 +143,7 @@ export async function deductLoyaltyPoints(
   description: string,
   referenceId?: string
 ): Promise<void> {
+  const db = await getFirebaseDb();
   const userRef = doc(db, 'users', userId);
   const userSnap = await getDoc(userRef);
   if (!userSnap.exists()) throw new Error('Utilisateur non trouvé');
@@ -162,6 +164,7 @@ export async function getLoyaltyTransactions(
   userId: string,
   limitCount: number = 50
 ): Promise<LoyaltyTransaction[]> {
+  const db = await getFirebaseDb();
   const q = query(
     collection(db, 'loyaltyTransactions'),
     where('userId', '==', userId),
@@ -177,6 +180,7 @@ export function onLoyaltyTransactionsSnapshot(
   callback: (transactions: LoyaltyTransaction[]) => void,
   limitCount: number = 50
 ): Unsubscribe {
+  const db = getFirebaseDb();
   const q = query(
     collection(db, 'loyaltyTransactions'),
     where('userId', '==', userId),
@@ -193,6 +197,7 @@ export function onLoyaltyTransactionsSnapshot(
 // ============================================================================
 
 export async function getActiveRewards(): Promise<LoyaltyReward[]> {
+  const db = await getFirebaseDb();
   const q = query(
     collection(db, 'loyaltyRewards'),
     where('active', '==', true),
@@ -206,6 +211,7 @@ export async function redeemReward(
   userId: string,
   rewardId: string
 ): Promise<string> {
+  const db = await getFirebaseDb();
   const rewardRef = doc(db, 'loyaltyRewards', rewardId);
   const rewardSnap = await getDoc(rewardRef);
   if (!rewardSnap.exists()) throw new Error('Récompense non trouvée');
@@ -260,6 +266,7 @@ export async function redeemReward(
 }
 
 export async function getUserRedemptions(userId: string): Promise<LoyaltyRedemption[]> {
+  const db = getFirebaseDb();
   const q = query(
     collection(db, 'loyaltyRedemptions'),
     where('userId', '==', userId),
@@ -286,6 +293,7 @@ export async function createReferral(
   }
 
   // Vérifier qu'un parrainage n'existe pas déjà
+  const db = getFirebaseDb();
   const existingQuery = query(
     collection(db, 'referrals'),
     where('referrerId', '==', referrerId),
@@ -314,6 +322,7 @@ export async function createReferral(
 }
 
 export async function getUserReferrals(userId: string): Promise<Referral[]> {
+  const db = getFirebaseDb();
   const q = query(
     collection(db, 'referrals'),
     where('referrerId', '==', userId),
@@ -344,6 +353,7 @@ export function onReferralsSnapshot(
   userId: string,
   callback: (referrals: Referral[]) => void
 ): Unsubscribe {
+  const db = getFirebaseDb();
   const q = query(
     collection(db, 'referrals'),
     where('referrerId', '==', userId),
@@ -363,6 +373,7 @@ export async function validatePromoCode(
   userId: string,
   bookingAmount: number
 ): Promise<{ valid: boolean; discount: number; promoCode?: PromoCode; error?: string }> {
+  const db = getFirebaseDb();
   const q = query(
     collection(db, 'promoCodes'),
     where('code', '==', code.toUpperCase()),
@@ -423,6 +434,7 @@ export async function applyPromoCode(
   bookingId: string,
   discountAmount: number
 ): Promise<void> {
+  const db = getFirebaseDb();
   // Enregistrer l'utilisation
   await addDoc(collection(db, 'promoCodeUsages'), {
     promoCodeId,

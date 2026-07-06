@@ -4,7 +4,7 @@
  */
 
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from './firebase';
+import { getFirebaseStorage } from './firebase';
 
 /**
  * Compresse une image à une taille maximale
@@ -115,7 +115,7 @@ export async function uploadProfilePhoto(
 
         // Créer la référence dans Storage
         const timestamp = Date.now();
-        const storageRef = ref(storage, `profile-photos/${userId}/${timestamp}.jpg`);
+        const storageRef = ref(getFirebaseStorage(), `profile-photos/${userId}/${timestamp}.jpg`);
 
         // Upload
         await uploadBytes(storageRef, compressedBlob, {
@@ -147,7 +147,7 @@ export async function deleteProfilePhoto(photoURL: string): Promise<void> {
         }
 
         const path = decodeURIComponent(pathMatch[0].replace('%2F', '/'));
-        const storageRef = ref(storage, path);
+        const storageRef = ref(getFirebaseStorage(), path);
 
         await deleteObject(storageRef);
     } catch (error: any) {

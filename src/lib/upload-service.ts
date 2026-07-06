@@ -3,15 +3,15 @@
  * Gestion du stockage des images, documents et thumbnails
  */
 
-import { 
-  ref, 
-  uploadBytes, 
-  getDownloadURL, 
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
   deleteObject,
   uploadBytesResumable,
-  UploadTaskSnapshot 
+  UploadTaskSnapshot
 } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { getFirebaseStorage } from '@/lib/firebase';
 import type { MessageAttachment } from '@/types/firestore';
 
 // Configuration des types de fichiers autorisés
@@ -53,7 +53,7 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
         error: 'L\\image est trop volumineuse (max 5 MB)'
       };
     }
-    
+
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       return {
         valid: false,
@@ -90,7 +90,7 @@ export async function compressImage(
     img.onload = () => {
       // Calculer les nouvelles dimensions
       let { width, height } = img;
-      
+
       if (width > height) {
         if (width > maxWidth) {
           height = (height * maxWidth) / width;
@@ -175,13 +175,13 @@ export async function uploadMessageAttachment(
   if (isImage) {
     // Compression de l'image principale
     processedFile = await compressImage(file);
-    
+
     // Création et upload du thumbnail
     try {
       const thumbnail = await createThumbnail(file);
       const thumbnailPath = `messages/${conversationId}/thumbnails/${generateFileName(file.name, userId)}`;
-      const thumbnailRef = ref(storage, thumbnailPath);
-      
+      const thumbnailRef = ref(getFirebaseStorage(), thumbnailPath);
+
       await uploadBytes(thumbnailRef, thumbnail);
       thumbnailURL = await getDownloadURL(thumbnailRef);
     } catch (error) {
@@ -192,11 +192,11 @@ export async function uploadMessageAttachment(
 
   // Upload du fichier principal
   const filePath = `messages/${conversationId}/attachments/${generateFileName(file.name, userId)}`;
-  const fileRef = ref(storage, filePath);
-  
+  const fileRef = ref(getFirebaseStorage(), filePath);
+
   return new Promise((resolve, reject) => {
     const uploadTask = uploadBytesResumable(fileRef, processedFile);
-    
+
     uploadTask.on(
       'state_changed',
       (snapshot: UploadTaskSnapshot) => {
@@ -210,7 +210,7 @@ export async function uploadMessageAttachment(
       async () => {
         try {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
-          
+
           const attachment: MessageAttachment = {
             type: isImage ? 'image' : 'document',
             url,
@@ -218,7 +218,7 @@ export async function uploadMessageAttachment(
             size: file.size,
             thumbnailURL
           };
-          
+
           resolve(attachment);
         } catch (error) {
           reject(new Error('Impossible d\\obtenir l\\URL du fichier'));
@@ -234,12 +234,12 @@ export async function uploadMessageAttachment(
 export async function deleteMessageAttachment(attachment: MessageAttachment): Promise<void> {
   try {
     // Supprimer le fichier principal
-    const fileRef = ref(storage, attachment.url);
+    const fileRef = ref(getFirebaseStorage(), attachment.url);
     await deleteObject(fileRef);
-    
+
     // Supprimer le thumbnail si présent
     if (attachment.thumbnailURL) {
-      const thumbnailRef = ref(storage, attachment.thumbnailURL);
+      const thumbnailRef = ref(getFirebaseStorage(), attachment.thumbnailURL);
       await deleteObject(thumbnailRef).catch(console.warn);
     }
   } catch (error) {

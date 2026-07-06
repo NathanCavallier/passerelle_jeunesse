@@ -309,7 +309,7 @@ export default function AdminUsersPage() {
                               )}
                               {u.role === 'parent' && u.parentProfile && (
                                 <div className="text-xs text-gray-500">
-                                  {u.parentProfile.childrenCount || 0} enfant(s)
+                                  {u.parentProfile.numberOfYoungsters || 0} enfant(s)
                                 </div>
                               )}
                             </td>

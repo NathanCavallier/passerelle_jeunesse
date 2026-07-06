@@ -11,7 +11,7 @@ import {
     uploadBytesResumable,
     UploadTaskSnapshot,
 } from 'firebase/storage';
-import { storage } from './firebase';
+import { getFirebaseStorage } from './firebase';
 
 // ============================================================================
 // TYPES
@@ -145,7 +145,7 @@ export async function uploadProfilePicture(
 
     // Créer la référence
     const fileName = `${Date.now()}-${file.name}`;
-    const storageRef = ref(storage, `profile-pictures/${userId}/${fileName}`);
+    const storageRef = ref(getFirebaseStorage(), `profile-pictures/${userId}/${fileName}`);
 
     // Upload avec suivi de progression si callback fourni
     if (onProgress) {
@@ -183,7 +183,7 @@ export async function uploadProfilePicture(
  */
 export async function deleteProfilePicture(photoUrl: string): Promise<void> {
     try {
-        const photoRef = ref(storage, photoUrl);
+        const photoRef = ref(getFirebaseStorage(), photoUrl);
         await deleteObject(photoRef);
     } catch (error: any) {
         // Ignorer l'erreur si le fichier n'existe pas
@@ -217,7 +217,7 @@ export async function uploadYoungsterPhoto(
 
     // Créer la référence
     const fileName = `${Date.now()}-${file.name}`;
-    const storageRef = ref(storage, `youngster-photos/${userId}/${youngsterId}/${fileName}`);
+    const storageRef = ref(getFirebaseStorage(), `youngster-photos/${userId}/${youngsterId}/${fileName}`);
 
     // Upload avec suivi de progression si callback fourni
     if (onProgress) {
@@ -255,7 +255,7 @@ export async function uploadYoungsterPhoto(
  */
 export async function deleteYoungsterPhoto(photoUrl: string): Promise<void> {
     try {
-        const photoRef = ref(storage, photoUrl);
+        const photoRef = ref(getFirebaseStorage(), photoUrl);
         await deleteObject(photoRef);
     } catch (error: any) {
         // Ignorer l'erreur si le fichier n'existe pas
@@ -297,7 +297,7 @@ export async function uploadDocument(
 
     // Créer la référence
     const fileName = `${Date.now()}-${file.name}`;
-    const storageRef = ref(storage, `documents/${userId}/${docType}/${fileName}`);
+    const storageRef = ref(getFirebaseStorage(), `documents/${userId}/${docType}/${fileName}`);
 
     // Upload avec suivi de progression si callback fourni
     if (onProgress) {
@@ -335,7 +335,7 @@ export async function uploadDocument(
  */
 export async function deleteDocument(documentUrl: string): Promise<void> {
     try {
-        const docRef = ref(storage, documentUrl);
+        const docRef = ref(getFirebaseStorage(), documentUrl);
         await deleteObject(docRef);
     } catch (error: any) {
         // Ignorer l'erreur si le fichier n'existe pas

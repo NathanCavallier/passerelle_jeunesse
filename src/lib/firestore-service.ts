@@ -22,8 +22,9 @@ import {
     arrayUnion,
     arrayRemove,
 } from 'firebase/firestore';
-import { db } from './firebase';
-import type { User, UserRole, Address, YoungsterDocument } from '@/types/firestore';
+import { getFirebaseDb } from './firebase';
+import { getDefaultNotificationPreferences } from './notifications-service';
+import type { User, UserRole, Address, YoungsterDocument, NotificationPreferences } from '@/types/firestore';
 
 // ============================================================================
 // USERS
@@ -45,7 +46,7 @@ export async function createUserDocument(
     uid: string,
     data: CreateUserData
 ): Promise<void> {
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(getFirebaseDb(), 'users', uid);
 
     const userData: Partial<User> = {
         uid,
@@ -58,11 +59,12 @@ export async function createUserDocument(
         address: data.address,
         preferences: {
             language: 'fr',
-            notifications: {
-                email: true,
-                sms: true,
-                push: true,
-            },
+            // Utiliser les préférences par défaut complètes pour respecter le type
+            notifications: ({
+                ...(getDefaultNotificationPreferences() as any),
+                // `updatedAt` sera peuplé lors de la première mise à jour côté serveur
+                updatedAt: serverTimestamp() as unknown as Timestamp,
+            } as unknown as NotificationPreferences),
             newsletter: false,
         },
         status: 'active',
@@ -119,7 +121,7 @@ export async function createUserDocument(
  * Récupère un document utilisateur
  */
 export async function getUserDocument(uid: string): Promise<User | null> {
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(getFirebaseDb(), 'users', uid);
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
@@ -136,7 +138,7 @@ export async function updateUserDocument(
     uid: string,
     data: Partial<User>
 ): Promise<void> {
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(getFirebaseDb(), 'users', uid);
 
     await updateDoc(userRef, {
         ...data,
@@ -148,7 +150,7 @@ export async function updateUserDocument(
  * Met à jour le lastLoginAt
  */
 export async function updateLastLogin(uid: string): Promise<void> {
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(getFirebaseDb(), 'users', uid);
 
     await updateDoc(userRef, {
         lastLoginAt: serverTimestamp(),
@@ -159,7 +161,7 @@ export async function updateLastLogin(uid: string): Promise<void> {
  * Supprime un document utilisateur (soft delete)
  */
 export async function deleteUserDocument(uid: string): Promise<void> {
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(getFirebaseDb(), 'users', uid);
 
     await updateDoc(userRef, {
         status: 'deleted',
@@ -178,7 +180,7 @@ export async function createYoungster(
     parentId: string,
     youngsterData: any
 ): Promise<string> {
-    const youngstersRef = collection(db, 'users', parentId, 'youngsters');
+    const youngstersRef = collection(getFirebaseDb(), 'users', parentId, 'youngsters');
     const youngsterRef = doc(youngstersRef);
 
     await setDoc(youngsterRef, {
@@ -193,7 +195,7 @@ export async function createYoungster(
     });
 
     // Incrémenter le compteur de jeunes du parent
-    const parentRef = doc(db, 'users', parentId);
+    const parentRef = doc(getFirebaseDb(), 'users', parentId);
     await updateDoc(parentRef, {
         'parentProfile.numberOfYoungsters': (await getDoc(parentRef)).data()
             ?.parentProfile?.numberOfYoungsters
@@ -208,7 +210,7 @@ export async function createYoungster(
  * Récupère tous les jeunes d'un parent
  */
 export async function getYoungsters(parentId: string): Promise<any[]> {
-    const youngstersRef = collection(db, 'users', parentId, 'youngsters');
+    const youngstersRef = collection(getFirebaseDb(), 'users', parentId, 'youngsters');
     const q = query(youngstersRef, where('status', '==', 'active'));
     const snapshot = await getDocs(q);
 
@@ -219,7 +221,7 @@ export async function getYoungsters(parentId: string): Promise<any[]> {
  * Récupère un jeune spécifique
  */
 export async function getYoungster(parentId: string, youngsterId: string): Promise<any | null> {
-    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+    const youngsterRef = doc(getFirebaseDb(), 'users', parentId, 'youngsters', youngsterId);
     const youngsterSnap = await getDoc(youngsterRef);
 
     if (!youngsterSnap.exists()) {
@@ -237,7 +239,7 @@ export async function updateYoungster(
     youngsterId: string,
     data: any
 ): Promise<void> {
-    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+    const youngsterRef = doc(getFirebaseDb(), 'users', parentId, 'youngsters', youngsterId);
 
     await updateDoc(youngsterRef, {
         ...data,
@@ -252,7 +254,7 @@ export async function deleteYoungster(
     parentId: string,
     youngsterId: string
 ): Promise<void> {
-    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+    const youngsterRef = doc(getFirebaseDb(), 'users', parentId, 'youngsters', youngsterId);
 
     await updateDoc(youngsterRef, {
         status: 'deleted',
@@ -260,7 +262,7 @@ export async function deleteYoungster(
     });
 
     // Décrémenter le compteur de jeunes du parent
-    const parentRef = doc(db, 'users', parentId);
+    const parentRef = doc(getFirebaseDb(), 'users', parentId);
     const parentSnap = await getDoc(parentRef);
     const currentCount = parentSnap.data()?.parentProfile?.numberOfYoungsters || 0;
 
@@ -279,7 +281,7 @@ export async function addYoungsterDocument(
     youngsterId: string,
     document: Omit<YoungsterDocument, 'id'>
 ): Promise<string> {
-    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+    const youngsterRef = doc(getFirebaseDb(), 'users', parentId, 'youngsters', youngsterId);
 
     // Générer un ID unique pour le document
     const docId = `doc_${Date.now()}_${Math.random().toString(36).substring(7)}`;
@@ -304,7 +306,7 @@ export async function deleteYoungsterDocument(
     youngsterId: string,
     document: YoungsterDocument
 ): Promise<void> {
-    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+    const youngsterRef = doc(getFirebaseDb(), 'users', parentId, 'youngsters', youngsterId);
 
     await updateDoc(youngsterRef, {
         documents: arrayRemove(document),
@@ -321,7 +323,7 @@ export async function updateYoungsterDocument(
     oldDocument: YoungsterDocument,
     newDocument: YoungsterDocument
 ): Promise<void> {
-    const youngsterRef = doc(db, 'users', parentId, 'youngsters', youngsterId);
+    const youngsterRef = doc(getFirebaseDb(), 'users', parentId, 'youngsters', youngsterId);
 
     // Supprimer l'ancien document et ajouter le nouveau
     await updateDoc(youngsterRef, {
@@ -342,7 +344,7 @@ export async function updateYoungsterDocument(
  * Crée une nouvelle réservation
  */
 export async function createBooking(bookingData: any): Promise<string> {
-    const bookingsRef = collection(db, 'bookings');
+    const bookingsRef = collection(getFirebaseDb(), 'bookings');
     const bookingRef = doc(bookingsRef);
 
     // Filtrer les valeurs undefined pour éviter l'erreur Firestore
@@ -366,7 +368,7 @@ export async function createBooking(bookingData: any): Promise<string> {
  */
 export async function getParentBookings(parentId: string): Promise<any[]> {
     try {
-        const bookingsRef = collection(db, 'bookings');
+        const bookingsRef = collection(getFirebaseDb(), 'bookings');
 
         // Requête simple sans orderBy pour éviter les erreurs si createdAt manque
         const q = query(
@@ -380,7 +382,7 @@ export async function getParentBookings(parentId: string): Promise<any[]> {
 
         // Inclure l'ID du document explicitement et trier côté client
         const bookings = snapshot.docs.map((doc) => ({
-            ...doc.data(),
+            ...(doc.data() as any),
             id: doc.id,
         }));
 
@@ -401,7 +403,7 @@ export async function getParentBookings(parentId: string): Promise<any[]> {
  * Récupère une réservation spécifique
  */
 export async function getBooking(bookingId: string): Promise<any | null> {
-    const bookingRef = doc(db, 'bookings', bookingId);
+    const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
     const bookingSnap = await getDoc(bookingRef);
 
     if (!bookingSnap.exists()) {
@@ -422,7 +424,7 @@ export async function updateBooking(
     bookingId: string,
     data: any
 ): Promise<void> {
-    const bookingRef = doc(db, 'bookings', bookingId);
+    const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
 
     await updateDoc(bookingRef, {
         ...data,
@@ -439,7 +441,7 @@ export async function cancelBooking(
     reason: string,
     refundAmount: number
 ): Promise<void> {
-    const bookingRef = doc(db, 'bookings', bookingId);
+    const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
 
     await updateDoc(bookingRef, {
         status: 'cancelled',
@@ -466,7 +468,7 @@ export async function confirmDepositPayment(
         paidAt?: Date;
     }
 ): Promise<void> {
-    const bookingRef = doc(db, 'bookings', bookingId);
+    const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
 
     const updateData: any = {
         'pricing.depositPaid': true,
@@ -499,7 +501,7 @@ export async function confirmBalancePayment(
         paidAt?: Date;
     }
 ): Promise<void> {
-    const bookingRef = doc(db, 'bookings', bookingId);
+    const bookingRef = doc(getFirebaseDb(), 'bookings', bookingId);
 
     const updateData: any = {
         'pricing.balancePaid': true,
@@ -528,7 +530,7 @@ export async function confirmBalancePayment(
  * Récupère les paramètres généraux
  */
 export async function getSettings(): Promise<any> {
-    const settingsRef = doc(db, 'settings', 'general');
+    const settingsRef = doc(getFirebaseDb(), 'settings', 'general');
     const settingsSnap = await getDoc(settingsRef);
 
     if (!settingsSnap.exists()) {
@@ -571,4 +573,4 @@ export function dateToTimestamp(date: Date): Timestamp {
     return Timestamp.fromDate(date);
 }
 
-export { db };
+export { getFirebaseDb as db };

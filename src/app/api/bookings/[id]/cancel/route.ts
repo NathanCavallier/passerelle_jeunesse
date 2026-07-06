@@ -1,7 +1,7 @@
 /**
  * API Route - Annulation de réservation
  * POST /api/bookings/[id]/cancel
- * 
+ *
  * Annule une réservation et traite le remboursement Stripe si applicable
  */
 
@@ -11,9 +11,10 @@ import { adminAuth } from '@/lib/firebase-admin';
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: any }
 ) {
     try {
+        const params = typeof context.params?.then === 'function' ? await context.params : context.params;
         const bookingId = params.id;
 
         // Récupérer les données de la requête

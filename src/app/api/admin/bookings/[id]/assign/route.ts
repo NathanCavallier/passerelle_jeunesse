@@ -1,7 +1,7 @@
 /**
  * API Route - Attribution accompagnateur (admin)
  * POST /api/admin/bookings/[id]/assign
- * 
+ *
  * Assigne un accompagnateur à une réservation via Admin SDK
  */
 
@@ -11,9 +11,10 @@ import { FieldValue } from 'firebase-admin/firestore';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: any }
 ) {
   try {
+    const params = typeof context.params?.then === 'function' ? await context.params : context.params;
     const bookingId = params.id;
 
     // Vérification du token

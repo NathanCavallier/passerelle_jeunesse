@@ -13,7 +13,7 @@ import {
     isSupported
 } from 'firebase/messaging';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from './firebase';
+import { getFirebaseDb } from './firebase';
 import type { NotificationPayload } from '@/types/firestore';
 
 // Configuration FCM
@@ -135,6 +135,7 @@ export const getFCMToken = async (userId?: string): Promise<string | null> => {
  */
 export const saveFCMToken = async (userId: string, token: string): Promise<void> => {
     try {
+        const db = await getFirebaseDb();
         const userRef = doc(db, 'users', userId);
         const deviceInfo = {
             userAgent: navigator.userAgent,
@@ -161,6 +162,7 @@ export const saveFCMToken = async (userId: string, token: string): Promise<void>
  */
 export const removeFCMToken = async (userId: string, token: string): Promise<void> => {
     try {
+        const db = await getFirebaseDb();
         const userRef = doc(db, 'users', userId);
 
         await updateDoc(userRef, {
