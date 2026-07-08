@@ -3,7 +3,7 @@
 /**
  * Section Vision — Timeline 3 phases
  * Positionnement : après <Services /> et avant <Testimonials />
- * 
+ *
  * Affiche la progression : Mobilité → Ateliers → Centre Jeunesse
  */
 
@@ -162,19 +162,6 @@ export default function HomepageVisionSection() {
               </div>
             );
           })}
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="mt-12 text-center">
-          <p className="text-muted-foreground mb-4">
-            Découvrez la vision complète du projet
-          </p>
-          <Link href="/poles">
-            <Button variant="outline" size="lg" className="gap-2">
-              Explorer les pôles
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
         </div>
       </div>
     </section>

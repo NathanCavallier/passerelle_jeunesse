@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { LanguageSwitcher } from './language-switcher';
 
 const navLinks = [
-  { href: '/poles', label: 'Services' },
+  //{ href: '/poles', label: 'Services' },
   { href: '/about', label: 'À propos' },
   { href: '/safety', label: 'Cadre & Sécurité' },
   { href: '/pricing', label: 'Tarifs' },

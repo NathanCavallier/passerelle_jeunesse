@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from '@/contexts/auth-context';
 import { ThemeProvider } from '@/components/theme-provider';
 import { I18nProvider } from '@/i18n';
-import { UnifiedNav } from '@/components/unified-nav';
 
 export const metadata: Metadata = {
   title: 'Passerelle Jeunesse | Accompagnement & Mobilité pour Jeunes',
@@ -79,7 +78,6 @@ export default function RootLayout({
         >
           <AuthProvider>
             <I18nProvider>
-              <UnifiedNav currentApp="passerelle" />
               {children}
             </I18nProvider>
           </AuthProvider>
