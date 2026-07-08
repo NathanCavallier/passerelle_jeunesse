@@ -216,12 +216,12 @@ export default function FAQ() {
               N'hésitez pas à nous contacter directement
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="mailto:contact@imogo.org" className="text-primary hover:underline">
-                contact@imogo.org
+              <a href="mailto:contact@passerellejeunesse.fr" className="text-primary hover:underline">
+                contact@passerellejeunesse.fr
               </a>
               <span className="hidden sm:inline text-muted-foreground">•</span>
-              <a href="tel:+33612345678" className="text-primary hover:underline">
-                06 12 34 56 78
+              <a href="tel:+33619226294" className="text-primary hover:underline">
+                06 19 22 62 94
               </a>
             </div>
           </div>

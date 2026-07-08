@@ -29,12 +29,13 @@ export default function Contact() {
                 </div>
                 <div className="flex items-center justify-center gap-3">
                   <Mail className="h-5 w-5 text-accent" />
-                  <a href="mailto:contact@passerellejeunesse.com" className="hover:underline">contact@passerellejeunesse.com</a>
+                  <a href="mailto:contact@passerellejeunesse.fr" className="hover:underline">contact@passerellejeunesse.fr</a>
                 </div>
               </div>
+              <p className="mt-4 text-sm text-muted-foreground">Réponse sous 24h ouvrées. Demande sans engagement et accompagnement sur mesure.</p>
               <div className="mt-8">
                 <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 h-auto whitespace-normal text-center" size="lg">
-                  <Link href="mailto:contact@passerellejeunesse.com">
+                  <Link href="mailto:contact@passerellejeunesse.fr">
                     Demander un devis ou un premier échange sans engagement
                   </Link>
                 </Button>

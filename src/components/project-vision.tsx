@@ -51,13 +51,13 @@ const phases = [
     status: 'upcoming' as const,
     statusLabel: 'À venir',
     description:
-      "Faire évoluer Passerelle Jeunesse vers un acteur jeunesse local reconnu en ajoutant les premiers ateliers éducatifs.",
+      "Renforcer Passerelle Jeunesse comme un acteur local de référence pour les familles, en enrichissant nos services d'accompagnement.",
     items: [
-      'Ateliers sciences (chimie, électricité, robotique)',
-      'Événements : Samedis Sciences, Vacances Découverte',
-      'Escape games éducatifs ponctuels',
-      'Partenariats mairies, MJC, centres sociaux',
-      'Intégration du pôle Ateliers 360',
+      'Accompagnements réguliers pour les familles',
+      'Partenariats avec associations et établissements',
+      'Formules de suivi sur mesure',
+      'Support logistique et administratif',
+      'Renforcement de la communication parents-jeunes',
     ],
     goal: "Être identifié localement comme une structure sérieuse.",
   },
@@ -65,19 +65,19 @@ const phases = [
     number: '03',
     label: 'Phase 3',
     horizon: '18 – 36 mois',
-    title: 'Ouvrir le Centre Jeunesse',
+    title: 'Consolider l’offre',
     status: 'future' as const,
     statusLabel: 'Vision',
     description:
-      "Disposer d'une communauté, de partenaires et d'ateliers testés pour ouvrir un lieu physique pérenne à Metz ou Saint-Avold.",
+      "Bâtir un service stable et reconnu, structuré autour de la mobilité, du suivi et de l'accompagnement durable.",
     items: [
-      'Local dédié (80 – 150 m²)',
-      'Salle sciences, espace devoirs, salle numérique',
-      'Escape games permanents',
-      'Accueil périscolaire & mercredis éducatifs',
-      "Équipe d'animateurs et intervenants",
+      'Organisation claire des services',
+      'Réseau de partenaires locaux',
+      'Espaces de préparation et de coordination',
+      'Formules de suivi personnalisé',
+      "Équipe d'accompagnateurs formés",
     ],
-    goal: "Un campus jeunesse où apprendre, créer, voyager et grandir.",
+    goal: "Être le réflexe des familles qui cherchent un accompagnement fiable.",
   },
 ];
 
@@ -110,40 +110,40 @@ const poles = [
   },
   {
     icon: FlaskConical,
-    title: 'Sciences & Découverte',
+    title: 'Accompagnement éducatif',
     status: 'upcoming' as const,
     color: 'text-violet-600',
     bg: 'bg-violet-50',
     services: [
-      'Chimie & physique',
-      'Électronique & robotique',
-      'Astronomie',
-      'Ateliers 360',
+      'Soutien scolaire',
+      'Orientation personnelle',
+      'Projets pédagogiques',
+      'Accompagnement aux démarches',
     ],
   },
   {
     icon: Puzzle,
-    title: 'Escape Games',
+    title: 'Accompagnement collectif',
     status: 'future' as const,
     color: 'text-amber-600',
     bg: 'bg-amber-50',
     services: [
-      'Scénarios scientifiques',
-      'Enquêtes historiques',
-      'Défis logiques',
+      'Scénarios de groupe',
+      'Actions citoyennes',
+      'Défis collaboratifs',
       "Formats groupe & famille",
     ],
   },
   {
     icon: Monitor,
-    title: 'Numérique',
+    title: 'Outils digitaux',
     status: 'future' as const,
     color: 'text-cyan-600',
     bg: 'bg-cyan-50',
     services: [
       'Programmation',
       'Création de jeux vidéo',
-      'IA initiation',
+      'Découverte IA',
       'Impression 3D',
     ],
   },
@@ -209,7 +209,7 @@ export default function ProjectVision() {
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
             De la mobilité vers un<br />
-            <span className="text-blue-200">centre jeunesse multifonction</span>
+            <span className="text-blue-200">service d'accompagnement structuré</span>
           </h1>
           <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-8">
             Passerelle Jeunesse n'est pas une activité figée. C'est un projet construit
@@ -343,11 +343,11 @@ export default function ProjectVision() {
               Vision à 3–5 ans
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Les 6 pôles du futur centre
+              Les 6 axes du service
             </h2>
             <p className="text-gray-500 mt-3 max-w-xl mx-auto">
-              Très peu de structures réunissent mobilité, sciences, escape games,
-              numérique et autonomie dans un même projet. C'est notre singularité.
+              Très peu de structures réunissent mobilité, accompagnement, autonomie
+              et soutien familial dans un même projet. C'est notre singularité.
             </p>
           </div>
 
@@ -380,19 +380,6 @@ export default function ProjectVision() {
                         {s}
                       </li>
                     ))}
-                    {pole.title === 'Sciences & Découverte' && (
-                      <p className="mt-3 text-xs text-violet-600 font-medium">
-                        ↗ En lien avec{' '}
-                        <a
-                          href="https://www.ateliers360.fr"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline"
-                        >
-                          Ateliers 360
-                        </a>
-                      </p>
-                    )}
                   </ul>
                 </div>
               );

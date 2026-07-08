@@ -42,6 +42,25 @@ Déployer Passerelle Jeunesse comme un vrai produit autonome, non pas comme une 
 - tunnel de réservation avant login, avec retour après connexion (en cours)
 - documentation du déploiement et du produit (en cours)
 
+### Cartographie actuelle du produit
+
+- Pages publiques actives : `/`, `/poles`, `/faq`, `/contact`, `/safety`
+- Composants de page existants : `Hero`, `HomepageVisionSection`, `PolesGrid`, `Testimonials`, `Contact`, `FAQ`, `Safety`, `MentionsLegales`
+- Emails : SendGrid transactionnel avec `contact@passerellejeunesse.fr`
+- Authentification & dashboard : parent, jeune, accompagnateur, admin
+- Réservation : moteur de demande de prestation et calcul tarifaire en place
+- Paiement : Stripe Checkout + webhooks
+- Documents juridiques : mentions légales existantes, à harmoniser avec le domaine
+- Domaine cible : migration de `jeunesse.imogo.org` vers `www.passerellejeunesse.fr`
+
+### Pages à compléter
+
+- `/pricing` — tarification et modalités de réservation
+- `/avis` — témoignages et preuves sociales
+- `/poles/[pole]` — pages détail par service
+- `/dashboard/bookings/new` — tunnel de réservation accessible depuis le marketing
+- `/mentions-legales` et `/privacy` — alignement complet du domaine et des adresses email
+
 ## Roadmap de transformation
 
 ### Phase 1 – Productisation immédiate (1 à 2 semaines)

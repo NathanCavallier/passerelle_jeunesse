@@ -209,7 +209,7 @@ function generateBookingConfirmationHTML(
 
     <div class="footer">
         <p>Passerelle Jeunesse - Accompagnement de jeunes en toute sécurité</p>
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002'}" style="color: #3B82F6;">jeunesse.imogo.org</a></p>
+        <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.passerellejeunesse.fr'}" style="color: #3B82F6;">www.passerellejeunesse.fr</a></p>
     </div>
 </body>
 </html>
@@ -362,7 +362,7 @@ function generatePaymentConfirmationHTML(
 
     <div class="footer">
         <p>Passerelle Jeunesse - Accompagnement de jeunes en toute sécurité</p>
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002'}" style="color: #10B981;">jeunesse.imogo.org</a></p>
+        <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.passerellejeunesse.fr'}" style="color: #10B981;">www.passerellejeunesse.fr</a></p>
     </div>
 </body>
 </html>
@@ -484,7 +484,7 @@ function generateReminderHTML(booking: Booking, parentName: string): string {
 
     <div class="footer">
         <p>Passerelle Jeunesse - Accompagnement de jeunes en toute sécurité</p>
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002'}" style="color: #F59E0B;">jeunesse.imogo.org</a></p>
+        <p><a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://www.passerellejeunesse.fr'}" style="color: #F59E0B;">www.passerellejeunesse.fr</a></p>
     </div>
 </body>
 </html>

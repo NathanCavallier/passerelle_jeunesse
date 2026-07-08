@@ -21,7 +21,7 @@ const testimonials = [
     name: 'Jean-François T.',
     role: 'Directeur, Centre Communautaire',
     avatarId: 'testimonial-avatar-2',
-    text: "Nous collaborons avec Passerelle Jeunesse pour leurs ateliers. Leur approche est engageante et incroyablement bénéfique pour les jeunes et les familles que nous servons.",
+    text: "Nous faisons confiance à Passerelle Jeunesse pour leurs accompagnements. Leur approche est engageante et bénéfique pour les jeunes et les familles que nous servons.",
   },
   {
     name: 'Aïcha B.',
@@ -38,9 +38,9 @@ export default function Testimonials() {
     <section id="testimonials" className="py-12 md:py-24 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Ce que nos partenaires disent</h2>
+          <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Des parents et partenaires rassurés</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Découvrez les expériences de ceux qui nous font confiance.
+            Témoignages concrets sur la sérénité, la fiabilité et la qualité des accompagnements.
           </p>
         </div>
         <Carousel

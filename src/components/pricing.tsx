@@ -89,7 +89,7 @@ const offer5 = {
     inclus: [
         'Aide ménage légère et rangement',
         'Courses et commissions',
-        'Aide numérique et accompagnement tech',
+        'Accompagnement aux démarches en ligne',
         'Tutorat et soutien pédagogique',
         'Accompagnement pour seniors',
     ],

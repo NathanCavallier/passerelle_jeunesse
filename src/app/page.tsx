@@ -9,7 +9,9 @@ export default function Home() {
   return (
     <PageShell>
       <Hero />
-       <Testimonials />
+      <HomepageVisionSection />
+      <PolesGrid />
+      <Testimonials />
       <Contact />
     </PageShell>
   );

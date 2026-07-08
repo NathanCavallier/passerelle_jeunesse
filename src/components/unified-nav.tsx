@@ -16,19 +16,9 @@ interface UnifiedNavProps {
 
 const APPS = [
   {
-    id: 'portfolio',
-    name: 'Portfolio',
-    href: 'https://portfolio.imogo.org',
-  },
-  {
     id: 'passerelle',
-    name: 'Jeunesse',
-    href: 'https://jeunesse.imogo.org',
-  },
-  {
-    id: 'imutask',
-    name: 'ImuTask',
-    href: 'https://imutask.imogo.org',
+    name: 'Passerelle Jeunesse',
+    href: 'https://www.passerellejeunesse.fr',
   }
 ];
 

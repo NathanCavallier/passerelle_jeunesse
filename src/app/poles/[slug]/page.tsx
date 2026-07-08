@@ -49,97 +49,57 @@ const polesData: Record<string, {
   color: keyof typeof colorClasses;
 }> = {
   mobilite: {
-    title: 'Mobilité',
-    subtitle: 'Accompagnement local et longue distance',
-    description: `Passerelle Jeunesse propose un accompagnement personnalisé pour tous les jeunes ayant besoin
-    de se déplacer. Que ce soit pour un trajet local à Metz/Saint-Avold ou une aventure à travers la France,
-    nous sommes là pour faciliter vos déplacements en toute sécurité et confiance.`,
+    title: 'Mobilité sécurisée',
+    subtitle: 'Accompagnement des trajets des jeunes',
+    description: `Passerelle Jeunesse propose un accompagnement personnalisé pour les déplacements des jeunes.
+    Que ce soit pour un trajet local à Metz/Saint-Avold ou un transfert plus lointain,
+    nous coordonnons chaque étape avec sérieux et transparence.`,
     status: '✓ Disponible',
     features: [
-      'Trajets locaux à Metz et Saint-Avold',
-      'Accompagnement à travers la France',
-      'Missions ponctuelles ou régulières',
-      'Professionnels expérimentés et formés',
-      'Plateforme de réservation sécurisée',
+      'Trajets sécurisés sur mesure',
+      'Accompagnement de sortie et arrivée',
+      'Coordination avec les familles',
+      'Conducteurs et accompagnateurs formés',
+      'Suivi en temps réel et compte rendu',
     ],
     ctaText: 'Réserver une mission',
     ctaHref: '/dashboard/bookings/new',
     color: 'blue',
   },
-  'sciences-decouverte': {
-    title: 'Sciences & Découverte',
-    subtitle: 'Ateliers scientifiques avec Ateliers 360',
-    description: `Découvrez le monde fascinant des sciences à travers des ateliers pratiques et ludiques.
-    Chimie, physique, électricité, robotique : des expériences concrètes pour comprendre et apprendre
-    en s'amusant.`,
-    status: '📅 Bientôt (Septembre 2026)',
+  'accompagnement-familial': {
+    title: 'Coordination familiale',
+    subtitle: 'Information et suivi pour les parents',
+    description: `Nous plaçons la communication avec les familles au cœur de notre service.
+    Passerelle Jeunesse garantit un interlocuteur dédié, des mises à jour régulières et une coordination
+    simple entre tous les acteurs du trajet.`,
+    status: '✓ Disponible',
     features: [
-      'Ateliers de chimie expérimentale',
-      'Projets de physique et électricité',
-      'Robotique et programmation',
-      'Expériences pratiques et ludiques',
-      'Équipes pédagogiques spécialisées',
-      'Petits groupes (6-12 jeunes)',
+      'Points de contact dédiés',
+      'Information claire avant et après chaque trajet',
+      'Validation des heures et lieux',
+      'Réponses rapides aux questions des parents',
+      'Organisation avec les établissements et les proches',
     ],
-    ctaText: 'Me notifier de l\'ouverture',
-    ctaHref: '/contact?subject=ateliers-sciences',
-    color: 'violet',
-  },
-  'escape-games': {
-    title: 'Escape Games & Enquêtes',
-    subtitle: 'Jeux d\'évasion éducatifs',
-    description: `Immergez-vous dans des aventures captivantes où logique, observation et travail
-    d'équipe sont essentiels. Nos escape games sont conçus pour développer l'esprit critique
-    tout en s'amusant.`,
-    status: '📅 Bientôt (Septembre 2026)',
-    features: [
-      'Enquêtes scientifiques et historiques',
-      'Énigmes logiques et mathématiques',
-      'Jeux coopératifs en équipe',
-      'Thèmes variés et progressifs',
-      'Sessions de 60-90 minutes',
-      'Accès régulier ou ponctuel',
-    ],
-    ctaText: 'Je m\'inscris à la liste d\'attente',
-    ctaHref: '/contact?subject=escape-games',
-    color: 'amber',
-  },
-  periscolaire: {
-    title: 'Accueil Périscolaire',
-    subtitle: 'Après l\'école et mercredis éducatifs',
-    description: `Un espace bienveillant où les jeunes trouvent aide aux devoirs, activités créatives
-    et moments de détente. Du lundi au vendredi après les cours et les mercredis, un encadrement
-    de qualité pour réussir à l'école et s'épanouir.`,
-    status: '📅 Bientôt (Août 2026)',
-    features: [
-      'Aide aux devoirs personnalisée',
-      'Activités créatives et sportives',
-      'Goûter et moments de détente',
-      'Encadrement bienveillant 15-20 jeunes',
-      'Horaires flexibles après école',
-      'Accueil pendant les vacances scolaires',
-    ],
-    ctaText: 'Préinscrire mon enfant',
-    ctaHref: '/contact?subject=periscolaire',
+    ctaText: 'Nous contacter',
+    ctaHref: '/contact?subject=coordination-familiale',
     color: 'emerald',
   },
-  numerique: {
-    title: 'Numérique & IA',
-    subtitle: 'Programmation, IA, cybersécurité, création',
-    description: `Préparez-vous au futur numérique en apprenant la programmation, la création de jeux
-    vidéo, les bases de l'IA et de la cybersécurité. L'impression 3D et les technologies modernes
-    n'auront plus de secrets pour vous.`,
-    status: '📅 Prochainement (Avril 2027)',
+  'suivi-transparent': {
+    title: 'Suivi transparent',
+    subtitle: 'Visibilité et confiance à chaque étape',
+    description: `Passerelle Jeunesse propose un suivi documenté et une traçabilité des missions.
+    Les parents reçoivent des comptes rendus, des confirmations de trajet et des échanges clairs
+    avec notre équipe.`,
+    status: '✓ Disponible',
     features: [
-      'Programmation Python et JavaScript',
-      'Création de jeux avec Godot/Unity',
-      'Initiation à l\'IA et machine learning',
-      'Cybersécurité et protection des données',
-      'Impression 3D et design numérique',
-      'Projets collaboratifs innovants',
+      'Rapports après chaque trajet',
+      'Confirmation de prise en charge',
+      'Suivi des temps de parcours',
+      'Recueil des retours familles',
+      'Supports clairs pour chaque déplacement',
     ],
-    ctaText: 'Rester informé du lancement',
-    ctaHref: '/contact?subject=numerique-ia',
+    ctaText: 'Demander un suivi',
+    ctaHref: '/contact?subject=suivi-transparent',
     color: 'cyan',
   },
 };

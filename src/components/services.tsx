@@ -187,7 +187,7 @@ export default function Services() {
                     </li>
                     <li className="flex items-start gap-3">
                         <Check className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />
-                        <span>Aide numérique et accompagnement tech</span>
+                        <span>Accompagnement aux démarches en ligne</span>
                     </li>
                     <li className="flex items-start gap-3">
                         <Check className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />

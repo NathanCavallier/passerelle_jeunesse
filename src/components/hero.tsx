@@ -37,17 +37,17 @@ async function handleServiceRequest(values: any) {
   // Simulate API call/database operation
   console.log('New service request:', values);
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   return { success: true, message: 'Service request sent successfully.' };
 }
 
 const heroImage = PlaceHolderImages.find(img => img.id === 'hero-image');
 
 const services = [
-  'Transport',
-  'Soutien Éducatif',
-  'Soutien à l’Autonomie',
-  'Ateliers Familiaux',
+  'Trajets sécurisés',
+  'Coordination parentale',
+  'Accompagnement individualisé',
+  'Suivi transparent',
 ];
 
 const formSchema = z.object({
@@ -111,16 +111,21 @@ export default function Hero() {
             <p className="text-lg md:text-xl text-slate-200">
               Sécuriser les parcours des jeunes, partout en France, en lien étroit avec les familles.
             </p>
-            
+
             <div className="text-base text-slate-300 space-y-3 max-w-3xl mx-auto !mt-6">
                 <p>
                     Passerelle Jeunesse propose un service professionnel d’accompagnement pour les <strong className="font-semibold text-white">jeunes de 7 à 20 ans</strong>, afin d’assurer leurs déplacements, soutenir leur autonomie et offrir aux familles un relais de confiance, dans un cadre sécurisé et bienveillant.
                 </p>
                 <p>
-                    Basé à <strong className="font-semibold text-white">Metz et Saint-Avold</strong>, le service intervient aussi bien pour des besoins locaux que pour des voyages longue distance en train ou bus vers toute la France.
+                    Basé à <strong className="font-semibold text-white">Metz et Saint-Avold</strong>, le service accompagne aussi bien des trajets locaux que des voyages longue distance en train ou bus vers toute la France.
                 </p>
+                <div className="grid gap-3 sm:grid-cols-3 mt-6 text-left text-sm text-slate-200">
+                  <p>✔ Accompagnement clair et rassurant</p>
+                  <p>✔ Parents informés à chaque étape</p>
+                  <p>✔ Jeunes accompagnés vers l’autonomie</p>
+                </div>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 !mt-8">
                 <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
                   <Link href="#services">

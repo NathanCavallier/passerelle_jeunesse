@@ -16,7 +16,7 @@ export default function MentionsLegales() {
         <div className="mx-auto max-w-4xl prose prose-slate dark:prose-invert">
           <h2>1. Identification de l'éditeur</h2>
           <p>
-            Le site <strong>jeunesse.imogo.org</strong> est édité par :
+            Le site <strong>www.passerellejeunesse.fr</strong> est édité par :
           </p>
           <div className="ml-6">
             <p>
@@ -24,14 +24,14 @@ export default function MentionsLegales() {
               Auto-entreprise exploitée par Nathan Imogo<br />
               SIRET : <em>[À compléter lors de l'immatriculation]</em><br />
               Adresse : <em>[Votre adresse professionnelle]</em><br />
-              Email : <a href="mailto:contact@imogo.org">contact@imogo.org</a><br />
-              Téléphone : 06 12 34 56 78
+              Email : <a href="mailto:contact@passerellejeunesse.fr">contact@passerellejeunesse.fr</a><br />
+              Téléphone : 06 19 22 62 94
             </p>
           </div>
 
           <h2>2. Directeur de la publication</h2>
           <p>
-            Le directeur de la publication du site est <strong>Nathan Imogo</strong>, 
+            Le directeur de la publication du site est <strong>Nathan Imogo</strong>,
             en sa qualité d'exploitant de l'auto-entreprise.
           </p>
 
@@ -50,10 +50,10 @@ export default function MentionsLegales() {
           </div>
 
           <h2>4. Protection des données personnelles (RGPD)</h2>
-          
+
           <h3>4.1 Responsable du traitement</h3>
           <p>
-            Le responsable du traitement des données personnelles est <strong>Nathan Imogo</strong>, 
+            Le responsable du traitement des données personnelles est <strong>Nathan Imogo</strong>,
             exploitant de Passerelle Jeunesse.
           </p>
 
@@ -112,10 +112,10 @@ export default function MentionsLegales() {
             <li><strong>Droit de limitation</strong> : restreindre temporairement un traitement</li>
           </ul>
           <p>
-            Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@imogo.org">contact@imogo.org</a>
+            Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@passerellejeunesse.fr">contact@passerellejeunesse.fr</a>
           </p>
           <p>
-            Vous disposez également du droit de déposer une réclamation auprès de la CNIL : 
+            Vous disposez également du droit de déposer une réclamation auprès de la CNIL :
             <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>
           </p>
 
@@ -131,10 +131,10 @@ export default function MentionsLegales() {
           </ul>
 
           <h2>5. Cookies</h2>
-          
+
           <h3>5.1 Qu'est-ce qu'un cookie ?</h3>
           <p>
-            Un cookie est un petit fichier texte déposé sur votre appareil lors de la visite d'un site web. 
+            Un cookie est un petit fichier texte déposé sur votre appareil lors de la visite d'un site web.
             Il permet de mémoriser des informations sur votre navigation.
           </p>
 
@@ -158,23 +158,23 @@ export default function MentionsLegales() {
 
           <h2>6. Propriété intellectuelle</h2>
           <p>
-            L'ensemble du contenu du site <strong>jeunesse.imogo.org</strong> (textes, images, logos, vidéos, structure) 
+            L'ensemble du contenu du site <strong>www.passerellejeunesse.fr</strong> (textes, images, logos, vidéos, structure)
             est la propriété exclusive de Passerelle Jeunesse, sauf mention contraire.
           </p>
           <p>
-            Toute reproduction, représentation, modification ou adaptation, totale ou partielle, 
+            Toute reproduction, représentation, modification ou adaptation, totale ou partielle,
             est strictement interdite sans autorisation écrite préalable.
           </p>
 
           <h2>7. Liens hypertextes</h2>
           <p>
-            Le site peut contenir des liens vers des sites externes. Passerelle Jeunesse n'exerce aucun contrôle 
+            Le site peut contenir des liens vers des sites externes. Passerelle Jeunesse n'exerce aucun contrôle
             sur ces sites et décline toute responsabilité quant à leur contenu.
           </p>
 
           <h2>8. Limitation de responsabilité</h2>
           <p>
-            Passerelle Jeunesse s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site. 
+            Passerelle Jeunesse s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site.
             Toutefois, nous ne pouvons garantir l'absence d'erreurs ou d'omissions.
           </p>
           <p>
@@ -188,7 +188,7 @@ export default function MentionsLegales() {
 
           <h2>9. Droit applicable</h2>
           <p>
-            Les présentes mentions légales sont régies par le droit français. 
+            Les présentes mentions légales sont régies par le droit français.
             Tout litige sera soumis aux tribunaux compétents de Metz.
           </p>
 
@@ -209,9 +209,9 @@ export default function MentionsLegales() {
             <p>
               <strong>Passerelle Jeunesse</strong><br />
               Nathan Imogo<br />
-              Email : <a href="mailto:contact@imogo.org">contact@imogo.org</a><br />
-              Téléphone : 06 12 34 56 78<br />
-              Site web : <a href="https://jeunesse.imogo.org">jeunesse.imogo.org</a>
+              Email : <a href="mailto:contact@passerellejeunesse.fr">contact@passerellejeunesse.fr</a><br />
+              Téléphone : 06 19 22 62 94<br />
+              Site web : <a href="https://www.passerellejeunesse.fr">www.passerellejeunesse.fr</a>
             </p>
           </div>
 

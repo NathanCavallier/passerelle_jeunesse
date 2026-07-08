@@ -4,7 +4,7 @@
  * Section Vision — Timeline 3 phases
  * Positionnement : après <Services /> et avant <Testimonials />
  *
- * Affiche la progression : Mobilité → Ateliers → Centre Jeunesse
+ * Affiche la progression : Mobilité → Coordination → Suivi
  */
 
 import Link from 'next/link';
@@ -19,38 +19,38 @@ import {
 const timelineSteps = [
   {
     label: 'Aujourd\'hui',
-    title: 'Accompagnement & Mobilité',
+    title: 'Accompagnement & mobilité',
     status: 'active' as const,
     icon: Train,
     color: 'blue',
     items: [
-      'Accompagnement local & longue distance',
-      'Metz et Saint-Avold',
-      'Toute la France',
+      'Trajets sécurisés accompagnés',
+      'Coordination de A à Z',
+      'Parents informés à chaque étape',
     ],
   },
   {
     label: 'Prochainement',
-    title: 'Ateliers éducatifs & Événements',
+    title: 'Renforcement du suivi',
     status: 'upcoming' as const,
     icon: FlaskConical,
     color: 'amber',
     items: [
-      'Ateliers sciences (Ateliers 360)',
-      'Samedis découverte',
-      'Escape games éducatifs',
+      'Protocoles de suivi plus complets',
+      'Rapports de mission détaillés',
+      'Meilleure visibilité pour les familles',
     ],
   },
   {
     label: 'Vision',
-    title: 'Centre Jeunesse Multifonction',
+    title: 'Passerelle Jeunesse comme référence',
     status: 'future' as const,
     icon: Home,
     color: 'gray',
     items: [
-      'Lieu physique dédié',
-      'Périscolaire & numérique',
-      'Campus jeunesse Lorraine',
+      'Référence locale d’accompagnement',
+      'Un service centré sur la confiance',
+      'Un suivi adapté aux familles',
     ],
   },
 ];
@@ -90,7 +90,7 @@ export default function HomepageVisionSection() {
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Passerelle Jeunesse se construit progressivement, de l'accompagnement
-            mobilité vers un véritable centre jeunesse multifonction.
+            mobilité vers une relation de confiance durable.
           </p>
         </div>
 

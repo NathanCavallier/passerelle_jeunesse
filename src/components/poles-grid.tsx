@@ -1,8 +1,8 @@
 'use client';
 
 /**
- * Grid des 6 pôles de service
- * Affiche : Mobilité, Sciences & Découverte, Escape Games, Périscolaire, Numérique, À venir
+ * Grid des pôles de service de Passerelle Jeunesse
+ * Affiche uniquement les services d'accompagnement et de suivi.
  */
 
 import Link from 'next/link';
@@ -10,84 +10,53 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import {
   Train,
-  FlaskConical,
-  Puzzle,
   Users,
   Monitor,
-  Sparkles,
   ArrowRight,
-  Lock,
 } from 'lucide-react';
 
 const poles = [
   {
     icon: Train,
-    title: 'Mobilité',
-    description: 'Accompagnement local et longue distance',
+    title: 'Mobilité sécurisée',
+    description: 'Trajets accompagnés et organisation des déplacements des jeunes en toute confiance.',
     status: 'active' as const,
     color: 'text-blue-600',
     bgColor: 'bg-blue-50',
     href: '/poles/mobilite',
   },
   {
-    icon: FlaskConical,
-    title: 'Sciences & Découverte',
-    description: 'Ateliers Ateliers 360 : chimie, physique, robotique',
-    status: 'coming' as const,
-    color: 'text-violet-600',
-    bgColor: 'bg-violet-50',
-    href: '/poles/sciences-decouverte',
-  },
-  {
-    icon: Puzzle,
-    title: 'Escape Games',
-    description: 'Enquêtes et jeux d\'évasion éducatifs',
-    status: 'coming' as const,
-    color: 'text-amber-600',
-    bgColor: 'bg-amber-50',
-    href: '/poles/escape-games',
-  },
-  {
     icon: Users,
-    title: 'Accueil Périscolaire',
-    description: 'Après l\'école, mercredis, vacances scolaires',
-    status: 'coming' as const,
+    title: 'Coordination familiale',
+    description: 'Suivi personnalisé des familles, points de contact clairs et informations partagées à chaque étape.',
+    status: 'active' as const,
     color: 'text-emerald-600',
     bgColor: 'bg-emerald-50',
-    href: '/poles/periscolaire',
+    href: '/poles/accompagnement-familial',
   },
   {
     icon: Monitor,
-    title: 'Numérique & IA',
-    description: 'Programmation, jeux vidéo, cybersécurité, impression 3D',
-    status: 'coming' as const,
+    title: 'Suivi transparent',
+    description: 'Compte rendu, visibilité et communication pour que les parents restent sereins.',
+    status: 'active' as const,
     color: 'text-cyan-600',
     bgColor: 'bg-cyan-50',
-    href: '/poles/numerique',
-  },
-  {
-    icon: Sparkles,
-    title: 'À Venir',
-    description: 'D\'autres pôles explorent nos ambitions futures',
-    status: 'future' as const,
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-50',
-    href: '/poles/coming-soon',
+    href: '/poles/suivi-transparent',
   },
 ];
 
 export default function PolesGrid() {
   return (
-    <section className="py-20 px-4 bg-background">
+    <section id="services" className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            6 pôles de service
+            Nos services d'accompagnement
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            De la mobilité aux ateliers éducatifs : un écosystème complet pour
-            l'épanouissement des jeunes.
+            Passerelle Jeunesse se concentre sur la mobilité, la coordination familiale
+            et le suivi transparent pour les jeunes et leurs proches.
           </p>
         </div>
 

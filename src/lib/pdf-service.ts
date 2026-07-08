@@ -13,9 +13,9 @@ import { fr } from 'date-fns/locale';
 const COMPANY_INFO = {
     name: 'Passerelle Jeunesse',
     address: 'Metz, France',
-    phone: '+33 (0)6 XX XX XX XX',
-    email: 'contact@passerelle-jeunesse.fr',
-    website: 'https://jeunesse.imogo.org',
+    phone: '+33 (0)6 19 22 62 94',
+    email: 'contact@passerellejeunesse.fr',
+    website: 'https://www.passerellejeunesse.fr',
     siret: 'XXX XXX XXX XXXXX', // À compléter
     tva: 'FR XX XXX XXX XXX', // À compléter
 };

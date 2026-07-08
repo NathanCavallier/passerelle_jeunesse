@@ -16,8 +16,8 @@ export default function CGV() {
         <div className="mx-auto max-w-4xl prose prose-slate dark:prose-invert">
           <h2>Article 1 – Objet</h2>
           <p>
-            Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre 
-            <strong> Passerelle Jeunesse</strong>, auto-entreprise exploitée par Nathan Imogo, et toute personne 
+            Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre
+            <strong> Passerelle Jeunesse</strong>, auto-entreprise exploitée par Nathan Imogo, et toute personne
             physique ou morale souhaitant bénéficier des services d'accompagnement de jeunes.
           </p>
           <p>
@@ -32,13 +32,13 @@ export default function CGV() {
             <li><strong>Accompagnements réguliers</strong> : forfaits hebdomadaires ou mensuels sur mesure</li>
           </ul>
           <p>
-            Les services sont destinés aux jeunes âgés de 7 à 20 ans. Les modalités spécifiques de chaque prestation 
+            Les services sont destinés aux jeunes âgés de 7 à 20 ans. Les modalités spécifiques de chaque prestation
             sont détaillées dans le contrat ou devis établi pour chaque mission.
           </p>
 
           <h2>Article 3 – Tarifs</h2>
           <p>
-            Les tarifs sont indiqués en euros TTC. Ils sont valables au moment de la commande et peuvent être révisés à tout moment. 
+            Les tarifs sont indiqués en euros TTC. Ils sont valables au moment de la commande et peuvent être révisés à tout moment.
             Les tarifs appliqués sont ceux en vigueur au moment de la réservation.
           </p>
           <p><strong>Tarifs indicatifs :</strong></p>
@@ -48,7 +48,7 @@ export default function CGV() {
             <li>Supplément pour jeunes supplémentaires : tarif dégressif communiqué au devis</li>
           </ul>
           <p>
-            Les frais de transport de l'accompagnateur sont inclus dans le tarif. 
+            Les frais de transport de l'accompagnateur sont inclus dans le tarif.
             Les billets de transport pour le(s) jeune(s) accompagné(s) restent à la charge du client.
           </p>
 
@@ -88,7 +88,7 @@ export default function CGV() {
             </li>
           </ul>
           <p>
-            Toute prestation commencée est due dans son intégralité. En cas de retard de paiement, 
+            Toute prestation commencée est due dans son intégralité. En cas de retard de paiement,
             des pénalités de 3 fois le taux d'intérêt légal s'appliqueront automatiquement.
           </p>
 
@@ -100,7 +100,7 @@ export default function CGV() {
             <li><strong>Moins de 3 jours avant</strong> : aucun remboursement</li>
           </ul>
           <p>
-            Exception : en cas de force majeure dûment justifiée (maladie avec certificat médical, décès, catastrophe naturelle), 
+            Exception : en cas de force majeure dûment justifiée (maladie avec certificat médical, décès, catastrophe naturelle),
             un remboursement total ou report de la prestation pourra être accordé.
           </p>
 
@@ -116,7 +116,7 @@ export default function CGV() {
 
           <h3>6.3 Modification</h3>
           <p>
-            Toute modification de date, heure ou itinéraire doit être demandée au minimum 48h avant la prestation. 
+            Toute modification de date, heure ou itinéraire doit être demandée au minimum 48h avant la prestation.
             Selon la faisabilité, elle pourra être acceptée sans frais ou moyennant un supplément.
           </p>
 
@@ -146,7 +146,7 @@ export default function CGV() {
             <li>Disposer d'une assurance Responsabilité Civile Professionnelle</li>
           </ul>
           <p>
-            Notre responsabilité est limitée à la période effective d'accompagnement, 
+            Notre responsabilité est limitée à la période effective d'accompagnement,
             de la prise en charge à la remise en main propre à l'adulte désigné.
           </p>
 
@@ -179,18 +179,18 @@ export default function CGV() {
             Passerelle Jeunesse dispose d'une assurance Responsabilité Civile Professionnelle couvrant l'ensemble de ses activités.
           </p>
           <p>
-            Le jeune reste couvert par l'assurance de ses parents. Nous recommandons vivement une assurance 
+            Le jeune reste couvert par l'assurance de ses parents. Nous recommandons vivement une assurance
             "individuelle accidents" pour toute activité impliquant des déplacements.
           </p>
 
           <h2>Article 10 – Données personnelles (RGPD)</h2>
           <p>
-            Conformément au Règlement Général sur la Protection des Données (RGPD), les informations collectées 
+            Conformément au Règlement Général sur la Protection des Données (RGPD), les informations collectées
             sont nécessaires à l'exécution de la prestation et sont destinées exclusivement à Passerelle Jeunesse.
           </p>
           <p>
-            Vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données. 
-            Pour exercer ces droits : <a href="mailto:contact@imogo.org">contact@imogo.org</a>
+            Vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition au traitement de vos données.
+            Pour exercer ces droits : <a href="mailto:contact@passerellejeunesse.fr">contact@passerellejeunesse.fr</a>
           </p>
           <p>
             Les données sont conservées pendant la durée nécessaire à la prestation, puis archivées selon les obligations légales.
@@ -198,13 +198,13 @@ export default function CGV() {
 
           <h2>Article 11 – Confidentialité</h2>
           <p>
-            Passerelle Jeunesse s'engage à traiter de manière strictement confidentielle toutes les informations 
+            Passerelle Jeunesse s'engage à traiter de manière strictement confidentielle toutes les informations
             relatives au jeune et à sa famille.
           </p>
 
           <h2>Article 12 – Droit à l'image</h2>
           <p>
-            Sauf opposition écrite des parents, Passerelle Jeunesse peut prendre des photos de confirmation 
+            Sauf opposition écrite des parents, Passerelle Jeunesse peut prendre des photos de confirmation
             (départ/arrivée, visage flouté) uniquement pour information des parents.
           </p>
           <p>
@@ -236,7 +236,7 @@ export default function CGV() {
 
           <h2>Article 15 – Modifications des CGV</h2>
           <p>
-            Passerelle Jeunesse se réserve le droit de modifier les présentes CGV à tout moment. 
+            Passerelle Jeunesse se réserve le droit de modifier les présentes CGV à tout moment.
             Les CGV applicables sont celles en vigueur au moment de la réservation.
           </p>
 
@@ -247,14 +247,14 @@ export default function CGV() {
           <p className="ml-6">
             <strong>Passerelle Jeunesse</strong><br />
             Nathan Imogo<br />
-            Email : <a href="mailto:contact@imogo.org">contact@imogo.org</a><br />
-            Téléphone : 06 12 34 56 78<br />
-            Site web : <a href="https://jeunesse.imogo.org">jeunesse.imogo.org</a>
+            Email : <a href="mailto:contact@passerellejeunesse.fr">contact@passerellejeunesse.fr</a><br />
+            Téléphone : 06 19 22 62 94<br />
+            Site web : <a href="https://www.passerellejeunesse.fr">www.passerellejeunesse.fr</a>
           </p>
 
           <div className="mt-12 p-6 bg-muted rounded-lg">
             <p className="text-sm text-center">
-              <strong>En réservant une prestation Passerelle Jeunesse, vous reconnaissez avoir pris connaissance 
+              <strong>En réservant une prestation Passerelle Jeunesse, vous reconnaissez avoir pris connaissance
               et accepter l'intégralité des présentes Conditions Générales de Vente.</strong>
             </p>
           </div>
