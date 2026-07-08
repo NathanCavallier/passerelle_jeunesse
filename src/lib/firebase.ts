@@ -8,6 +8,10 @@ import { getStorage, connectStorageEmulator, type FirebaseStorage } from "fireba
 // En priorité : FIREBASE_WEBAPP_CONFIG, injecté automatiquement par Firebase App Hosting.
 // En repli : les variables NEXT_PUBLIC_FIREBASE_* (utile en local avec .env.local).
 function resolveFirebaseConfig() {
+    if (typeof window !== 'undefined' && (window as any).FIREBASE_WEBAPP_CONFIG) {
+        return (window as any).FIREBASE_WEBAPP_CONFIG;
+    }
+
     if (process.env.FIREBASE_WEBAPP_CONFIG) {
         try {
             return JSON.parse(process.env.FIREBASE_WEBAPP_CONFIG);
@@ -15,6 +19,7 @@ function resolveFirebaseConfig() {
             // JSON invalide : on retombe sur les variables NEXT_PUBLIC_*
         }
     }
+
     return {
         apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
         authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
