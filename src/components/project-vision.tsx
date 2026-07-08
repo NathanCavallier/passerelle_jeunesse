@@ -97,13 +97,13 @@ const poles = [
   },
   {
     icon: Home,
-    title: 'Accueil & périscolaire',
+    title: 'Accueil & soutien de proximité',
     status: 'upcoming' as const,
     color: 'text-emerald-600',
     bg: 'bg-emerald-50',
     services: [
       "Accueil après l'école",
-      'Mercredis éducatifs',
+      'Accompagnement aux temps libres',
       'Vacances scolaires',
       'Aide aux devoirs',
     ],
@@ -224,7 +224,7 @@ export default function ProjectVision() {
               <Users className="h-4 w-4" /> 7 à 20 ans
             </span>
             <span className="flex items-center gap-1.5">
-              <Building2 className="h-4 w-4" /> Centre jeunesse à venir
+              <Building2 className="h-4 w-4" /> Accompagnement renforcé
             </span>
           </div>
         </div>
@@ -406,13 +406,13 @@ export default function ProjectVision() {
               {
                 ages: '11 – 14 ans',
                 title: 'Exploration',
-                desc: "Projets collaboratifs, ateliers sciences, déplacements plus longs, construction de l'autonomie.",
+                desc: "Projets collaboratifs, sciences appliquées, déplacements plus longs et construction de l'autonomie.",
                 color: 'border-t-4 border-violet-400',
               },
               {
                 ages: '15 – 20 ans',
                 title: 'Autonomie',
-                desc: "Voyages accompagnés longue distance, ateliers citoyenneté, orientation et préparation à l'avenir.",
+                desc: "Voyages accompagnés longue distance, citoyenneté active, orientation et préparation à l'avenir.",
                 color: 'border-t-4 border-amber-400',
               },
             ].map((group) => (

@@ -459,7 +459,7 @@ export default function Pricing() {
                             <div>
                                 <h4 className="font-bold text-lg mb-3">Services proposés</h4>
                                 <ul className="space-y-2">
-                                    {['Aide ménage légère et rangement', 'Courses et commissions', 'Aide numérique et tech', 'Tutorat et soutien pédagogique'].map((feature, idx) => (
+                                    {['Aide ménage légère et rangement', 'Courses et commissions', 'Accompagnement aux démarches en ligne', 'Tutorat et soutien pédagogique'].map((feature, idx) => (
                                         <li key={idx} className="flex items-start gap-3">
                                             <Check className="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />
                                             <span className="text-muted-foreground text-sm">{feature}</span>
