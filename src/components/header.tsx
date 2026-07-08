@@ -8,7 +8,7 @@ import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
-import { LanguageSwitcher } from './language-switcher';
+//import { LanguageSwitcher } from './language-switcher';
 
 const navLinks = [
   //{ href: '/poles', label: 'Services' },
@@ -58,7 +58,7 @@ export default function Header() {
 
         {/* Boutons d'authentification - Desktop */}
         <div className="hidden items-center gap-2 md:flex">
-          <LanguageSwitcher />
+          {/* <LanguageSwitcher /> */}
           {isAuthenticated ? (
             <Button asChild>
               <Link href="/dashboard">
@@ -106,7 +106,7 @@ export default function Header() {
 
                 {/* Boutons d'authentification - Mobile */}
                 <div className="flex flex-col gap-3 border-t pt-6">
-                  <LanguageSwitcher variant="outline" />
+                  {/* <LanguageSwitcher variant="outline" /> */}
                   {isAuthenticated ? (
                     <Button asChild className="w-full">
                       <Link href="/dashboard">

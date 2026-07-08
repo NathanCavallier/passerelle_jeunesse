@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirmation de réservation - Passerelle Jeunesse</title>
+  <style>
+    body {
+      background-color: #f7f9fc;
+      color: #1f2937;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+    }
+    .hero {
+      background: linear-gradient(135deg, #0c4a6e 0%, #2563eb 100%);
+      color: white;
+      padding: 28px 32px;
+      text-align: left;
+    }
+    .hero h1 {
+      font-size: 28px;
+      margin: 0 0 12px;
+    }
+    .hero p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 16px;
+    }
+    .content {
+      padding: 32px;
+    }
+    h2 {
+      font-size: 18px;
+      margin: 0 0 16px;
+      color: #111827;
+    }
+    p {
+      margin: 0 0 18px;
+      line-height: 1.7;
+      color: #4b5563;
+    }
+    .section {
+      margin-bottom: 28px;
+    }
+    .details {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 22px;
+    }
+    .details dt,
+    .details dd {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+    .details dt {
+      color: #475569;
+      font-weight: 700;
+    }
+    .details dd {
+      color: #0f172a;
+      font-weight: 500;
+    }
+    .button {
+      display: inline-block;
+      font-weight: 700;
+      text-decoration: none;
+      color: white;
+      background-color: #2563eb;
+      border-radius: 999px;
+      padding: 14px 28px;
+      margin-top: 12px;
+    }
+    .highlight {
+      background: #e0f2fe;
+      border-left: 4px solid #2563eb;
+      color: #0f172a;
+      padding: 18px 20px;
+      margin: 0 0 20px;
+      border-radius: 10px;
+    }
+    .footer {
+      padding: 24px 24px 12px;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.7;
+      text-align: center;
+    }
+    .signature {
+      margin: 20px 0 0;
+      color: #1f2937;
+      font-weight: 600;
+    }
+    .signature small {
+      display: block;
+      margin-top: 4px;
+      font-weight: 400;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="hero">
+        <h1>Réservation confirmée</h1>
+        <p>Votre demande a bien été enregistrée. Nous sommes heureux de vous accompagner.</p>
+      </div>
+      <div class="content">
+        <div class="section">
+          <p>Bonjour {{parentName}},</p>
+          <p>Merci de votre confiance. Voici le récapitulatif de votre réservation.</p>
+        </div>
+        <div class="section details">
+          <dl>
+            <dt>Date et heure</dt>
+            <dd>{{scheduledDate}}</dd>
+            <dt>Type de service</dt>
+            <dd>{{serviceType}}</dd>
+            <dt>Jeunes pris en charge</dt>
+            <dd>{{youngstersNames}}</dd>
+            <dt>Départ</dt>
+            <dd>{{departureAddress}}</dd>
+            <dt>Arrivée</dt>
+            <dd>{{arrivalAddress}}</dd>
+            <dt>Montant total</dt>
+            <dd>{{totalAmount}}</dd>
+          </dl>
+        </div>
+        <div class="section highlight">
+          <p><strong>Action recommandée :</strong> Pensez à vérifier votre demande et à contacter votre accompagnateur si nécessaire.</p>
+        </div>
+        <div class="section">
+          <a href="{{bookingUrl}}" class="button">Voir ma réservation</a>
+        </div>
+        <div class="section signature">
+          <div>Bien cordialement,</div>
+          <small>
+            Nathan Imogo<br />
+            Fondateur & coordonnateur<br />
+            Passerelle Jeunesse<br />
+            <a href="mailto:contact@passerellejeunesse.fr" style="color: #2563eb; text-decoration: none;">contact@passerellejeunesse.fr</a><br />
+            <a href="tel:+33619226294" style="color: #2563eb; text-decoration: none;">+33 6 19 22 62 94</a><br />
+            Zone d'intervention : Moselle, Grand Est, France metropolitaine
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Passerelle Jeunesse – Accompagnement sécurisé des jeunes vers leurs démarches.</p>
+      <p><a href="https://www.passerellejeunesse.fr" style="color: #2563eb; text-decoration: none;">www.passerellejeunesse.fr</a></p>
+    </div>
+  </div>
+</body>
+</html>
