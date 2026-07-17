@@ -15,14 +15,16 @@ import {
   Users,
   Monitor,
   Sparkles,
+  Baby,
+  BookOpen,
   ArrowRight,
 } from 'lucide-react';
 
 const poles = [
   {
     icon: Train,
-    title: 'Mobilité sécurisée',
-    description: 'Trajets accompagnés et coordination des déplacements des jeunes.',
+    title: 'Accompagnement et mobilité',
+    description: 'Trajets accompagnés, présence rassurante et coordination des déplacements des jeunes.',
     status: 'Disponible maintenant',
     color: 'text-blue-600',
     bgColor: 'bg-blue-50',
@@ -46,11 +48,29 @@ const poles = [
     bgColor: 'bg-cyan-50',
     href: '/poles/suivi-transparent',
   },
+  {
+    icon: Baby,
+    title: 'Baby Sitting',
+    description: 'Garde d’enfants à domicile, rassurante et bienveillante, pour les horaires scolaires et les vacances.',
+    status: 'Nouveau pôle',
+    color: 'text-violet-600',
+    bgColor: 'bg-violet-50',
+    href: '/poles/baby-sitting',
+  },
+  {
+    icon: BookOpen,
+    title: 'Soutien scolaire',
+    description: 'Accompagnement pédagogique bienveillant pour aider les jeunes à reprendre confiance et à s’organiser.',
+    status: 'Disponible maintenant',
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-50',
+    href: '/poles/soutien-scolaire',
+  },
 ];
 
 export const metadata = {
   title: 'Nos services - Passerelle Jeunesse',
-  description: 'Découvrez les services de Passerelle Jeunesse : mobilité, coordination familiale et suivi transparent.',
+  description: 'Découvrez les services de Passerelle Jeunesse : mobilité, coordination familiale, suivi transparent, baby sitting et soutien scolaire.',
 };
 
 export default function PolesPage() {
@@ -61,10 +81,10 @@ export default function PolesPage() {
         <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-violet-50">
           <div className="max-w-5xl mx-auto">
             <h1 className="text-5xl font-bold text-foreground mb-4">
-              Nos services d'accompagnement
+              Nos services d'accompagnement, de garde et de soutien
             </h1>
             <p className="text-xl text-muted-foreground">
-              Découvrez les services concrets que Passerelle Jeunesse propose aux familles : mobilité, coordination et suivi en toute confiance.
+              Découvrez les services concrets que Passerelle Jeunesse propose aux familles : accompagnement, mobilité, coordination, suivi en toute confiance, garde d’enfants à domicile et soutien scolaire.
             </p>
           </div>
         </section>

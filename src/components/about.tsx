@@ -5,10 +5,10 @@ import { CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const commitments = [
-    { text: 'Sécurité et vigilance' },
+    { text: 'Sécurité et vigilance dans les déplacements et les accueils' },
     { text: 'Communication claire avec les familles' },
-    { text: 'Respect du rythme et de la personnalité du jeune' },
-    { text: 'Cadre professionnel et contractualisé' },
+    { text: 'Respect du rythme, de la personnalité et du contexte du jeune' },
+    { text: 'Cadre professionnel, rassurant et contractualisé' },
 ];
 
 export default function About() {
@@ -36,13 +36,16 @@ export default function About() {
             </h2>
             <div className="mt-6 space-y-4 text-lg text-muted-foreground">
               <p>
-                Je m’appelle <strong className="font-semibold text-foreground">Nathan Imogo</strong>, fondateur de <em className="italic">Passerelle Jeunesse – Accompagnement & Mobilité</em>.
+                Je m’appelle <strong className="font-semibold text-foreground">Nathan Imogo</strong>, fondateur de <em className="italic">Passerelle Jeunesse</em>.
               </p>
               <p>
-                J’ai créé ce service pour répondre à un besoin concret : offrir aux familles et aux structures locales une présence fiable et bienveillante pour accompagner les jeunes dans certaines étapes de leur quotidien.
+                J’ai créé ce service pour répondre à un besoin concret : accompagner les jeunes et leurs familles dans leur quotidien, avec le même souci de confiance et de sécurité, que ce soit pour des déplacements, une garde à domicile ou un soutien scolaire ponctuel.
               </p>
               <p>
-                Mon rôle n’est pas de remplacer les parents, mais de les <strong className="font-semibold text-foreground">soutenir ponctuellement</strong>, en assurant la sécurité, le cadre et l’accompagnement éducatif nécessaire lors de déplacements, d’activités ou de moments de transition.
+                Mon rôle n’est pas de remplacer les parents, mais de les <strong className="font-semibold text-foreground">soutenir de manière rassurante</strong> dans des situations où une présence fiable, bienveillante et structurée peut faire la différence.
+              </p>
+              <p>
+                Le projet est né autour de la mobilité et s’est ensuite étendu progressivement vers un accompagnement plus large de l’enfant, du jeune et de sa famille, toujours dans une logique de proximité et de continuité.
               </p>
             </div>
           </div>
@@ -50,7 +53,7 @@ export default function About() {
         <div className="mt-16">
             <Card className="bg-card">
                 <CardHeader>
-                    <CardTitle className="text-center font-headline text-2xl font-bold">Mes engagements</CardTitle>
+                    <CardTitle className="text-center font-headline text-2xl font-semibold tracking-tight">Mes engagements</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -65,7 +68,7 @@ export default function About() {
             </Card>
         </div>
         <div className="mt-12 text-center text-lg text-muted-foreground">
-            <p>Passerelle Jeunesse s’inscrit dans une démarche de proximité, de confiance et de prévention.</p>
+            <p>Passerelle Jeunesse s’inscrit dans une démarche de proximité, de confiance et de prévention au service de l’accompagnement du jeune dans son quotidien.</p>
         </div>
       </div>
     </section>

@@ -12,17 +12,19 @@ import {
   Train,
   Users,
   Monitor,
+  Baby,
+  GraduationCap,
   ArrowRight,
 } from 'lucide-react';
 
 const poles = [
   {
     icon: Train,
-    title: 'Mobilité sécurisée',
-    description: 'Trajets accompagnés et organisation des déplacements des jeunes en toute confiance.',
+    title: 'Accompagnement et mobilité',
+    description: 'Trajets accompagnés, organisation des déplacements et présence rassurante pour les jeunes en toute confiance.',
     status: 'active' as const,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
+    color: 'text-sky-700',
+    bgColor: 'bg-sky-50',
     href: '/poles/mobilite',
   },
   {
@@ -30,18 +32,36 @@ const poles = [
     title: 'Coordination familiale',
     description: 'Suivi personnalisé des familles, points de contact clairs et informations partagées à chaque étape.',
     status: 'active' as const,
-    color: 'text-emerald-600',
+    color: 'text-emerald-700',
     bgColor: 'bg-emerald-50',
     href: '/poles/accompagnement-familial',
   },
   {
     icon: Monitor,
-    title: 'Suivi transparent',
+    title: 'Suivi et transparence',
     description: 'Compte rendu, visibilité et communication pour que les parents restent sereins.',
     status: 'active' as const,
-    color: 'text-cyan-600',
+    color: 'text-cyan-700',
     bgColor: 'bg-cyan-50',
     href: '/poles/suivi-transparent',
+  },
+  {
+    icon: Baby,
+    title: 'Garde à domicile',
+    description: 'Garde d’enfants à domicile rassurante et bienveillante pour les horaires scolaires et les vacances.',
+    status: 'active' as const,
+    color: 'text-violet-700',
+    bgColor: 'bg-violet-50',
+    href: '/poles/baby-sitting',
+  },
+  {
+    icon: GraduationCap,
+    title: 'Soutien scolaire',
+    description: 'Aide aux devoirs et accompagnement pédagogique pour reprendre confiance dans le travail scolaire.',
+    status: 'active' as const,
+    color: 'text-amber-700',
+    bgColor: 'bg-amber-50',
+    href: '/poles/soutien-scolaire',
   },
 ];
 
@@ -55,48 +75,37 @@ export default function PolesGrid() {
             Nos services d'accompagnement
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Passerelle Jeunesse se concentre sur la mobilité, la coordination familiale
-            et le suivi transparent pour les jeunes et leurs proches.
+            Une offre pensée pour accompagner les jeunes au quotidien, avec des services clairs, rassurants et adaptés à chaque famille.
           </p>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {poles.map((pole) => {
             const Icon = pole.icon;
             const isActive = pole.status === 'active';
-            const isComing = pole.status === 'coming';
 
             return (
               <Link key={pole.title} href={pole.href}>
                 <Card
-                  className={`h-full transition-all duration-300 hover:shadow-lg cursor-pointer ${
-                    isComing || !isActive ? 'opacity-90' : ''
+                  className={`group h-full rounded-2xl border border-border/70 bg-card p-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
+                    !isActive ? 'opacity-90' : ''
                   }`}
                 >
-                  <CardHeader>
-                    <div className={`p-3 rounded-lg w-fit mb-3 ${pole.bgColor}`}>
+                  <CardHeader className="pb-4">
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${pole.bgColor}`}>
                       <Icon className={`h-6 w-6 ${pole.color}`} />
                     </div>
-                    <CardTitle className="text-xl">{pole.title}</CardTitle>
-                    <CardDescription>{pole.description}</CardDescription>
+                    <CardTitle className="mt-4 text-xl font-semibold text-foreground">{pole.title}</CardTitle>
+                    <CardDescription className="text-sm leading-6 text-muted-foreground">{pole.description}</CardDescription>
                   </CardHeader>
 
                   <CardContent>
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <span className="text-xs font-semibold text-muted-foreground uppercase">
-                        {isActive
-                          ? '✓ Disponible'
-                          : isComing
-                          ? '📅 Bientôt'
-                          : '🔮 À l\'étude'}
+                    <div className="flex items-center justify-between border-t border-border/70 pt-4">
+                      <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+                        {isActive ? '✓ Disponible' : '🔮 À l\'étude'}
                       </span>
-                      {!isActive && isComing && (
-                        <Lock className="h-4 w-4 text-muted-foreground" />
-                      )}
-                      {!(!isActive && isComing) && (
-                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                      )}
+                      <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1" />
                     </div>
                   </CardContent>
                 </Card>

@@ -17,7 +17,7 @@ export default function Services() {
                   <Footprints className="h-10 w-10 text-primary" />
                 </div>
                 <div className="flex-grow">
-                    <CardTitle className="font-headline text-2xl">Accompagnement local</CardTitle>
+                    <CardTitle className="font-headline text-2xl">Accompagnement et mobilité local</CardTitle>
                     <CardDescription>Déplacements courts, accompagnement à des activités, rendez-vous ou trajets scolaires.</CardDescription>
                 </div>
               </div>
@@ -58,7 +58,7 @@ export default function Services() {
                   <Train className="h-10 w-10 text-primary" />
                 </div>
                 <div className="flex-grow">
-                    <CardTitle className="font-headline text-2xl">Voyages accompagnés – France entière</CardTitle>
+                    <CardTitle className="font-headline text-2xl">Accompagnement et mobilité – France entière</CardTitle>
                     <CardDescription>Un jeune doit voyager seul ? Passerelle Jeunesse peut l’accompagner du départ jusqu’à l’arrivée.</CardDescription>
                 </div>
               </div>
@@ -103,7 +103,7 @@ export default function Services() {
                   <Sparkles className="h-10 w-10 text-primary" />
                 </div>
                 <div className="flex-grow">
-                    <CardTitle className="font-headline text-2xl">Soutenir l’autonomie en toute sécurité</CardTitle>
+                    <CardTitle className="font-headline text-2xl">Accompagnement et mobilité au service de l’autonomie</CardTitle>
                 </div>
               </div>
             </CardHeader>

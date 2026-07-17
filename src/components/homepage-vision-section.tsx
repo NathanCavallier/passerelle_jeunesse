@@ -19,12 +19,13 @@ import {
 const timelineSteps = [
   {
     label: 'Aujourd\'hui',
-    title: 'Accompagnement & mobilité',
+    title: 'Accompagnement, garde et soutien',
     status: 'active' as const,
     icon: Train,
     color: 'blue',
     items: [
       'Trajets sécurisés accompagnés',
+      'Garde à domicile et soutien scolaire',
       'Coordination de A à Z',
       'Parents informés à chaque étape',
     ],
@@ -90,7 +91,7 @@ export default function HomepageVisionSection() {
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Passerelle Jeunesse se construit progressivement, de l'accompagnement
-            mobilité vers une relation de confiance durable.
+            et de la mobilité vers une relation de confiance durable.
           </p>
         </div>
 

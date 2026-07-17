@@ -27,13 +27,14 @@ export default function CGV() {
           <h2>Article 2 – Services proposés</h2>
           <p>Passerelle Jeunesse propose les services suivants :</p>
           <ul>
-            <li><strong>Accompagnement local</strong> : trajets domicile-école, activités, rendez-vous (Metz et Saint-Avold)</li>
-            <li><strong>Accompagnement longue distance</strong> : voyages en train ou bus dans toute la France</li>
+            <li><strong>Accompagnement et mobilité</strong> : trajets domicile-école, activités, rendez-vous, ainsi que voyages accompagnés (Metz, Saint-Avold et toute la France)</li>
+            <li><strong>Baby-Sitting</strong> : garde d’enfants à domicile, ponctuelle ou récurrente, dans un cadre sécurisé et bienveillant</li>
+            <li><strong>Soutien scolaire</strong> : accompagnement à l’autonomie, aux devoirs et à l’organisation du travail scolaire</li>
             <li><strong>Accompagnements réguliers</strong> : forfaits hebdomadaires ou mensuels sur mesure</li>
           </ul>
           <p>
-            Les services sont destinés aux jeunes âgés de 7 à 20 ans. Les modalités spécifiques de chaque prestation
-            sont détaillées dans le contrat ou devis établi pour chaque mission.
+            Les services sont destinés aux jeunes âgés de 7 à 20 ans, ainsi qu’aux enfants plus jeunes selon les conditions
+            précisées lors de la réservation. Les modalités spécifiques de chaque prestation sont détaillées dans le contrat ou devis établi pour chaque mission.
           </p>
 
           <h2>Article 3 – Tarifs</h2>
@@ -93,6 +94,24 @@ export default function CGV() {
           </p>
 
           <h2>Article 6 – Annulation et modification</h2>
+          <h3>6.1 Annulation d’une garde</h3>
+          <p>
+            Pour une garde ponctuelle, une annulation effectuée avec un préavis raisonnable, généralement de 24 heures minimum,
+            permet d’éviter tout frais de gestion. En cas d’annulation tardive ou d’absence du client sans préavis, Passerelle Jeunesse
+            pourra facturer les frais engagés ou les heures correspondant à la mission prévue, selon les circonstances.
+          </p>
+          <p>
+            Pour une garde récurrente inscrite dans un planning hebdomadaire, toute modification ou interruption doit être signalée
+            dès que possible afin de permettre une organisation adaptée. En cas d’interruption brutale, Passerelle Jeunesse pourra
+            appliquer les conditions prévues au contrat de suivi établi avec la famille.
+          </p>
+
+          <h3>6.2 Annulation ou report d’une séance de soutien scolaire</h3>
+          <p>
+            Une séance de soutien scolaire peut être annulée ou reportée selon les conditions convenues au moment de la réservation.
+            Un préavis raisonnable est demandé afin de permettre une organisation fluide. En cas d’absence du jeune sans préavis,
+            la séance pourra être facturée selon les modalités prévues au devis.
+          </p>
           <h3>6.1 Annulation par le client</h3>
           <ul>
             <li><strong>Plus de 7 jours avant</strong> : remboursement intégral</li>
@@ -122,6 +141,31 @@ export default function CGV() {
 
           <h2>Article 7 – Documents obligatoires</h2>
           <p>
+            Pour toute prestation, les documents suivants sont obligatoires, selon la nature de la mission :
+          </p>
+          <ol>
+            <li><strong>Autorisation parentale</strong> signée des deux parents (ou du représentant légal)</li>
+            <li><strong>Fiche de renseignements</strong> complète (contacts d'urgence, allergies, traitements médicaux, numéro de sécurité sociale)</li>
+            <li><strong>Copie de la pièce d'identité</strong> du jeune</li>
+            <li><strong>Billets de transport</strong> (pour les trajets longue distance)</li>
+            <li><strong>Consigne médicale écrite</strong> pour toute administration de médicament, le cas échéant</li>
+          </ol>
+          <p>
+            Sans ces documents, Passerelle Jeunesse se réserve le droit de refuser la prestation sans remboursement.
+          </p>
+
+          <h3>7.1 Cas spécifique – Baby-Sitting</h3>
+          <p>
+            Avant toute première garde, les parents doivent communiquer toutes les informations utiles concernant l’enfant,
+            notamment les allergies, les traitements éventuels, les habitudes, et les consignes de sécurité.
+          </p>
+
+          <h3>7.2 Cas spécifique – Soutien scolaire</h3>
+          <p>
+            Le matériel pédagogique nécessaire à la séance peut être fourni par la famille, par l’intervenant ou partagé selon les besoins.
+            Cette organisation est précisée au moment de la réservation.
+          </p>
+          <p>
             Pour toute prestation, les documents suivants sont obligatoires :
           </p>
           <ol>
@@ -135,6 +179,27 @@ export default function CGV() {
           </p>
 
           <h2>Article 8 – Responsabilités</h2>
+          <h3>8.1 Responsabilité en cas d’urgence pendant une garde</h3>
+          <p>
+            En cas d’urgence médicale ou de situation d’urgence pendant une garde, l’intervenant prendra les mesures de sécurité
+            nécessaires, notamment en contactant les secours et, si besoin, les parents ou leurs représentants légaux.
+          </p>
+          <p>
+            Passerelle Jeunesse ne pourra être tenue responsable des conséquences d’un événement médical ou d’un incident
+            survenu en dehors des gestes de premiers secours raisonnablement mis en œuvre dans le cadre de la mission.
+          </p>
+
+          <h3>8.2 Administration de médicaments</h3>
+          <p>
+            Aucune administration de médicament ne sera réalisée sans consigne écrite préalable, signée par les responsables légaux.
+            Les parents restent responsables de fournir toutes les informations nécessaires à la bonne prise en charge de l’enfant.
+          </p>
+
+          <h3>8.3 Absence de garantie de résultat en soutien scolaire</h3>
+          <p>
+            Les prestations de soutien scolaire constituent un accompagnement pédagogique et organisationnel. Elles ne constituent
+            pas un engagement de résultat sur les notes, la réussite scolaire ou la progression académique de l’enfant.
+          </p>
           <h3>8.1 Responsabilité de Passerelle Jeunesse</h3>
           <p>
             Passerelle Jeunesse s'engage à :
@@ -174,7 +239,18 @@ export default function CGV() {
             <li>Des objets de valeur non déclarés et perdus</li>
           </ul>
 
-          <h2>Article 9 – Assurances</h2>
+          <h2>Article 9 – Statut des intervenants</h2>
+          <p>
+            Les intervenants mobilisés par Passerelle Jeunesse agissent dans le cadre de la prestation prévue par le contrat
+            conclu avec le client. Le statut exact des intervenants (prestataire, partenaire ou autre forme de collaboration)
+            est précisé selon les modalités contractuelles applicables à chaque mission.
+          </p>
+          <p>
+            Passerelle Jeunesse s’efforce de sélectionner des personnes compétentes, fiables et adaptées aux besoins des familles,
+            sans toutefois garantir une absence totale de risque ou un résultat particulier.
+          </p>
+
+          <h2>Article 10 – Assurances</h2>
           <p>
             Passerelle Jeunesse dispose d'une assurance Responsabilité Civile Professionnelle couvrant l'ensemble de ses activités.
           </p>
@@ -183,7 +259,7 @@ export default function CGV() {
             "individuelle accidents" pour toute activité impliquant des déplacements.
           </p>
 
-          <h2>Article 10 – Données personnelles (RGPD)</h2>
+          <h2>Article 11 – Données personnelles (RGPD)</h2>
           <p>
             Conformément au Règlement Général sur la Protection des Données (RGPD), les informations collectées
             sont nécessaires à l'exécution de la prestation et sont destinées exclusivement à Passerelle Jeunesse.
@@ -196,13 +272,13 @@ export default function CGV() {
             Les données sont conservées pendant la durée nécessaire à la prestation, puis archivées selon les obligations légales.
           </p>
 
-          <h2>Article 11 – Confidentialité</h2>
+          <h2>Article 12 – Confidentialité</h2>
           <p>
             Passerelle Jeunesse s'engage à traiter de manière strictement confidentielle toutes les informations
             relatives au jeune et à sa famille.
           </p>
 
-          <h2>Article 12 – Droit à l'image</h2>
+          <h2>Article 13 – Droit à l'image</h2>
           <p>
             Sauf opposition écrite des parents, Passerelle Jeunesse peut prendre des photos de confirmation
             (départ/arrivée, visage flouté) uniquement pour information des parents.
@@ -211,7 +287,7 @@ export default function CGV() {
             Aucune photo ne sera utilisée à des fins commerciales ou publiques sans autorisation écrite préalable.
           </p>
 
-          <h2>Article 13 – Litiges</h2>
+          <h2>Article 14 – Litiges</h2>
           <p>
             En cas de litige, nous privilégions une résolution amiable. Le client peut d'abord nous contacter directement.
           </p>
@@ -229,18 +305,18 @@ export default function CGV() {
             À défaut d'accord amiable, tout litige sera soumis aux tribunaux compétents de Metz.
           </p>
 
-          <h2>Article 14 – Droit applicable</h2>
+          <h2>Article 15 – Droit applicable</h2>
           <p>
             Les présentes CGV sont régies par le droit français. Toute clause déclarée nulle n'affecte pas la validité des autres clauses.
           </p>
 
-          <h2>Article 15 – Modifications des CGV</h2>
+          <h2>Article 16 – Modifications des CGV</h2>
           <p>
             Passerelle Jeunesse se réserve le droit de modifier les présentes CGV à tout moment.
             Les CGV applicables sont celles en vigueur au moment de la réservation.
           </p>
 
-          <h2>Article 16 – Contact</h2>
+          <h2>Article 17 – Contact</h2>
           <p>
             Pour toute question concernant les présentes CGV :
           </p>

@@ -47,13 +47,25 @@ const polesData: Record<string, {
   ctaText: string;
   ctaHref: string;
   color: keyof typeof colorClasses;
+  details?: {
+    includes: string[];
+    excludes: string[];
+    securityItems: string[];
+    processSteps: string[];
+    audience: string;
+    crossLink?: {
+      href: string;
+      label: string;
+    };
+    note?: string;
+  };
 }> = {
   mobilite: {
-    title: 'Mobilité sécurisée',
-    subtitle: 'Accompagnement des trajets des jeunes',
-    description: `Passerelle Jeunesse propose un accompagnement personnalisé pour les déplacements des jeunes.
+    title: 'Accompagnement et mobilité',
+    subtitle: 'Accompagnement des trajets et déplacements',
+    description: `Passerelle Jeunesse propose un accompagnement rassurant pour les déplacements des jeunes.
     Que ce soit pour un trajet local à Metz/Saint-Avold ou un transfert plus lointain,
-    nous coordonnons chaque étape avec sérieux et transparence.`,
+    nous organisons chaque étape avec sérieux, clarté et transparence.`,
     status: '✓ Disponible',
     features: [
       'Trajets sécurisés sur mesure',
@@ -68,10 +80,10 @@ const polesData: Record<string, {
   },
   'accompagnement-familial': {
     title: 'Coordination familiale',
-    subtitle: 'Information et suivi pour les parents',
+    subtitle: 'Communication et coordination autour du jeune',
     description: `Nous plaçons la communication avec les familles au cœur de notre service.
-    Passerelle Jeunesse garantit un interlocuteur dédié, des mises à jour régulières et une coordination
-    simple entre tous les acteurs du trajet.`,
+    Passerelle Jeunesse garantit un interlocuteur clair, des informations régulières et un cadre défini
+    pour chaque mission, dans un souci de simplicité et de confiance.`,
     status: '✓ Disponible',
     features: [
       'Points de contact dédiés',
@@ -85,11 +97,11 @@ const polesData: Record<string, {
     color: 'emerald',
   },
   'suivi-transparent': {
-    title: 'Suivi transparent',
+    title: 'Suivi et transparence',
     subtitle: 'Visibilité et confiance à chaque étape',
     description: `Passerelle Jeunesse propose un suivi documenté et une traçabilité des missions.
-    Les parents reçoivent des comptes rendus, des confirmations de trajet et des échanges clairs
-    avec notre équipe.`,
+    Les parents reçoivent des comptes rendus, des confirmations de prise en charge et des échanges clairs
+    avec notre équipe, dans un cadre défini.`,
     status: '✓ Disponible',
     features: [
       'Rapports après chaque trajet',
@@ -101,6 +113,105 @@ const polesData: Record<string, {
     ctaText: 'Demander un suivi',
     ctaHref: '/contact?subject=suivi-transparent',
     color: 'cyan',
+  },
+  'baby-sitting': {
+    title: 'Garde à domicile',
+    subtitle: 'Présence rassurante et cadre défini à domicile',
+    description: `Une présence rassurante et bienveillante pour vos enfants, avant ou après l’école,
+    le mercredi ou pendant les vacances. Passerelle Jeunesse met à disposition des intervenants
+    de confiance, avec une communication claire et un cadre défini dès la première mission.`,
+    status: '✓ Nouveau pôle',
+    features: [
+      'Garde à domicile avant et après l’école',
+      'Garde le mercredi et pendant les vacances scolaires',
+      'Accompagnement aux activités ludiques et récréatives',
+      'Aide aux devoirs légère et routines du soir ou du matin',
+      'Compte rendu de garde envoyé après chaque mission',
+    ],
+    ctaText: 'Demander une garde',
+    ctaHref: '/contact?subject=baby-sitting',
+    color: 'violet',
+    details: {
+      includes: [
+        'Garde à domicile avant et après l’école',
+        'Garde le mercredi et pendant les vacances scolaires',
+        'Accompagnement aux activités ludiques et récréatives',
+        'Aide aux devoirs légère et routines du soir/matin',
+        'Préparation de repas simples',
+      ],
+      excludes: [
+        'Aucun soin médical au-delà des premiers secours de base',
+        'Aucune garde de nourrissons de moins de 12 mois sans validation préalable',
+        'Aucune administration de médicament sans protocole écrit signé par les parents',
+      ],
+      securityItems: [
+        'Autorisation parentale écrite obligatoire avant toute première garde',
+        'Fiche sanitaire simplifiée avec allergies, contacts d’urgence et consignes particulières',
+        'Intervenant identifié et présenté à la famille avant la première mission',
+        'Procédure d’urgence claire communiquée en amont',
+        'Compte rendu envoyé après chaque mission',
+      ],
+      processSteps: [
+        'Premier échange — on évalue vos besoins, la fréquence, les horaires et l’âge des enfants',
+        'Mise en relation — un intervenant adapté au profil de vos enfants est proposé',
+        'Garde d’essai — une première mission permet de valider que le courant passe',
+        'Récurrence possible — mise en place d’un planning hebdomadaire si besoin',
+      ],
+      audience: 'Enfants de 4 à 16 ans. Pour les enfants de moins de 4 ans, une évaluation spécifique est nécessaire selon le profil de l’intervenant.',
+      crossLink: {
+        href: '/poles/soutien-scolaire',
+        label: 'Découvrir le pôle Soutien scolaire',
+      },
+      note: 'Si un agrément Services à la Personne est obtenu, un crédit d’impôt de 50 % peut devenir un argument de conversion particulièrement fort sur ce service.',
+    },
+  },
+  'soutien-scolaire': {
+    title: 'Soutien scolaire',
+    subtitle: 'Accompagnement scolaire bienveillant à domicile',
+    description: `Un accompagnement scolaire bienveillant pour aider votre enfant à reprendre confiance
+    et à s’organiser dans son travail. Ce service s’inscrit dans un cadre défini et rassurant,
+    sans chercher à remplacer un cadre éducatif spécialisé.`,
+    status: '✓ Disponible',
+    features: [
+      'Aide aux devoirs et à l’organisation',
+      'Intervenants adaptés au niveau de l’enfant',
+      'Préparation d’évaluations et de contrôles',
+      'Remotivation et remise en confiance',
+      'Suivi partagé avec les parents',
+    ],
+    ctaText: 'Demander un accompagnement',
+    ctaHref: '/contact?subject=soutien-scolaire',
+    color: 'amber',
+    details: {
+      includes: [
+        'Aide aux devoirs (primaire, collège, lycée selon l’intervenant)',
+        'Aide à l’organisation du travail et des méthodes',
+        'Préparation d’évaluations et de contrôles',
+        'Remotivation et remise en confiance face au travail scolaire',
+      ],
+      excludes: [
+        'Nous ne sommes pas un organisme de soutien scolaire certifié avec programme pédagogique propre',
+        'Nous ne garantissons pas de résultat scolaire ou de progression de notes',
+        'Nous n’intervenons pas comme professionnel de l’éducation spécialisée (troubles DYS, accompagnement MDPH, etc.)',
+      ],
+      securityItems: [
+        'Autorisation parentale écrite avant la première séance',
+        'Séance découverte pour définir les besoins réels de l’enfant',
+        'Point régulier avec les parents sur la progression et l’assiduité',
+        'Séances à domicile ou en présentiel dans un lieu convenu avec la famille',
+      ],
+      processSteps: [
+        'Premier échange — matières concernées, niveau, difficultés identifiées',
+        'Mise en relation — un intervenant adapté au niveau scolaire et à la matière est proposé',
+        'Séance découverte — pour ajuster la méthode à l’enfant',
+        'Suivi régulier — séances ponctuelles ou récurrentes selon les besoins',
+      ],
+      audience: 'Jeunes de 6 à 18 ans, du primaire à la terminale, selon le niveau et la disponibilité de nos intervenants.',
+      crossLink: {
+        href: '/poles/baby-sitting',
+        label: 'Découvrir le pôle Baby Sitting',
+      },
+    },
   },
 };
 
@@ -157,19 +268,92 @@ export default function PoleDetailPage({ params }: { params: { slug: string } })
         {/* Content */}
         <section className="py-16 px-4">
           <div className="max-w-3xl mx-auto">
-            <p className="text-lg text-muted-foreground leading-relaxed mb-12">
+            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
               {pole.description}
             </p>
 
-            <h2 className="text-3xl font-bold text-foreground mb-6">Ce que nous proposons</h2>
-            <ul className="space-y-3 mb-12">
-              {pole.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-3">
-                  <span className={`${color.icon} font-bold mt-1`}>✓</span>
-                  <span className="text-muted-foreground">{feature}</span>
-                </li>
-              ))}
-            </ul>
+            {pole.details ? (
+              <>
+                <div className="grid gap-6 md:grid-cols-2 mb-10">
+                  <div className="rounded-2xl border bg-white p-6 shadow-sm">
+                    <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">Inclus</h2>
+                    <ul className="space-y-3">
+                      {pole.details.includes.map((item) => (
+                        <li key={item} className="flex items-start gap-2">
+                          <span className={`${color.icon} font-bold mt-1`}>✓</span>
+                          <span className="text-muted-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="rounded-2xl border bg-white p-6 shadow-sm">
+                    <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">Exclus</h2>
+                    <ul className="space-y-3">
+                      {pole.details.excludes.map((item) => (
+                        <li key={item} className="flex items-start gap-2">
+                          <span className="text-rose-600 font-bold mt-1">✕</span>
+                          <span className="text-muted-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 mb-8">
+                  <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">Cadre et sécurité</h2>
+                  <ul className="space-y-3">
+                    {pole.details.securityItems.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="text-amber-700 font-bold mt-1">•</span>
+                        <span className="text-muted-foreground">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <p className="text-muted-foreground mb-8">
+                  <span className="font-semibold text-foreground">Public concerné :</span>{' '}
+                  {pole.details.audience}
+                </p>
+
+                <div className="rounded-2xl border bg-slate-50 p-6 mb-8">
+                  <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">Comment ça fonctionne</h2>
+                  <ol className="space-y-3 list-decimal list-inside text-muted-foreground">
+                    {pole.details.processSteps.map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
+
+                {pole.details.crossLink && (
+                  <div className="rounded-2xl border border-violet-200 bg-violet-50 p-6 mb-8">
+                    <p className="text-sm font-semibold text-violet-700 mb-2">Besoin d’un accompagnement plus scolaire ?</p>
+                    <Link href={pole.details.crossLink.href} className="text-violet-700 underline-offset-4 hover:underline">
+                      {pole.details.crossLink.label}
+                    </Link>
+                  </div>
+                )}
+
+                {pole.details.note && (
+                  <div className="rounded-2xl border border-dashed border-violet-200 bg-violet-50/60 p-5 mb-10">
+                    <p className="text-sm text-violet-700">{pole.details.note}</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <h2 className="text-3xl font-semibold tracking-tight text-foreground mb-6">Ce que nous proposons</h2>
+                <ul className="space-y-3 mb-12">
+                  {pole.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3">
+                      <span className={`${color.icon} font-bold mt-1`}>✓</span>
+                      <span className="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
             {/* CTA */}
             <div className="flex flex-col sm:flex-row gap-4">
@@ -191,7 +375,7 @@ export default function PoleDetailPage({ params }: { params: { slug: string } })
         {/* Related poles */}
         <section className="py-16 px-4 bg-gray-50">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-foreground mb-8">Découvrez aussi</h2>
+            <h2 className="text-3xl font-semibold tracking-tight text-foreground mb-8">Découvrez aussi</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(polesData)
                 .filter(([slug]) => slug !== params.slug)

@@ -44,9 +44,10 @@ async function handleServiceRequest(values: any) {
 const heroImage = PlaceHolderImages.find(img => img.id === 'hero-image');
 
 const services = [
-  'Trajets sécurisés',
+  'Accompagnement et mobilité',
+  'Baby-Sitting',
+  'Soutien scolaire',
   'Coordination parentale',
-  'Accompagnement individualisé',
   'Suivi transparent',
 ];
 
@@ -106,7 +107,7 @@ export default function Hero() {
         <div className="container px-4 md:px-6 text-white">
           <div className="max-w-3xl mx-auto space-y-4">
             <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Passerelle Jeunesse – Accompagnement & Mobilité
+              Passerelle Jeunesse – Accompagnement, garde et soutien scolaire
             </h1>
             <p className="text-lg md:text-xl text-slate-200">
               Sécuriser les parcours des jeunes, partout en France, en lien étroit avec les familles.
@@ -114,7 +115,7 @@ export default function Hero() {
 
             <div className="text-base text-slate-300 space-y-3 max-w-3xl mx-auto !mt-6">
                 <p>
-                    Passerelle Jeunesse propose un service professionnel d’accompagnement pour les <strong className="font-semibold text-white">jeunes de 7 à 20 ans</strong>, afin d’assurer leurs déplacements, soutenir leur autonomie et offrir aux familles un relais de confiance, dans un cadre sécurisé et bienveillant.
+                    Passerelle Jeunesse propose un accompagnement professionnel pour les <strong className="font-semibold text-white">jeunes de 7 à 20 ans</strong> — déplacements, garde à domicile et soutien scolaire — afin de soutenir leur autonomie et offrir aux familles un relais de confiance, dans un cadre sécurisé et bienveillant.
                 </p>
                 <p>
                     Basé à <strong className="font-semibold text-white">Metz et Saint-Avold</strong>, le service accompagne aussi bien des trajets locaux que des voyages longue distance en train ou bus vers toute la France.

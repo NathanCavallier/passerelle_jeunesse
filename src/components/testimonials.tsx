@@ -15,19 +15,19 @@ const testimonials = [
     name: 'Marie L.',
     role: 'Parent',
     avatarId: 'testimonial-avatar-1',
-    text: "Le service de transport de Passerelle Jeunesse est une bouée de sauvetage. Je sais que mon fils est entre de bonnes mains. La ponctualité et le professionnalisme sont exceptionnels.",
+    text: "Le service de transport de Passerelle Jeunesse est une vraie aide au quotidien. Mon fils est accompagné avec calme, ponctualité et sérénité, ce qui change beaucoup pour notre famille.",
   },
   {
     name: 'Jean-François T.',
     role: 'Directeur, Centre Communautaire',
     avatarId: 'testimonial-avatar-2',
-    text: "Nous faisons confiance à Passerelle Jeunesse pour leurs accompagnements. Leur approche est engageante et bénéfique pour les jeunes et les familles que nous servons.",
+    text: "Nous avons trouvé chez Passerelle Jeunesse une présence fiable et rassurante pour accompagner les jeunes dans des situations de transition ou de déplacement.",
   },
   {
     name: 'Aïcha B.',
     role: 'Famille',
     avatarId: 'testimonial-avatar-3',
-    text: "Le programme de soutien à l'autonomie a aidé notre fille à s'épanouir. Elle a gagné en confiance et en indépendance. Nous sommes infiniment reconnaissants.",
+    text: "Les gardes à domicile et le soutien scolaire de Passerelle Jeunesse ont permis à notre fille de reprendre confiance et de retrouver un rythme serein. Nous avons senti une vraie présence humaine à chaque étape.",
   },
 ];
 

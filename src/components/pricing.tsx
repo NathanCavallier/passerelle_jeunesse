@@ -63,40 +63,42 @@ const offer2 = {
 
 const offer4 = {
     offerNumber: 'OFFRE 4',
-    title: 'GARDE & ACCOMPAGNEMENT D\'ENFANTS',
-    subtitle: '"Services flexibles pour familles"',
-    description: 'Pour : garde d\'enfants avec gratifications libres des parents',
+    title: 'BABY-SITTING',
+    subtitle: '"Garde d\'enfants à domicile"',
+    description: 'Pour : familles ayant besoin d\'une garde ponctuelle ou régulière',
     inclus: [
-        'Garde à domicile (avant/après école, mercredi, vacances)',
-        'Accompagnements locaux (école, activités, rendez-vous)',
-        'Aide aux devoirs et activités ludiques',
-        'Encadrement bienveillant et sécurisé',
-        'Communication régulière avec les parents',
+        'Garde à domicile avant/après l’école, le mercredi ou pendant les vacances',
+        'Activités ludiques et encadrement bienveillant',
+        'Aide légère aux devoirs',
+        'Compte rendu de garde envoyé aux parents',
     ],
-    capacite: ['4-16 ans'],
+    capacite: ['4 à 16 ans'],
     tarifs: [
-        { formule: 'Gratification libre', tarif: 'Recommandé : 15€+/h' },
-        { formule: 'Demi-journée', tarif: 'À convenir' },
-        { formule: 'Journée complète', tarif: 'À convenir' },
+        { formule: '1 heure', tarif: '18 €' },
+        { formule: '2 heures', tarif: '32 €' },
+        { formule: 'Demi-journée (4h)', tarif: '60 €' },
+        { formule: 'Journée complète', tarif: '110 €' },
+        { formule: 'Heure supplémentaire', tarif: '15 €' },
     ],
 };
 
 const offer5 = {
     offerNumber: 'OFFRE 5',
-    title: 'MISSIONS VARIÉES',
-    subtitle: '"Services diversifiés pour tous"',
-    description: 'Pour : aide ponctuelle avec gratifications libres',
+    title: 'SOUTIEN SCOLAIRE',
+    subtitle: '"Aide aux devoirs et accompagnement scolaire"',
+    description: 'Pour : élèves ayant besoin d\'un accompagnement régulier ou ponctuel',
     inclus: [
-        'Aide ménage légère et rangement',
-        'Courses et commissions',
-        'Accompagnement aux démarches en ligne',
-        'Tutorat et soutien pédagogique',
-        'Accompagnement pour seniors',
+        'Séance découverte pour cerner les besoins',
+        'Aide aux devoirs et à l’organisation du travail',
+        'Préparation d’évaluations',
+        'Point de suivi avec les parents',
     ],
-    capacite: ['Flexibilité adaptée'],
+    capacite: ['6 à 18 ans'],
     tarifs: [
-        { formule: 'Gratification libre', tarif: 'Recommandé : 20€+/h' },
-        { formule: 'Par visite', tarif: 'À convenir' },
+        { formule: 'Séance découverte (1h)', tarif: '20 €' },
+        { formule: '1 heure', tarif: '22 €' },
+        { formule: 'Forfait 4 séances (1h)', tarif: '80 €' },
+        { formule: 'Forfait 10 séances (1h)', tarif: '190 €' },
     ],
 };
 
@@ -116,13 +118,13 @@ export default function Pricing() {
                 <div className="text-center max-w-3xl mx-auto mb-12">
                     <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Nos offres et tarifs</h2>
                     <p className="mt-4 text-lg text-muted-foreground">
-                        Des solutions claires et adaptées pour répondre à chaque besoin.
+                        Des solutions claires et adaptées pour répondre à chaque besoin en accompagnement et mobilité.
                     </p>
                 </div>
 
                 <Card className="mb-16 bg-background border-2 border-primary/20">
                     <CardHeader>
-                        <CardTitle className="font-headline text-2xl font-bold text-center">Cadre Général des Prestations</CardTitle>
+                        <CardTitle className="font-headline text-2xl font-bold text-center">Cadre général des prestations d’accompagnement et mobilité</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ul className="grid md:grid-cols-2 gap-x-8 gap-y-6 text-muted-foreground">
@@ -397,13 +399,13 @@ export default function Pricing() {
                                     <CardDescription className="text-lg !mt-2">"Services flexibles pour familles"</CardDescription>
                                 </div>
                             </div>
-                            <p className="text-muted-foreground pt-2 !mt-1">Pour : garde d'enfants avec gratifications libres des parents</p>
+                            <p className="text-muted-foreground pt-2 !mt-1">Pour : familles ayant besoin d’une garde ponctuelle ou régulière</p>
                         </CardHeader>
                         <CardContent className="flex-grow p-6 grid md:grid-cols-2 gap-8">
                             <div>
                                 <h4 className="font-bold text-lg mb-3">Services inclus</h4>
                                 <ul className="space-y-2">
-                                    {['Garde à domicile (avant/après école, mercredi, vacances)', 'Accompagnements locaux', 'Aide aux devoirs et activités ludiques', 'Encadrement bienveillant et sécurisé'].map((feature, idx) => (
+                                    {['Garde à domicile avant/après l’école, le mercredi ou pendant les vacances', 'Activités ludiques et encadrement bienveillant', 'Aide légère aux devoirs', 'Compte rendu de garde envoyé aux parents'].map((feature, idx) => (
                                         <li key={idx} className="flex items-start gap-3">
                                             <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-1" />
                                             <span className="text-muted-foreground text-sm">{feature}</span>
@@ -415,19 +417,24 @@ export default function Pricing() {
                                 <h4 className="font-bold text-lg mb-3">Tarification</h4>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-muted-foreground text-sm">Gratification libre</span>
-                                        <span className="font-bold text-foreground">Recommandé : 15€+/h</span>
+                                        <span className="text-muted-foreground text-sm">1 heure</span>
+                                        <span className="font-bold text-foreground">18 €</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-muted-foreground text-sm">Demi-journée</span>
-                                        <span className="font-bold text-foreground">À convenir</span>
+                                        <span className="text-muted-foreground text-sm">2 heures</span>
+                                        <span className="font-bold text-foreground">32 €</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-muted-foreground text-sm">Demi-journée (4h)</span>
+                                        <span className="font-bold text-foreground">60 €</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-muted-foreground text-sm">Journée complète</span>
-                                        <span className="font-bold text-foreground">À convenir</span>
+                                        <span className="font-bold text-foreground">110 €</span>
                                     </div>
                                     <div className="pt-3 border-t text-sm text-muted-foreground">
-                                        <p><strong className="text-foreground">Âges :</strong> 4-16 ans</p>
+                                        <p><strong className="text-foreground">Âges :</strong> 4 à 16 ans</p>
+                                        <p className="mt-1">Heure supplémentaire : 15 €</p>
                                     </div>
                                 </div>
                             </div>
@@ -449,17 +456,17 @@ export default function Pricing() {
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold text-amber-600 dark:text-amber-400">OFFRE 5</p>
-                                    <CardTitle className="font-headline text-2xl">MISSIONS VARIÉES</CardTitle>
-                                    <CardDescription className="text-lg !mt-2">"Services diversifiés pour tous"</CardDescription>
+                                    <CardTitle className="font-headline text-2xl">SOUTIEN SCOLAIRE</CardTitle>
+                                    <CardDescription className="text-lg !mt-2">"Aide aux devoirs et accompagnement scolaire"</CardDescription>
                                 </div>
                             </div>
-                            <p className="text-muted-foreground pt-2 !mt-1">Pour : aide ponctuelle avec gratifications libres</p>
+                            <p className="text-muted-foreground pt-2 !mt-1">Pour : élèves ayant besoin d’un accompagnement régulier ou ponctuel</p>
                         </CardHeader>
                         <CardContent className="flex-grow p-6 grid md:grid-cols-2 gap-8">
                             <div>
                                 <h4 className="font-bold text-lg mb-3">Services proposés</h4>
                                 <ul className="space-y-2">
-                                    {['Aide ménage légère et rangement', 'Courses et commissions', 'Accompagnement aux démarches en ligne', 'Tutorat et soutien pédagogique'].map((feature, idx) => (
+                                    {['Séance découverte pour cerner les besoins', 'Aide aux devoirs et à l’organisation du travail', 'Préparation d’évaluations', 'Point de suivi avec les parents'].map((feature, idx) => (
                                         <li key={idx} className="flex items-start gap-3">
                                             <Check className="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />
                                             <span className="text-muted-foreground text-sm">{feature}</span>
@@ -471,15 +478,23 @@ export default function Pricing() {
                                 <h4 className="font-bold text-lg mb-3">Tarification</h4>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-muted-foreground text-sm">Gratification libre</span>
-                                        <span className="font-bold text-foreground">Recommandé : 20€+/h</span>
+                                        <span className="text-muted-foreground text-sm">Séance découverte (1h)</span>
+                                        <span className="font-bold text-foreground">20 €</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-muted-foreground text-sm">Par visite</span>
-                                        <span className="font-bold text-foreground">À convenir</span>
+                                        <span className="text-muted-foreground text-sm">1 heure</span>
+                                        <span className="font-bold text-foreground">22 €</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-muted-foreground text-sm">Forfait 4 séances (1h)</span>
+                                        <span className="font-bold text-foreground">80 €</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-muted-foreground text-sm">Forfait 10 séances (1h)</span>
+                                        <span className="font-bold text-foreground">190 €</span>
                                     </div>
                                     <div className="pt-3 border-t text-sm text-muted-foreground">
-                                        <p><strong className="text-foreground">Flexibilité :</strong> Adaptable selon vos besoins</p>
+                                        <p><strong className="text-foreground">Public :</strong> 6 à 18 ans</p>
                                     </div>
                                 </div>
                             </div>

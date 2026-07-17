@@ -12,9 +12,9 @@ export default function Contact() {
         <div className="mx-auto max-w-2xl">
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Besoin d’un accompagnement ?</CardTitle>
+              <CardTitle className="font-headline text-3xl font-bold tracking-tight sm:text-4xl">Besoin d’un accompagnement et de mobilité ?</CardTitle>
               <CardDescription className="pt-2">
-                Chaque situation est étudiée avec attention afin de proposer un cadre clair, adapté et sécurisé.
+                Chaque situation est étudiée avec attention afin de proposer un cadre clair, adapté et sécurisé pour vos trajets, vos garde ou vos besoins d’accompagnement.
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
@@ -32,7 +32,7 @@ export default function Contact() {
                   <a href="mailto:contact@passerellejeunesse.fr" className="hover:underline">contact@passerellejeunesse.fr</a>
                 </div>
               </div>
-              <p className="mt-4 text-sm text-muted-foreground">Réponse sous 24h ouvrées. Demande sans engagement et accompagnement sur mesure.</p>
+              <p className="mt-4 text-sm text-muted-foreground">Réponse sous 24h ouvrées. Demande sans engagement et accompagnement sur mesure pour votre famille ou votre structure.</p>
               <div className="mt-8">
                 <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 h-auto whitespace-normal text-center" size="lg">
                   <Link href="mailto:contact@passerellejeunesse.fr">
